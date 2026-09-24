@@ -106,7 +106,7 @@ def main():
     html = html.replace("/*__DATA__*/null", payload).replace("__REPO__", REPO)
     out = SKILL / "docs"
     out.mkdir(exist_ok=True)
-    (out / "index.html").write_text(html, encoding="utf-8")
+    (out / "index.html").write_text(html, encoding="utf-8", newline="\n")  # 固定 LF，跨平台生成结果一致
     (out / ".nojekyll").write_text("", encoding="utf-8")
 
     ex = SKILL / "examples"
@@ -114,7 +114,7 @@ def main():
         old.unlink()
     for d in demos:
         fname = "示范-" + re.sub(r"[\s，,]", "", d["tab"]) + ".md"
-        (ex / fname).write_text(demo_markdown(d, by_id), encoding="utf-8")
+        (ex / fname).write_text(demo_markdown(d, by_id), encoding="utf-8", newline="\n")
     print(f"已生成 docs/index.html（{len(html) // 1024} KB）与 {len(demos)} 份示范；"
           f"案例 {len(cases)}，引文 {data['stats']['quotes']}，勘误 {len(errata)}。")
 
