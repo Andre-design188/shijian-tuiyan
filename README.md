@@ -2,7 +2,7 @@
 
 纠结一个决定的时候，把你的处境说给它听。它会从《史记》《资治通鉴》里找出走过同样局面的人，走对的和走错的都找，逐个推演每个选项的去向，最后给你一条带止损线的建议。
 
-**在线展示**：<https://gavincao6313-jpg.github.io/shijian-tuiyan/>，里面有三次完整推演，以及可按处境筛选的 92 个历史案例。
+**在线使用**：<https://gavincao6313-jpg.github.io/shijian-tuiyan/>。在对话框里写下当前处境和所求，它会追问最多三个问题，推演完成后对话框自动折叠、展开结果。页面里还有三次完整示范，以及可按处境筛选的 92 个历史案例。
 
 [![引文校验](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/verify.yml/badge.svg)](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/verify.yml)
 
@@ -49,7 +49,28 @@
 
   这道校验是必要的：初稿由大模型凭记忆写出，100 句里有 12 句和原文对不上。例如把"良为他人**者**"写成"良为他人**言**"，把"独孤误我"写成"独孤**诚**误我"。这类错读起来都像古文，人工审稿几乎发现不了。完整对照见展示页的「为什么可信」一节。
 
-## 安装与使用
+## 在网页上推演
+
+对话框有三种推演引擎，在对话框底部的「设置」里切换：
+
+| 引擎 | 怎么用 | 费用 |
+|---|---|---|
+| 示范模式 | 线上页面的默认选项，回放三个预先推演好的示范 | 免费 |
+| 自带 API Key | 填入自己的 Anthropic API Key；Key 只存在你的浏览器里，由官方 SDK 直接发给 Anthropic，本页没有服务器 | 记在你的 API 账户上 |
+| 本机 Claude 订阅 | 本机运行 `python scripts/serve_local.py` 打开页面，对话框通过本机的 `claude` 命令推演 | 用你的 Claude 订阅额度 |
+
+不管用哪种引擎，模型给出的古文都会在浏览器里和案例原文逐字核对，对不上的不显示，并在结果里说明隐藏了什么。
+
+本机订阅模式的准备（只需一次）：
+
+```bash
+claude auth login                   # 登录 Claude Code，用你的 Claude 订阅
+python scripts/serve_local.py       # 启动本地页面，自动打开 http://127.0.0.1:8765/
+```
+
+本地服务只监听本机，只接受本页发出的请求；`claude` 以关闭全部工具、安全模式运行，只生成文字。
+
+## 安装为 Claude Code 技能
 
 需要 [Claude Code](https://claude.com/claude-code) 和 Python 3.10+。
 
@@ -70,6 +91,7 @@ python scripts/find_cases.py --list            # 母题总览
 python scripts/find_cases.py 合伙 股权          # 按关键词找案例
 python scripts/grep_source.py 暴得大名          # 在两书全文里检索
 python scripts/build_site.py                   # 重新生成展示页与示范文件
+python scripts/serve_local.py                  # 本机打开页面，用 Claude 订阅推演
 ```
 
 ## 目录
@@ -78,8 +100,8 @@ python scripts/build_site.py                   # 重新生成展示页与示范�
 SKILL.md                  技能主文件：流程、输出模板、纪律（Claude 读这个）
 references/cases/         16 个母题的案例库
 examples/demos.json       三次示范推演（展示页和示范文件都由它生成）
-scripts/                  检索、校验、语料下载、展示页生成
-site/                     展示页模板与勘误数据
+scripts/                  检索、校验、语料下载、展示页生成、本地服务
+site/                     展示页模板、对话框脚本（dialog.js）、推演引擎（engine.js）、勘误数据
 docs/                     生成的展示页（GitHub Pages）
 corpus/                   原文语料（下载生成，不入库）
 ```

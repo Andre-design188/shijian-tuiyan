@@ -1,6 +1,7 @@
 """生成展示页 docs/index.html 与示范文件 examples/示范-*.md。
 
-数据源：references/cases/（案例库）、examples/demos.json（推演示范）、site/errata.json（引文勘误）。
+数据源：references/cases/（案例库）、examples/demos.json（推演示范）、site/errata.json（引文勘误）；
+页面脚本：site/template.html 内嵌 site/engine.js（提示词、模型调用、引文校验）与 site/dialog.js（对话框）。
 用法：python build_site.py        # 任何一项校验失败都会中止，不产出页面
 校验：示范和勘误引用的案例必须存在；示范里的古文、勘误里的"原文"必须逐字见于已校验的案例引文。
 """
@@ -12,13 +13,6 @@ from pathlib import Path
 from caselib import CASES_DIR, SKILL, load_cases, norm, quotes_of
 
 REPO = "https://github.com/gavincao6313-jpg/shijian-tuiyan"
-# 首屏的今古对照：现代处境 → 案例
-HERO = [
-    {"now": "老同学拉我去当 CTO", "case": "04-02"},
-    {"now": "爸妈让我回老家接厂", "case": "11-06"},
-    {"now": "功劳最大，却被新领导架空", "case": "08-01"},
-    {"now": "四十多岁，要不要转行", "case": "15-03"},
-]
 
 
 def load_themes():
@@ -41,7 +35,9 @@ def demo_markdown(d, cases):
     t = lambda i: cases[i]["title"]  # noqa: E731
     lines = [f"# 示范：{d['tab']}", "",
              "> 由 examples/demos.json 生成（python scripts/build_site.py），请改 JSON，不要直接改这个文件。", "",
-             f"**来问的人说**：{d['question']}", "", "## 局面卡"]
+             f"**来问的人说**：{d['question']}", "", f"**所求为何**：{d['goal']}", "", "## 追问"]
+    lines += [f"- {q['q']}　回答：{q['pick']}" for q in d["questions"]]
+    lines += ["", "## 局面卡"]
     lines += [f"- **{b['k']}**：{b['v']}" + ("（假设）" if b.get("assume") else "") for b in d["board"]]
     lines += ["", "## 母题：" + " + ".join(d["themes"]), "", "## 历史镜像",
               "| 选项 | 案例 | 正/反 | 像在哪里 | 不像的地方 | 结论 |", "|---|---|---|---|---|---|"]
@@ -71,10 +67,14 @@ def main():
     quotes = {c["id"]: [norm(q) for q in quotes_of(c)] for c in cases}
     errors = []
 
-    for h in HERO:
-        check(h["case"] in by_id, f"首屏引用了不存在的案例 {h['case']}", errors)
     for d in demos:
         name = d["id"]
+        for k in ("question", "goal", "summary"):
+            check(bool(d.get(k)), f"[{name}] 缺少 {k}", errors)
+        qs = d.get("questions", [])
+        check(1 <= len(qs) <= 3, f"[{name}] 追问应为 1 到 3 个", errors)
+        for q in qs:
+            check(2 <= len(q["options"]) <= 4 and q.get("pick") in q["options"], f"[{name}] 追问「{q['q']}」的选项或预设回答不对", errors)
         for code in d["themes"]:
             check(code in codes, f"[{name}] 母题 {code} 不存在", errors)
         for m in d["mirrors"]:
@@ -99,11 +99,15 @@ def main():
         "themes": themes,
         "cases": [{"id": c["id"], "title": c["title"], "theme": c["file"][:2],
                    "src": c["fields"].get("出处", ""), "fields": c["fields"]} for c in cases],
-        "demos": demos, "errata": errata, "hero": HERO,
+        "demos": demos, "errata": errata,
     }
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     html = (SKILL / "site" / "template.html").read_text(encoding="utf-8")
     html = html.replace("/*__DATA__*/null", payload).replace("__REPO__", REPO)
+    for tag, name in (("/*__ENGINE_JS__*/", "engine.js"), ("/*__DIALOG_JS__*/", "dialog.js")):
+        js = (SKILL / "site" / name).read_text(encoding="utf-8")
+        assert "</script" not in js.lower(), f"{name} 里不能出现 </script>"
+        html = html.replace(tag, js)
     out = SKILL / "docs"
     out.mkdir(exist_ok=True)
     (out / "index.html").write_text(html, encoding="utf-8", newline="\n")  # 固定 LF，跨平台生成结果一致

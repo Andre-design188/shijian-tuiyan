@@ -7,24 +7,26 @@
 <meta name="description" content="纠结一个决定时，从《史记》《资治通鉴》里找出走过同样局面的人，推演每个选项的去向，给出带止损线的建议。">
 <meta property="og:title" content="史鉴推演">
 <meta property="og:description" content="用《史记》《资治通鉴》推演人生抉择：立局、照镜、推演、太史公曰。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%232B7468' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%238A5A2B' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%232B7468'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%238F4E24' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%239B2C22' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%238F4E24'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- 字体异步加载：拿不到时（例如网络受限）直接用系统宋体/黑体，不阻塞渲染 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700;900&display=swap" media="print" onload="this.media='all'">
 <style>
 :root {
-  --bg: #EEF1EE;
-  --surface: #F7F8F6;
-  --ink: #15211E;
-  --ink-2: #4B5955;
-  --ink-3: #6E7B77;
-  --rule: #CAD2CD;
-  --verdigris: #2B7468;
-  --verdigris-soft: #D6E7E2;
-  --bronze: #8A5A2B;
-  --bronze-soft: #F0E4D6;
-  --seal: #A8322A;
+  --bg: #E7E0D3;
+  --surface: #F2EDE4;
+  --ink: #2B231D;
+  --ink-2: #5E5248;
+  --ink-3: #685B4E;
+  --rule: #CFC4B3;
+  --gu: #8F4E24;
+  --gu-soft: #EAD8C4;
+  --on-gu: #F7F1E8;
+  --jin: #4B5864;
+  --jin-soft: #DCE0E2;
+  --seal: #9B2C22;
+  --on-seal: #FBF3EE;
   --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
   --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
@@ -32,18 +34,19 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0F1716; --surface: #152120; --ink: #E3EAE6; --ink-2: #A9B7B2; --ink-3: #82918C;
-    --rule: #2B3B38; --verdigris: #72C3B3; --verdigris-soft: #1C3531; --bronze: #D4A26E;
-    --bronze-soft: #33271B; --seal: #DB5A4D; color-scheme: dark;
+    --bg: #1C1814; --surface: #26201A; --ink: #EAE0D0; --ink-2: #BDAF9B; --ink-3: #9C8E7B;
+    --rule: #3D352C; --gu: #D4935F; --gu-soft: #3A2719; --on-gu: #1C1814; --jin: #A3B1BE;
+    --jin-soft: #262D34; --seal: #CF5646; --on-seal: #FBF1EC; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0F1716; --surface: #152120; --ink: #E3EAE6; --ink-2: #A9B7B2; --ink-3: #82918C;
-  --rule: #2B3B38; --verdigris: #72C3B3; --verdigris-soft: #1C3531; --bronze: #D4A26E;
-  --bronze-soft: #33271B; --seal: #DB5A4D; color-scheme: dark;
+  --bg: #1C1814; --surface: #26201A; --ink: #EAE0D0; --ink-2: #BDAF9B; --ink-3: #9C8E7B;
+  --rule: #3D352C; --gu: #D4935F; --gu-soft: #3A2719; --on-gu: #1C1814; --jin: #A3B1BE;
+  --jin-soft: #262D34; --seal: #CF5646; --on-seal: #FBF1EC; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
@@ -52,9 +55,9 @@ body {
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
 .serif { font-family: var(--serif); }
-a { color: var(--verdigris); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a { color: var(--gu); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 2px solid var(--verdigris); outline-offset: 3px; border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--gu); outline-offset: 3px; border-radius: 2px; }
 .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -62,7 +65,7 @@ a:hover { text-decoration-thickness: 2px; }
 .top { border-bottom: 1px solid var(--rule); }
 .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--serif); font-weight: 700; font-size: 18px; letter-spacing: .08em; }
-.brand-mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--verdigris); box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 6px var(--bronze); flex: none; }
+.brand-mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--gu); box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 6px var(--seal); flex: none; }
 .nav { display: flex; gap: 20px; font-size: 15px; }
 .nav a { color: var(--ink-2); text-decoration: none; }
 .nav a:hover { color: var(--ink); }
@@ -70,7 +73,7 @@ a:hover { text-decoration-thickness: 2px; }
 
 /* ---------- 首屏：今古对照 ---------- */
 .hero { padding: clamp(40px, 8vw, 96px) 0 clamp(48px, 8vw, 88px); }
-.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 64px); align-items: start; }
 @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
 .hero h1 {
   font-family: var(--serif); font-weight: 900; margin: 0 0 20px;
@@ -79,39 +82,77 @@ a:hover { text-decoration-thickness: 2px; }
 .hero .lead { font-size: clamp(18px, 2vw, 20px); color: var(--ink); max-width: 30em; margin: 0 0 12px; }
 .hero .lead + .lead { color: var(--ink-2); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-.btn { display: inline-flex; align-items: center; min-height: 46px; padding: 0 22px; border-radius: 3px; font: 500 16px/1 var(--sans); text-decoration: none; cursor: pointer; border: 1px solid var(--verdigris); }
-.btn-primary { background: var(--verdigris); color: var(--bg); }
+.btn { display: inline-flex; align-items: center; min-height: 46px; padding: 0 22px; border-radius: 3px; font: 500 16px/1 var(--sans); text-decoration: none; cursor: pointer; border: 1px solid var(--gu); }
+.btn-primary { background: var(--gu); color: var(--on-gu); }
 .btn-primary:hover { filter: brightness(1.08); }
-.btn-ghost { color: var(--verdigris); background: transparent; }
-.btn-ghost:hover { background: var(--verdigris-soft); }
+.btn-ghost { color: var(--gu); background: transparent; }
+.btn-ghost:hover { background: var(--gu-soft); }
 .hero-note { margin-top: 18px; font-size: 14px; color: var(--ink-3); }
 
-.mirror { position: relative; }
-.mirror-head { display: grid; grid-template-columns: 1fr 64px 1fr; align-items: center; margin-bottom: 8px; font-size: 15px; color: var(--ink-3); }
-.mirror-head .now-h { text-align: right; padding-right: 12px; }
-.mirror-head .then-h { padding-left: 12px; }
-.disc { /* 铜镜：两道环 + 中间一个"鉴"字 */
-  width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; margin-inline: auto;
-  border: 2px solid var(--verdigris); box-shadow: inset 0 0 0 5px var(--bg), inset 0 0 0 7px var(--bronze);
-  font-family: var(--serif); font-weight: 900; font-size: 24px; color: var(--verdigris); background: var(--bg);
-  position: relative; z-index: 1;
-}
-.pairs { list-style: none; margin: 0; padding: 0; position: relative; }
-.pairs::before { content: ""; position: absolute; left: 50%; top: -8px; bottom: 8px; width: 1px; background: var(--rule); }
-.pair { display: grid; grid-template-columns: 1fr 64px 1fr; align-items: center; padding: 14px 0; border-bottom: 1px dashed var(--rule); }
-.pair:last-child { border-bottom: 0; }
-.pair .now { text-align: right; font-size: 16px; color: var(--ink); text-wrap: balance; }
-.pair .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--verdigris); margin-inline: auto; position: relative; z-index: 1; box-shadow: 0 0 0 4px var(--bg); }
-.pair .then { font-family: var(--serif); font-weight: 700; font-size: 17px; line-height: 1.45; color: var(--ink); text-decoration: none; }
-.pair .then:hover { color: var(--verdigris); }
-.pair .then small { display: block; font-family: var(--sans); font-weight: 400; font-size: 13px; color: var(--ink-3); }
-@media (prefers-reduced-motion: no-preference) {
-  .js .pair { opacity: 0; transform: translateY(6px); animation: rise .5s ease forwards; }
-  .js .pair:nth-child(2) { animation-delay: .25s; }
-  .js .pair:nth-child(3) { animation-delay: .5s; }
-  .js .pair:nth-child(4) { animation-delay: .75s; }
-  @keyframes rise { to { opacity: 1; transform: none; } }
-}
+/* ---------- 对话框 ---------- */
+.dlg { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 20px 0 28px; }
+.dlg-head h2 { font-family: var(--serif); font-weight: 700; font-size: 24px; margin: 0; }
+.dlg-hint { font-size: 14px; color: var(--ink-3); }
+.icon-btn { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: 4px; background: transparent; color: var(--ink-2); cursor: pointer; }
+.icon-btn:hover { color: var(--ink); border-color: var(--gu); }
+.dlg-main { padding: 18px 28px 24px; display: flex; flex-direction: column; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 15px; font-weight: 500; }
+.field textarea, .field input, .engine-panel input, .engine-panel select, .more-in { box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--sans); }
+.field textarea { resize: vertical; min-height: 7.5em; }
+.field textarea::placeholder, .field input::placeholder, .more-in::placeholder { color: var(--ink-3); }
+.dlg-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.demo-picks { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-3); }
+.demo-pick { font: 14px/1.2 var(--sans); padding: 8px 10px; border: 1px dashed var(--rule); border-radius: 4px; background: transparent; color: var(--ink-2); cursor: pointer; }
+.demo-pick:hover { border-color: var(--gu); color: var(--ink); }
+.engine { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 12px 28px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-3); }
+.engine b { font-weight: 500; color: var(--ink-2); }
+.linkish { font: inherit; color: var(--gu); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.engine-panel { padding: 4px 28px 22px; display: flex; flex-direction: column; gap: 12px; font-size: 15px; }
+.engine-panel fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.engine-panel legend { font-weight: 500; margin-bottom: 4px; }
+.engine-panel .opt-line { display: flex; gap: 8px; align-items: baseline; }
+.engine-panel .opt-line input { width: auto; }
+.engine-panel small { display: block; color: var(--ink-3); font-size: 13.5px; }
+.engine-panel .row { display: grid; grid-template-columns: minmax(0, 1fr) 170px; gap: 10px; }
+.engine-panel .check { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--ink-2); }
+.engine-panel .check input { width: auto; }
+/* 对话线程 */
+.thread { display: flex; flex-direction: column; gap: 18px; }
+.msg-user { align-self: flex-end; max-width: 90%; background: var(--jin-soft); border-radius: 6px; padding: 12px 16px; font-size: 15.5px; }
+.msg-user div + div { margin-top: 4px; }
+.msg-user b { color: var(--jin); font-weight: 500; margin-right: .5em; }
+.msg-bot { display: flex; flex-direction: column; gap: 14px; font-size: 16px; }
+.msg-bot .note { font-size: 13.5px; color: var(--ink-3); }
+.q { display: flex; flex-direction: column; gap: 8px; }
+.q-t { font-size: 16px; }
+.q-t span { font-family: var(--serif); font-weight: 700; color: var(--gu); margin-right: 8px; }
+.q-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.q-opt { min-height: 44px; padding: 0 16px; border-radius: 4px; border: 1px solid var(--rule); background: transparent; color: var(--ink-2); font: 15px var(--sans); cursor: pointer; }
+.q-opt:hover { border-color: var(--gu); color: var(--ink); }
+.q-opt[aria-pressed="true"] { background: var(--gu); border-color: var(--gu); color: var(--on-gu); }
+.q-opt:disabled { cursor: default; }
+.prog { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.prog span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink-3); }
+.prog i { width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; border: 1px solid var(--rule); display: grid; place-items: center; font: normal 12px var(--sans); }
+.prog .done { color: var(--ink); }
+.prog .done i { background: var(--gu); border-color: var(--gu); color: var(--on-gu); }
+.prog .now { color: var(--gu); font-weight: 500; }
+.prog .now i { border: 2px solid var(--gu); }
+.alert { padding: 14px 16px; border-radius: 4px; background: var(--gu-soft); font-size: 15px; }
+.alert .dlg-actions { margin-top: 10px; }
+.care { padding: 16px 18px; border-radius: 4px; background: var(--jin-soft); font-size: 16px; }
+/* 折叠后的摘要条 */
+.dlg-bar { display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 14px 16px 14px 22px; }
+.dlg-bar .sum { flex: 1 1 260px; display: flex; flex-direction: column; }
+.dlg-bar .sum b { font-weight: 400; color: var(--ink-3); margin-right: .5em; }
+.dlg-bar .sum small { font-size: 13.5px; color: var(--ink-3); }
+.btn-sm { min-height: 44px; padding: 0 16px; font-size: 15px; }
+.mine { padding: clamp(40px, 6vw, 72px) 0; border-top: 1px solid var(--rule); }
+.mine .intro { color: var(--ink-2); margin: 0 0 28px; }
+.mine h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(30px, 4vw, 42px); letter-spacing: .04em; margin: 0 0 8px; }
+.dropped { font-size: 13.5px; color: var(--ink-3); margin: 8px 0 0; }
 
 /* ---------- 区块通用 ---------- */
 .section { padding: clamp(56px, 8vw, 96px) 0; border-top: 1px solid var(--rule); }
@@ -121,11 +162,13 @@ a:hover { text-decoration-thickness: 2px; }
 /* ---------- 推演演示 ---------- */
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 .tab { font: 500 16px/1.3 var(--sans); padding: 10px 16px; border-radius: 3px; border: 1px solid var(--rule); background: transparent; color: var(--ink-2); cursor: pointer; }
-.tab:hover { border-color: var(--verdigris); color: var(--ink); }
-.tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.tab:hover { border-color: var(--gu); color: var(--ink); }
+.tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 
-.question { position: relative; margin: 0 0 40px; padding: 20px 24px 20px 28px; background: var(--bronze-soft); border-left: 3px solid var(--bronze); font-size: 18px; max-width: 46em; }
-.question .who { display: block; font-size: 14px; color: var(--bronze); margin-bottom: 4px; }
+.question { margin: 0 0 40px; padding: 20px 24px; background: var(--jin-soft); border-radius: 4px; font-size: 18px; max-width: 46em; }
+.question .who { display: block; font-size: 14px; color: var(--jin); margin-bottom: 2px; }
+.question .qa { margin: 0; padding-left: 1.2em; font-size: 16px; }
+.question .qa b { font-weight: 500; margin-left: .6em; }
 
 .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
 .step { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 32px; padding: 32px 0; border-top: 1px solid var(--rule); }
@@ -133,40 +176,40 @@ a:hover { text-decoration-thickness: 2px; }
 @media (max-width: 800px) { .step { grid-template-columns: 1fr; gap: 16px; } }
 .step-head { counter-increment: step; }
 .step-head h3 { font-family: var(--serif); font-weight: 900; font-size: 24px; margin: 0; letter-spacing: .06em; }
-.step-head h3::before { content: counter(step); display: inline-block; width: 1.5em; color: var(--verdigris); font-weight: 700; }
+.step-head h3::before { content: counter(step); display: inline-block; width: 1.5em; color: var(--gu); font-weight: 700; }
 .step-head p { font-size: 14px; color: var(--ink-3); margin: 6px 0 0; line-height: 1.65; }
 
 .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
 @media (max-width: 640px) { .board { grid-template-columns: 1fr; } }
 .cell { padding: 16px 18px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--surface); }
-.cell b { font-family: var(--serif); font-weight: 900; font-size: 26px; color: var(--verdigris); line-height: 1; }
+.cell b { font-family: var(--serif); font-weight: 900; font-size: 26px; color: var(--gu); line-height: 1; }
 .cell .hint { font-size: 13px; color: var(--ink-3); margin-left: 8px; }
 .cell p { margin: 10px 0 0; font-size: 15.5px; line-height: 1.7; }
-.assume { display: inline-block; font-size: 12px; line-height: 1; padding: 3px 6px; border: 1px solid var(--bronze); color: var(--bronze); border-radius: 2px; margin-left: 6px; vertical-align: 2px; }
+.assume { display: inline-block; font-size: 12px; line-height: 1; padding: 3px 6px; border: 1px solid var(--jin); color: var(--jin); border-radius: 2px; margin-left: 6px; vertical-align: 2px; }
 
 .themes-used { display: flex; flex-wrap: wrap; gap: 10px; }
 .theme-link { display: inline-flex; flex-direction: column; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 3px; text-decoration: none; color: var(--ink); background: var(--surface); min-width: 140px; }
 .theme-link b { font-family: var(--serif); font-size: 18px; }
 .theme-link span { font-size: 13px; color: var(--ink-3); }
-.theme-link:hover { border-color: var(--verdigris); }
+.theme-link:hover { border-color: var(--gu); }
 
 /* 照镜：今 | 轴 | 古 */
 .mrows { display: grid; gap: 14px; }
 .mrow { display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr); background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; }
 .m-now { padding: 16px 18px; text-align: right; }
 .m-then { padding: 16px 18px; }
-.m-opt { font-size: 13px; color: var(--bronze); }
+.m-opt { font-size: 13px; color: var(--jin); }
 .m-now p { margin: 4px 0 0; font-size: 15.5px; text-wrap: pretty; }
 .m-axis { position: relative; display: grid; place-items: center; }
 .m-axis::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--rule); }
 .knob { position: relative; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--serif); font-weight: 900; font-size: 15px; }
-.knob.pos { background: var(--verdigris); color: var(--bg); }
-.knob.neg { background: var(--surface); color: var(--bronze); border: 1.5px solid var(--bronze); }
+.knob.pos { background: var(--gu); color: var(--on-gu); }
+.knob.neg { background: var(--surface); color: var(--jin); border: 1.5px solid var(--jin); }
 .m-then a { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--ink); text-decoration: none; line-height: 1.5; }
-.m-then a:hover { color: var(--verdigris); text-decoration: underline; }
+.m-then a:hover { color: var(--gu); text-decoration: underline; }
 .m-then .src { font-size: 13px; color: var(--ink-3); }
 .m-diff { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; padding: 10px 18px; border-top: 1px dashed var(--rule); font-size: 14.5px; color: var(--ink-2); }
-.m-diff .use { font-size: 13px; padding: 2px 8px; border-radius: 2px; background: var(--verdigris-soft); color: var(--verdigris); white-space: nowrap; }
+.m-diff .use { font-size: 13px; padding: 2px 8px; border-radius: 2px; background: var(--gu-soft); color: var(--gu); white-space: nowrap; }
 .m-diff .use.ref { background: transparent; border: 1px dashed var(--ink-3); color: var(--ink-3); }
 @media (max-width: 640px) {
   .mrow { grid-template-columns: 1fr; }
@@ -181,19 +224,19 @@ a:hover { text-decoration-thickness: 2px; }
 /* 推演：各选项 */
 .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .opt { border: 1px solid var(--rule); border-top: 3px solid var(--ink-3); border-radius: 3px; background: var(--surface); padding: 16px 18px 18px; }
-.opt.pick { border-top-color: var(--verdigris); }
+.opt.pick { border-top-color: var(--gu); }
 .opt h4 { margin: 0 0 12px; font-size: 17px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.opt h4 .rec { font-size: 12px; font-weight: 500; color: var(--verdigris); border: 1px solid var(--verdigris); border-radius: 2px; padding: 1px 6px; white-space: nowrap; }
+.opt h4 .rec { font-size: 12px; font-weight: 500; color: var(--gu); border: 1px solid var(--gu); border-radius: 2px; padding: 1px 6px; white-space: nowrap; }
 .timeline { list-style: none; margin: 0 0 14px; padding: 0 0 0 16px; border-left: 1px solid var(--rule); }
 .timeline li { position: relative; font-size: 15px; line-height: 1.65; margin-bottom: 8px; }
 .timeline li::before { content: ""; position: absolute; left: -20.5px; top: .65em; width: 8px; height: 8px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--ink-3); }
 .timeline li span { display: block; font-size: 12.5px; color: var(--ink-3); }
 .risk, .sig { font-size: 14.5px; line-height: 1.65; margin: 10px 0 0; padding-left: 10px; }
-.risk { border-left: 2px solid var(--bronze); }
-.sig { border-left: 2px solid var(--verdigris); }
+.risk { border-left: 2px solid var(--jin); }
+.sig { border-left: 2px solid var(--gu); }
 .risk b, .sig b { display: block; font-size: 12.5px; font-weight: 500; }
-.risk b { color: var(--bronze); }
-.sig b { color: var(--verdigris); }
+.risk b { color: var(--jin); }
+.sig b { color: var(--gu); }
 
 .swaps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
 .swaps h4 { margin: 0 0 4px; font-size: 16px; }
@@ -202,20 +245,20 @@ a:hover { text-decoration-thickness: 2px; }
 /* 太史公曰 */
 .verdict { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 24px; padding: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; }
 @media (max-width: 640px) { .verdict { grid-template-columns: 1fr; padding: 22px; } }
-.seal { writing-mode: vertical-rl; align-self: start; background: var(--seal); color: #FBF3EE; font-family: var(--serif); font-weight: 900; font-size: 19px; letter-spacing: .25em; padding: 12px 8px; border-radius: 2px; }
+.seal { writing-mode: vertical-rl; align-self: start; background: var(--seal); color: var(--on-seal); font-family: var(--serif); font-weight: 900; font-size: 19px; letter-spacing: .25em; padding: 12px 8px; border-radius: 2px; }
 @media (max-width: 640px) { .seal { writing-mode: horizontal-tb; justify-self: start; padding: 6px 12px; } }
 .v-pick { font-family: var(--serif); font-weight: 900; font-size: clamp(24px, 3vw, 30px); line-height: 1.35; margin: 0 0 10px; }
-.v-quote { font-family: var(--serif); font-size: 18px; color: var(--verdigris); margin: 0 0 12px; }
+.v-quote { font-family: var(--serif); font-size: 18px; color: var(--gu); margin: 0 0 12px; }
 .v-quote a { font-family: var(--sans); font-size: 13px; color: var(--ink-3); margin-left: 8px; }
 .v-why { margin: 0 0 16px; max-width: 40em; }
 .v-terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 0; }
 .v-terms div { padding: 12px 14px; border-radius: 2px; }
 .v-terms dt { font-size: 13px; font-weight: 500; }
 .v-terms dd { margin: 2px 0 0; font-size: 15.5px; }
-.v-premise { background: var(--verdigris-soft); }
-.v-premise dt { color: var(--verdigris); }
-.v-stop { background: var(--bronze-soft); }
-.v-stop dt { color: var(--bronze); }
+.v-premise { background: var(--gu-soft); }
+.v-premise dt { color: var(--gu); }
+.v-stop { background: var(--jin-soft); }
+.v-stop dt { color: var(--jin); }
 .card { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 24px; margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--rule); }
 @media (max-width: 800px) { .card { grid-template-columns: 1fr; gap: 14px; } }
 .card h4 { margin: 0 0 6px; font-size: 14px; color: var(--ink-3); font-weight: 500; }
@@ -225,8 +268,8 @@ a:hover { text-decoration-thickness: 2px; }
 /* ---------- 案例库 ---------- */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .chip { font: 15px/1.2 var(--sans); padding: 8px 12px; border: 1px solid var(--rule); border-radius: 3px; background: transparent; color: var(--ink-2); cursor: pointer; }
-.chip:hover { border-color: var(--verdigris); color: var(--ink); }
-.chip[aria-pressed="true"] { background: var(--verdigris); border-color: var(--verdigris); color: var(--bg); }
+.chip:hover { border-color: var(--gu); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--gu); border-color: var(--gu); color: var(--on-gu); }
 .theme-note { min-height: 1.75em; color: var(--ink-2); font-size: 15px; margin: 4px 0 16px; }
 .search { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
 .search input { flex: 1 1 280px; font: 16px var(--sans); padding: 12px 14px; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); color: var(--ink); }
@@ -245,9 +288,9 @@ a:hover { text-decoration-thickness: 2px; }
 .case dl { margin: 0 0 20px; display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: 8px 12px; font-size: 15px; }
 .case dt { color: var(--ink-3); font-size: 13.5px; padding-top: 2px; }
 .case dd { margin: 0; }
-.case dd.quote { font-family: var(--serif); color: var(--verdigris); font-size: 16px; }
-.case dd.bound { color: var(--bronze); }
-.case:target summary .t, .case.flash summary .t { color: var(--verdigris); }
+.case dd.quote { font-family: var(--serif); color: var(--gu); font-size: 16px; }
+.case dd.bound { color: var(--jin); }
+.case:target summary .t, .case.flash summary .t { color: var(--gu); }
 .empty { padding: 24px 0; color: var(--ink-2); }
 .more { margin-top: 20px; }
 
@@ -263,8 +306,8 @@ a:hover { text-decoration-thickness: 2px; }
 .errata th { text-align: left; font-weight: 500; font-size: 13px; color: var(--ink-3); padding: 8px 10px; border-bottom: 1px solid var(--rule); }
 .errata td { padding: 9px 10px; border-bottom: 1px dashed var(--rule); vertical-align: top; }
 .errata td.cn { font-family: var(--serif); }
-.errata del { color: var(--bronze); text-decoration-thickness: 1.5px; }
-.errata ins { color: var(--verdigris); text-decoration: none; border-bottom: 2px solid var(--verdigris); }
+.errata del { color: var(--jin); text-decoration-thickness: 1.5px; }
+.errata ins { color: var(--gu); text-decoration: none; border-bottom: 2px solid var(--gu); }
 .errata .foot { font-size: 14px; color: var(--ink-3); margin: 12px 0 0; }
 
 /* ---------- 怎么用 ---------- */
@@ -273,7 +316,7 @@ a:hover { text-decoration-thickness: 2px; }
 .code pre { margin: 0; padding: 18px 20px; overflow-x: auto; font: 14px/1.7 var(--mono); color: var(--ink); }
 .code pre .c { color: var(--ink-3); }
 .copy { font: 13px var(--sans); padding: 5px 10px; border: 1px solid var(--rule); border-radius: 3px; background: var(--bg); color: var(--ink-2); cursor: pointer; }
-.copy:hover { color: var(--ink); border-color: var(--verdigris); }
+.copy:hover { color: var(--ink); border-color: var(--gu); }
 .use-note { max-width: 38em; color: var(--ink-2); margin: 20px 0 0; }
 
 footer { border-top: 1px solid var(--rule); padding: 32px 0 48px; font-size: 14px; color: var(--ink-3); }
@@ -287,7 +330,7 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <div class="wrap">
     <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>史鉴推演</a>
     <nav class="nav" aria-label="页面导航">
-      <a href="#demo">看推演</a>
+      <a href="#demo">看示范</a>
       <a href="#library">案例库</a>
       <a href="#trust">为什么可信</a>
       <a class="nav-gh" href="__REPO__">GitHub</a>
@@ -302,23 +345,71 @@ footer p { margin: 0 0 6px; max-width: 60em; }
         <h1 id="hero-title">史鉴推演</h1>
         <p class="lead">纠结一个决定的时候，把你的处境说给它听。</p>
         <p class="lead">它会从《史记》《资治通鉴》里找出走过同样局面的人，走对的和走错的都找，逐个推演每个选项的去向，最后给你一条带止损线的建议。</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="#demo">看一次完整推演</a>
-          <a class="btn btn-ghost" href="#library">浏览历史案例</a>
-        </div>
         <p class="hero-note">一个开源的 Claude Code 技能。历史给的是变量，不是答案。</p>
       </div>
-      <div class="mirror" aria-label="现代处境与历史先例的对照示例">
-        <div class="mirror-head" aria-hidden="true"><span class="now-h">你的处境</span><span class="disc">鉴</span><span class="then-h">史书里的局</span></div>
-        <ul class="pairs" id="pairs"></ul>
-      </div>
+      <section class="dlg" id="dlg" aria-labelledby="dlg-title">
+        <div class="dlg-bar" id="dlg-bar" hidden>
+          <div class="sum"><span><b>你的处境</b><span id="bar-sum"></span></span><small id="bar-meta"></small></div>
+          <button type="button" class="btn btn-ghost btn-sm" id="dlg-expand">展开对话 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <button type="button" class="linkish" id="dlg-restart">重新推演</button>
+        </div>
+        <div id="dlg-body">
+          <div class="dlg-head">
+            <h2 id="dlg-title">说说你的处境</h2>
+            <span class="dlg-hint" id="dlg-hint">它最多追问三个问题</span>
+            <button type="button" class="icon-btn" id="dlg-collapse" aria-label="收起对话" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+          </div>
+          <div class="dlg-main">
+            <form class="ask" id="ask-form" novalidate>
+              <div class="field">
+                <label for="f-now">当前处境</label>
+                <textarea id="f-now" rows="4" placeholder="比如：35 岁，大厂工程师，老同学拉我去他的创业公司当 CTO，给 5% 期权，现金降一半……"></textarea>
+              </div>
+              <div class="field" style="margin-top: 16px">
+                <label for="f-goal">所求为何</label>
+                <input id="f-goal" type="text" placeholder="比如：该不该去；要去的话，先谈好什么">
+              </div>
+              <div class="dlg-actions" style="margin-top: 18px">
+                <button type="submit" class="btn btn-primary">开始推演</button>
+                <div class="demo-picks" id="demo-picks"><span>或看一个示范：</span></div>
+              </div>
+            </form>
+            <div class="thread" id="thread" aria-live="polite" hidden></div>
+          </div>
+          <div class="engine">推演引擎：<b id="engine-name">示范模式</b><button type="button" class="linkish" id="engine-btn" aria-expanded="false" aria-controls="engine-panel">设置</button></div>
+          <div class="engine-panel" id="engine-panel" hidden>
+            <fieldset>
+              <legend>用什么来推演</legend>
+              <label class="opt-line"><input type="radio" name="engine" value="demo"><span>示范模式<small>不接模型，只能回放三个预先推演好的示范。</small></span></label>
+              <label class="opt-line"><input type="radio" name="engine" value="byok"><span>用我自己的 API Key<small>Key 只保存在你的浏览器里，直接发给 Anthropic；本页没有服务器，费用记在你的账户上。</small></span></label>
+              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
+            </fieldset>
+            <div id="byok-fields" hidden>
+              <div class="row">
+                <div class="field"><label for="f-key">Anthropic API Key</label><input id="f-key" type="password" autocomplete="off" placeholder="sk-ant-…"></div>
+                <div class="field"><label for="f-model">模型</label><select id="f-model"><option value="claude-opus-5">Claude Opus 5</option><option value="claude-sonnet-5">Claude Sonnet 5</option></select></div>
+              </div>
+              <label class="check" style="margin-top: 8px"><input type="checkbox" id="f-remember">在这台设备上记住 Key</label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+
+  <section class="mine" id="mine" aria-labelledby="mine-title" hidden>
+    <div class="wrap">
+      <h2 id="mine-title" tabindex="-1">你的推演</h2>
+      <p class="intro" id="mine-intro"></p>
+      <div id="mine-body"></div>
     </div>
   </section>
 
   <section class="section" id="demo" aria-labelledby="demo-title">
     <div class="wrap">
-      <h2 id="demo-title">一次完整的推演</h2>
-      <p class="intro">三个常见的抉择，每个都按同样的六步走完。点开案例名，可以看到它在史书里的原貌。</p>
+      <h2 id="demo-title">三个示范推演</h2>
+      <p class="intro">三个常见的抉择，每个都按同样的六步走完：立局、定母题、照镜、推演、换位、太史公曰。点开案例名，可以看到它在史书里的原貌。</p>
       <div class="tabs" role="tablist" aria-label="选择一个抉择" id="tabs"></div>
       <div role="tabpanel" id="panel" tabindex="0"></div>
     </div>
@@ -351,7 +442,7 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <section class="section" id="use" aria-labelledby="use-title">
     <div class="wrap">
       <h2 id="use-title">怎么用</h2>
-      <p class="intro">它是一个 Claude Code 技能。装好之后，在 Claude Code 里说出你在纠结的事，比如"帮我推演一下要不要辞职创业"，它会自动开始推演。</p>
+      <p class="intro">有三种用法：直接在这个页面填自己的 API Key；在本机打开页面，用你自己的 Claude 订阅额度；或者装成 Claude Code 技能，在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职创业"。后两种都从下面的安装开始。</p>
       <div class="code">
         <div class="code-bar"><span>终端</span><button class="copy" type="button" id="copy">复制</button></div>
         <pre id="install"><span class="c"># 安装到 Claude Code 的技能目录</span>
@@ -362,6 +453,14 @@ pip install -r requirements.txt
 python scripts/fetch_corpus.py
 <span class="c"># 校验全部引文，应输出 FAIL 0 条</span>
 python scripts/verify_quotes.py</pre>
+      </div>
+      <p class="use-note">想在本机用订阅额度推演：先在终端登录一次 Claude Code，再启动本地页面。页面只在你的电脑上打开，对话框会通过本机的 <code>claude</code> 命令推演。</p>
+      <div class="code">
+        <div class="code-bar"><span>终端</span></div>
+        <pre><span class="c"># 只需一次：登录 Claude Code（用你的 Claude 订阅）</span>
+claude auth login
+<span class="c"># 启动本地页面，浏览器会自动打开 http://127.0.0.1:8765/</span>
+python scripts/serve_local.py</pre>
       </div>
       <p class="use-note">源码、案例库和校验脚本都在 <a href="__REPO__">GitHub</a>。</p>
     </div>
@@ -385,13 +484,6 @@ const caseById = Object.fromEntries(DATA.cases.map(c => [c.id, c]));
 const themeByCode = Object.fromEntries(DATA.themes.map(t => [t.code, t]));
 const BOARD_HINT = {位: "你在结构里的位置", 力: "手里的资源", 人: "关键的他人", 时: "窗口期", 势: "大势", 退: "最坏结果"};
 
-/* ---------- 首屏 ---------- */
-$("#pairs").innerHTML = DATA.hero.map(p => {
-  const c = caseById[p.case];
-  return `<li class="pair"><span class="now">${esc(p.now)}</span><span class="dot" aria-hidden="true"></span>
-    <a class="then" href="#case-${c.id}">${esc(c.title)}<small>${esc(c.src)}</small></a></li>`;
-}).join("");
-
 /* ---------- 推演演示 ---------- */
 const STEPS = [
   ["立局", "把处境拆成六个要素。拿不准的地方标成假设，不装作知道。"],
@@ -401,15 +493,16 @@ const STEPS = [
   ["换位", "站到关键他人的位置上，再推一遍。"],
   ["太史公曰", "推荐、前提、止损线，外加一张本周就能动手的行动卡。"],
 ];
-const caseLink = id => { const c = caseById[id]; return `<a href="#case-${id}">${esc(c.title)}</a>`; };
+const caseLink = id => { const c = caseById[id]; return c ? `<a href="#case-${id}">${esc(c.title)}</a>` : ""; };
 
-function renderDemo(d) {
+/* 一次推演 → HTML；示范区和「你的推演」共用。d 的结构见 examples/demos.json */
+function planHTML(d) {
   const board = d.board.map(b => `<div class="cell"><b>${esc(b.k)}</b><span class="hint">${esc(BOARD_HINT[b.k] || "")}</span>
       <p>${esc(b.v)}${b.assume ? '<span class="assume">假设</span>' : ""}</p></div>`).join("");
-  const themes = d.themes.map(code => { const t = themeByCode[code];
+  const themes = d.themes.filter(code => themeByCode[code]).map(code => { const t = themeByCode[code];
     return `<a class="theme-link" href="#library" data-theme="${code}"><b>${esc(t.code + " " + t.name)}</b><span>${esc(t.sub)}</span></a>`; }).join("");
-  const mirrors = d.mirrors.map(m => { const c = caseById[m.case]; const pos = m.role === "正例";
-    const ref = m.use.startsWith("降为参考");
+  const mirrors = d.mirrors.filter(m => caseById[m.case]).map(m => { const c = caseById[m.case]; const pos = m.role === "正例";
+    const ref = String(m.use).startsWith("降为参考");
     return `<div class="mrow">
       <div class="m-now"><div class="m-opt">选项：${esc(m.option)}</div><p>${esc(m.same)}</p></div>
       <div class="m-axis"><span class="knob ${pos ? "pos" : "neg"}" title="${esc(m.role)}">${pos ? "正" : "反"}</span></div>
@@ -425,7 +518,7 @@ function renderDemo(d) {
   const v = d.verdict, qc = caseById[v.quote_case];
   const verdict = `<div class="verdict"><div class="seal" aria-hidden="true">太史公曰</div><div>
       <p class="v-pick">${esc(v.pick)}</p>
-      <p class="v-quote">「${esc(v.quote)}」<a href="#case-${qc.id}">${esc(qc.title)}</a></p>
+      ${v.quote && qc ? `<p class="v-quote">「${esc(v.quote)}」<a href="#case-${qc.id}">${esc(qc.title)}</a></p>` : ""}
       <p class="v-why">${esc(v.why)}</p>
       <dl class="v-terms"><div class="v-premise"><dt>前提</dt><dd>${esc(v.premise)}</dd></div>
         <div class="v-stop"><dt>止损线</dt><dd>${esc(v.stop)}</dd></div></dl>
@@ -437,9 +530,14 @@ function renderDemo(d) {
   const bodies = [`<div class="board">${board}</div>`, `<div class="themes-used">${themes}</div>`,
     `<div class="mrows">${mirrors}</div><div class="legend"><span><span class="knob pos">正</span>走对了的先例</span><span><span class="knob neg">反</span>走错了的先例</span></div>`,
     `<div class="opts">${opts}</div>`, `<div class="swaps">${swaps}</div>`, verdict];
-  $("#panel").innerHTML = `<p class="question"><span class="who">来问的人说</span>${esc(d.question)}</p>
+  const qa = (d.questions || []).filter(q => q.pick).map(q => `<li>${esc(q.q)}<b>${esc(q.pick)}</b></li>`).join("");
+  return `<div class="question"><span class="who">来问的人说</span>${esc(d.question)}
+      ${d.goal ? `<span class="who" style="margin-top: 10px">所求为何</span>${esc(d.goal)}` : ""}
+      ${qa ? `<span class="who" style="margin-top: 10px">追问</span><ul class="qa">${qa}</ul>` : ""}
+      ${d.extra ? `<span class="who" style="margin-top: 10px">补充</span>${esc(d.extra)}` : ""}</div>
     <ol class="steps">${STEPS.map(([t, p], i) => `<li class="step"><div class="step-head"><h3>${t}</h3><p>${p}</p></div><div>${bodies[i]}</div></li>`).join("")}</ol>`;
 }
+function renderDemo(d) { $("#panel").innerHTML = planHTML(d); }
 const tabs = $("#tabs");
 tabs.innerHTML = DATA.demos.map((d, i) => `<button class="tab" role="tab" id="tab-${d.id}" aria-controls="panel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${esc(d.tab)}</button>`).join("");
 function selectTab(i, focus) {
@@ -514,6 +612,7 @@ const s = DATA.stats;
 $("#trust-body").innerHTML = `
   <div><h3>每句古文都对过原文</h3><p>${s.quotes} 句引文，逐字比对《史记》${s.shiji_juan} 卷、《资治通鉴》${s.tongjian_juan} 卷全文，并定位到具体的卷。每次更新自动重跑，对不上的案例不能入库。<a href="${REPO}/actions/workflows/verify.yml">查看最近一次校验</a></p></div>
   <div><h3>每个案例都写明了边界</h3><p>历史经验在什么条件下不成立，和它在什么条件下成立一样重要。推演时，现实和案例的差异如果正好落在关键变量上，这个案例只作参考。</p></div>
+  <div><h3>页面上的推演守同样的规矩</h3><p>用 API Key 或本机订阅实时推演时，模型只能从案例原文里摘引古文；页面会逐字核对，对不上的引文不显示，并告诉你隐藏了什么。</p></div>
   <div><h3>正反例一起看</h3><p>每个选项至少配一个走对的、一个走错的先例，避免只挑对自己有利的故事讲。</p></div>
   <div><h3>知道什么时候不该推演</h3><p>对方流露出轻生念头时，先关心人，不推演；涉及医疗、法律、税务，会提醒找专业人士；不讲宿命，历史给的是变量，不是剧本。</p></div>
   <details class="errata"><summary>初稿里，大模型凭记忆写的古文有 ${DATA.errata.length} 句和原文对不上</summary>
@@ -530,6 +629,9 @@ $("#copy").addEventListener("click", async () => {
   catch { $("#copy").textContent = "请手动复制"; }
   setTimeout(() => { $("#copy").textContent = "复制"; }, 1800);
 });
+
+/*__ENGINE_JS__*/
+/*__DIALOG_JS__*/
 </script>
 </body>
 </html>
