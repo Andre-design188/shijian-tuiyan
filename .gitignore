@@ -1,0 +1,5 @@
+# 原文语料由 scripts/fetch_corpus.py 下载生成（维基文库 CC BY-SA，不随仓库分发）
+corpus/*/
+__pycache__/
+*.pyc
+.DS_Store

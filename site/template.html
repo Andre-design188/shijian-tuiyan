@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>史鉴推演</title>
+<meta name="description" content="纠结一个决定时，从《史记》《资治通鉴》里找出走过同样局面的人，推演每个选项的去向，给出带止损线的建议。">
+<meta property="og:title" content="史鉴推演">
+<meta property="og:description" content="用《史记》《资治通鉴》推演人生抉择：立局、照镜、推演、太史公曰。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%232B7468' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%238A5A2B' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%232B7468'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 字体异步加载：拿不到时（例如网络受限）直接用系统宋体/黑体，不阻塞渲染 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700;900&display=swap" media="print" onload="this.media='all'">
+<style>
+:root {
+  --bg: #EEF1EE;
+  --surface: #F7F8F6;
+  --ink: #15211E;
+  --ink-2: #4B5955;
+  --ink-3: #6E7B77;
+  --rule: #CAD2CD;
+  --verdigris: #2B7468;
+  --verdigris-soft: #D6E7E2;
+  --bronze: #8A5A2B;
+  --bronze-soft: #F0E4D6;
+  --seal: #A8322A;
+  --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1716; --surface: #152120; --ink: #E3EAE6; --ink-2: #A9B7B2; --ink-3: #82918C;
+    --rule: #2B3B38; --verdigris: #72C3B3; --verdigris-soft: #1C3531; --bronze: #D4A26E;
+    --bronze-soft: #33271B; --seal: #DB5A4D; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1716; --surface: #152120; --ink: #E3EAE6; --ink-2: #A9B7B2; --ink-3: #82918C;
+  --rule: #2B3B38; --verdigris: #72C3B3; --verdigris-soft: #1C3531; --bronze: #D4A26E;
+  --bronze-soft: #33271B; --seal: #DB5A4D; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.75;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.serif { font-family: var(--serif); }
+a { color: var(--verdigris); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--verdigris); outline-offset: 3px; border-radius: 2px; }
+.wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- 顶栏 ---------- */
+.top { border-bottom: 1px solid var(--rule); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--serif); font-weight: 700; font-size: 18px; letter-spacing: .08em; }
+.brand-mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--verdigris); box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 6px var(--bronze); flex: none; }
+.nav { display: flex; gap: 20px; font-size: 15px; }
+.nav a { color: var(--ink-2); text-decoration: none; }
+.nav a:hover { color: var(--ink); }
+@media (max-width: 640px) { .nav a:not(.nav-gh) { display: none; } }
+
+/* ---------- 首屏：今古对照 ---------- */
+.hero { padding: clamp(40px, 8vw, 96px) 0 clamp(48px, 8vw, 88px); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
+.hero h1 {
+  font-family: var(--serif); font-weight: 900; margin: 0 0 20px;
+  font-size: clamp(56px, 10vw, 112px); line-height: 1.02; letter-spacing: .06em;
+}
+.hero .lead { font-size: clamp(18px, 2vw, 20px); color: var(--ink); max-width: 30em; margin: 0 0 12px; }
+.hero .lead + .lead { color: var(--ink-2); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; min-height: 46px; padding: 0 22px; border-radius: 3px; font: 500 16px/1 var(--sans); text-decoration: none; cursor: pointer; border: 1px solid var(--verdigris); }
+.btn-primary { background: var(--verdigris); color: var(--bg); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-ghost { color: var(--verdigris); background: transparent; }
+.btn-ghost:hover { background: var(--verdigris-soft); }
+.hero-note { margin-top: 18px; font-size: 14px; color: var(--ink-3); }
+
+.mirror { position: relative; }
+.mirror-head { display: grid; grid-template-columns: 1fr 64px 1fr; align-items: center; margin-bottom: 8px; font-size: 15px; color: var(--ink-3); }
+.mirror-head .now-h { text-align: right; padding-right: 12px; }
+.mirror-head .then-h { padding-left: 12px; }
+.disc { /* 铜镜：两道环 + 中间一个"鉴"字 */
+  width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; margin-inline: auto;
+  border: 2px solid var(--verdigris); box-shadow: inset 0 0 0 5px var(--bg), inset 0 0 0 7px var(--bronze);
+  font-family: var(--serif); font-weight: 900; font-size: 24px; color: var(--verdigris); background: var(--bg);
+  position: relative; z-index: 1;
+}
+.pairs { list-style: none; margin: 0; padding: 0; position: relative; }
+.pairs::before { content: ""; position: absolute; left: 50%; top: -8px; bottom: 8px; width: 1px; background: var(--rule); }
+.pair { display: grid; grid-template-columns: 1fr 64px 1fr; align-items: center; padding: 14px 0; border-bottom: 1px dashed var(--rule); }
+.pair:last-child { border-bottom: 0; }
+.pair .now { text-align: right; font-size: 16px; color: var(--ink); text-wrap: balance; }
+.pair .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--verdigris); margin-inline: auto; position: relative; z-index: 1; box-shadow: 0 0 0 4px var(--bg); }
+.pair .then { font-family: var(--serif); font-weight: 700; font-size: 17px; line-height: 1.45; color: var(--ink); text-decoration: none; }
+.pair .then:hover { color: var(--verdigris); }
+.pair .then small { display: block; font-family: var(--sans); font-weight: 400; font-size: 13px; color: var(--ink-3); }
+@media (prefers-reduced-motion: no-preference) {
+  .js .pair { opacity: 0; transform: translateY(6px); animation: rise .5s ease forwards; }
+  .js .pair:nth-child(2) { animation-delay: .25s; }
+  .js .pair:nth-child(3) { animation-delay: .5s; }
+  .js .pair:nth-child(4) { animation-delay: .75s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+/* ---------- 区块通用 ---------- */
+.section { padding: clamp(56px, 8vw, 96px) 0; border-top: 1px solid var(--rule); }
+.section h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(30px, 4vw, 42px); line-height: 1.25; letter-spacing: .04em; margin: 0 0 12px; }
+.section .intro { color: var(--ink-2); max-width: 38em; margin: 0 0 32px; }
+
+/* ---------- 推演演示 ---------- */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.tab { font: 500 16px/1.3 var(--sans); padding: 10px 16px; border-radius: 3px; border: 1px solid var(--rule); background: transparent; color: var(--ink-2); cursor: pointer; }
+.tab:hover { border-color: var(--verdigris); color: var(--ink); }
+.tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+.question { position: relative; margin: 0 0 40px; padding: 20px 24px 20px 28px; background: var(--bronze-soft); border-left: 3px solid var(--bronze); font-size: 18px; max-width: 46em; }
+.question .who { display: block; font-size: 14px; color: var(--bronze); margin-bottom: 4px; }
+
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+.step { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 32px; padding: 32px 0; border-top: 1px solid var(--rule); }
+.step:first-child { border-top: 0; padding-top: 0; }
+@media (max-width: 800px) { .step { grid-template-columns: 1fr; gap: 16px; } }
+.step-head { counter-increment: step; }
+.step-head h3 { font-family: var(--serif); font-weight: 900; font-size: 24px; margin: 0; letter-spacing: .06em; }
+.step-head h3::before { content: counter(step); display: inline-block; width: 1.5em; color: var(--verdigris); font-weight: 700; }
+.step-head p { font-size: 14px; color: var(--ink-3); margin: 6px 0 0; line-height: 1.65; }
+
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
+@media (max-width: 640px) { .board { grid-template-columns: 1fr; } }
+.cell { padding: 16px 18px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--surface); }
+.cell b { font-family: var(--serif); font-weight: 900; font-size: 26px; color: var(--verdigris); line-height: 1; }
+.cell .hint { font-size: 13px; color: var(--ink-3); margin-left: 8px; }
+.cell p { margin: 10px 0 0; font-size: 15.5px; line-height: 1.7; }
+.assume { display: inline-block; font-size: 12px; line-height: 1; padding: 3px 6px; border: 1px solid var(--bronze); color: var(--bronze); border-radius: 2px; margin-left: 6px; vertical-align: 2px; }
+
+.themes-used { display: flex; flex-wrap: wrap; gap: 10px; }
+.theme-link { display: inline-flex; flex-direction: column; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 3px; text-decoration: none; color: var(--ink); background: var(--surface); min-width: 140px; }
+.theme-link b { font-family: var(--serif); font-size: 18px; }
+.theme-link span { font-size: 13px; color: var(--ink-3); }
+.theme-link:hover { border-color: var(--verdigris); }
+
+/* 照镜：今 | 轴 | 古 */
+.mrows { display: grid; gap: 14px; }
+.mrow { display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr); background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; }
+.m-now { padding: 16px 18px; text-align: right; }
+.m-then { padding: 16px 18px; }
+.m-opt { font-size: 13px; color: var(--bronze); }
+.m-now p { margin: 4px 0 0; font-size: 15.5px; text-wrap: pretty; }
+.m-axis { position: relative; display: grid; place-items: center; }
+.m-axis::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--rule); }
+.knob { position: relative; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--serif); font-weight: 900; font-size: 15px; }
+.knob.pos { background: var(--verdigris); color: var(--bg); }
+.knob.neg { background: var(--surface); color: var(--bronze); border: 1.5px solid var(--bronze); }
+.m-then a { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--ink); text-decoration: none; line-height: 1.5; }
+.m-then a:hover { color: var(--verdigris); text-decoration: underline; }
+.m-then .src { font-size: 13px; color: var(--ink-3); }
+.m-diff { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; padding: 10px 18px; border-top: 1px dashed var(--rule); font-size: 14.5px; color: var(--ink-2); }
+.m-diff .use { font-size: 13px; padding: 2px 8px; border-radius: 2px; background: var(--verdigris-soft); color: var(--verdigris); white-space: nowrap; }
+.m-diff .use.ref { background: transparent; border: 1px dashed var(--ink-3); color: var(--ink-3); }
+@media (max-width: 640px) {
+  .mrow { grid-template-columns: 1fr; }
+  .m-now { text-align: left; padding-bottom: 8px; }
+  .m-axis { height: 30px; }
+  .m-axis::before { top: 50%; bottom: auto; left: 0; right: 0; width: auto; height: 1px; }
+  .m-then { padding-top: 8px; }
+}
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-3); margin-top: 12px; }
+.legend .knob { width: 20px; height: 20px; font-size: 11px; display: inline-grid; vertical-align: -5px; margin-right: 4px; }
+
+/* 推演：各选项 */
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.opt { border: 1px solid var(--rule); border-top: 3px solid var(--ink-3); border-radius: 3px; background: var(--surface); padding: 16px 18px 18px; }
+.opt.pick { border-top-color: var(--verdigris); }
+.opt h4 { margin: 0 0 12px; font-size: 17px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.opt h4 .rec { font-size: 12px; font-weight: 500; color: var(--verdigris); border: 1px solid var(--verdigris); border-radius: 2px; padding: 1px 6px; white-space: nowrap; }
+.timeline { list-style: none; margin: 0 0 14px; padding: 0 0 0 16px; border-left: 1px solid var(--rule); }
+.timeline li { position: relative; font-size: 15px; line-height: 1.65; margin-bottom: 8px; }
+.timeline li::before { content: ""; position: absolute; left: -20.5px; top: .65em; width: 8px; height: 8px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--ink-3); }
+.timeline li span { display: block; font-size: 12.5px; color: var(--ink-3); }
+.risk, .sig { font-size: 14.5px; line-height: 1.65; margin: 10px 0 0; padding-left: 10px; }
+.risk { border-left: 2px solid var(--bronze); }
+.sig { border-left: 2px solid var(--verdigris); }
+.risk b, .sig b { display: block; font-size: 12.5px; font-weight: 500; }
+.risk b { color: var(--bronze); }
+.sig b { color: var(--verdigris); }
+
+.swaps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.swaps h4 { margin: 0 0 4px; font-size: 16px; }
+.swaps p { margin: 0; color: var(--ink-2); font-size: 15.5px; }
+
+/* 太史公曰 */
+.verdict { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 24px; padding: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; }
+@media (max-width: 640px) { .verdict { grid-template-columns: 1fr; padding: 22px; } }
+.seal { writing-mode: vertical-rl; align-self: start; background: var(--seal); color: #FBF3EE; font-family: var(--serif); font-weight: 900; font-size: 19px; letter-spacing: .25em; padding: 12px 8px; border-radius: 2px; }
+@media (max-width: 640px) { .seal { writing-mode: horizontal-tb; justify-self: start; padding: 6px 12px; } }
+.v-pick { font-family: var(--serif); font-weight: 900; font-size: clamp(24px, 3vw, 30px); line-height: 1.35; margin: 0 0 10px; }
+.v-quote { font-family: var(--serif); font-size: 18px; color: var(--verdigris); margin: 0 0 12px; }
+.v-quote a { font-family: var(--sans); font-size: 13px; color: var(--ink-3); margin-left: 8px; }
+.v-why { margin: 0 0 16px; max-width: 40em; }
+.v-terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 0; }
+.v-terms div { padding: 12px 14px; border-radius: 2px; }
+.v-terms dt { font-size: 13px; font-weight: 500; }
+.v-terms dd { margin: 2px 0 0; font-size: 15.5px; }
+.v-premise { background: var(--verdigris-soft); }
+.v-premise dt { color: var(--verdigris); }
+.v-stop { background: var(--bronze-soft); }
+.v-stop dt { color: var(--bronze); }
+.card { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 24px; margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--rule); }
+@media (max-width: 800px) { .card { grid-template-columns: 1fr; gap: 14px; } }
+.card h4 { margin: 0 0 6px; font-size: 14px; color: var(--ink-3); font-weight: 500; }
+.card ol, .card ul { margin: 0; padding-left: 1.3em; font-size: 15.5px; }
+.card p { margin: 0; font-size: 15.5px; }
+
+/* ---------- 案例库 ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip { font: 15px/1.2 var(--sans); padding: 8px 12px; border: 1px solid var(--rule); border-radius: 3px; background: transparent; color: var(--ink-2); cursor: pointer; }
+.chip:hover { border-color: var(--verdigris); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--verdigris); border-color: var(--verdigris); color: var(--bg); }
+.theme-note { min-height: 1.75em; color: var(--ink-2); font-size: 15px; margin: 4px 0 16px; }
+.search { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.search input { flex: 1 1 280px; font: 16px var(--sans); padding: 12px 14px; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); color: var(--ink); }
+.search input::placeholder { color: var(--ink-3); }
+.count { font-size: 14px; color: var(--ink-3); }
+.cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+@media (max-width: 800px) { .cases { grid-template-columns: 1fr; } }
+.case { border-top: 1px solid var(--rule); }
+.case summary { list-style: none; cursor: pointer; padding: 16px 28px 16px 0; position: relative; }
+.case summary::-webkit-details-marker { display: none; }
+.case summary::after { content: "+"; position: absolute; right: 4px; top: 16px; font-size: 20px; color: var(--ink-3); line-height: 1.4; }
+.case[open] summary::after { content: "−"; }
+.case .t { font-family: var(--serif); font-weight: 700; font-size: 18px; line-height: 1.5; }
+.case .t small { font-family: var(--sans); font-weight: 400; font-size: 13px; color: var(--ink-3); margin-left: 8px; }
+.case .m { display: block; font-size: 14.5px; color: var(--ink-2); margin-top: 2px; }
+.case dl { margin: 0 0 20px; display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: 8px 12px; font-size: 15px; }
+.case dt { color: var(--ink-3); font-size: 13.5px; padding-top: 2px; }
+.case dd { margin: 0; }
+.case dd.quote { font-family: var(--serif); color: var(--verdigris); font-size: 16px; }
+.case dd.bound { color: var(--bronze); }
+.case:target summary .t, .case.flash summary .t { color: var(--verdigris); }
+.empty { padding: 24px 0; color: var(--ink-2); }
+.more { margin-top: 20px; }
+
+/* ---------- 为什么可信 ---------- */
+.trust { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; }
+@media (max-width: 800px) { .trust { grid-template-columns: 1fr; } }
+.trust h3 { font-family: var(--serif); font-weight: 700; font-size: 21px; margin: 0 0 6px; }
+.trust p { margin: 0; color: var(--ink-2); }
+.errata { grid-column: 1 / -1; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); }
+.errata summary { cursor: pointer; padding: 14px 18px; font-weight: 500; }
+.errata .tbl-wrap { overflow-x: auto; padding: 0 18px 18px; }
+.errata table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+.errata th { text-align: left; font-weight: 500; font-size: 13px; color: var(--ink-3); padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+.errata td { padding: 9px 10px; border-bottom: 1px dashed var(--rule); vertical-align: top; }
+.errata td.cn { font-family: var(--serif); }
+.errata del { color: var(--bronze); text-decoration-thickness: 1.5px; }
+.errata ins { color: var(--verdigris); text-decoration: none; border-bottom: 2px solid var(--verdigris); }
+.errata .foot { font-size: 14px; color: var(--ink-3); margin: 12px 0 0; }
+
+/* ---------- 怎么用 ---------- */
+.code { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; max-width: 760px; }
+.code-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px 8px 20px; border-bottom: 1px solid var(--rule); font-size: 13px; color: var(--ink-3); }
+.code pre { margin: 0; padding: 18px 20px; overflow-x: auto; font: 14px/1.7 var(--mono); color: var(--ink); }
+.code pre .c { color: var(--ink-3); }
+.copy { font: 13px var(--sans); padding: 5px 10px; border: 1px solid var(--rule); border-radius: 3px; background: var(--bg); color: var(--ink-2); cursor: pointer; }
+.copy:hover { color: var(--ink); border-color: var(--verdigris); }
+.use-note { max-width: 38em; color: var(--ink-2); margin: 20px 0 0; }
+
+footer { border-top: 1px solid var(--rule); padding: 32px 0 48px; font-size: 14px; color: var(--ink-3); }
+footer p { margin: 0 0 6px; max-width: 60em; }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>史鉴推演</a>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#demo">看推演</a>
+      <a href="#library">案例库</a>
+      <a href="#trust">为什么可信</a>
+      <a class="nav-gh" href="__REPO__">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <h1 id="hero-title">史鉴推演</h1>
+        <p class="lead">纠结一个决定的时候，把你的处境说给它听。</p>
+        <p class="lead">它会从《史记》《资治通鉴》里找出走过同样局面的人，走对的和走错的都找，逐个推演每个选项的去向，最后给你一条带止损线的建议。</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#demo">看一次完整推演</a>
+          <a class="btn btn-ghost" href="#library">浏览历史案例</a>
+        </div>
+        <p class="hero-note">一个开源的 Claude Code 技能。历史给的是变量，不是答案。</p>
+      </div>
+      <div class="mirror" aria-label="现代处境与历史先例的对照示例">
+        <div class="mirror-head" aria-hidden="true"><span class="now-h">你的处境</span><span class="disc">鉴</span><span class="then-h">史书里的局</span></div>
+        <ul class="pairs" id="pairs"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="demo" aria-labelledby="demo-title">
+    <div class="wrap">
+      <h2 id="demo-title">一次完整的推演</h2>
+      <p class="intro">三个常见的抉择，每个都按同样的六步走完。点开案例名，可以看到它在史书里的原貌。</p>
+      <div class="tabs" role="tablist" aria-label="选择一个抉择" id="tabs"></div>
+      <div role="tabpanel" id="panel" tabindex="0"></div>
+    </div>
+  </section>
+
+  <section class="section" id="library" aria-labelledby="lib-title">
+    <div class="wrap">
+      <h2 id="lib-title"><span id="lib-count"></span> 个历史案例</h2>
+      <p class="intro">按你正在经历的处境找。每个案例都写了它在什么条件下成立，也写了什么条件下不成立。</p>
+      <div class="filters" role="group" aria-label="按处境筛选" id="filters"></div>
+      <p class="theme-note" id="theme-note" aria-live="polite"></p>
+      <div class="search">
+        <label class="visually-hidden" for="q">搜索案例</label>
+        <input id="q" type="search" placeholder="搜处境或人物，比如：合伙、接班、韩信" autocomplete="off">
+        <span class="count" id="count" aria-live="polite"></span>
+      </div>
+      <div class="cases" id="cases"></div>
+      <div class="more" id="more"></div>
+    </div>
+  </section>
+
+  <section class="section" id="trust" aria-labelledby="trust-title">
+    <div class="wrap">
+      <h2 id="trust-title">为什么可信</h2>
+      <p class="intro">人生建议最怕两件事：拿编出来的典故讲道理，和只挑对自己有利的故事讲。下面是这两件事的防线。</p>
+      <div class="trust" id="trust-body"></div>
+    </div>
+  </section>
+
+  <section class="section" id="use" aria-labelledby="use-title">
+    <div class="wrap">
+      <h2 id="use-title">怎么用</h2>
+      <p class="intro">它是一个 Claude Code 技能。装好之后，在 Claude Code 里说出你在纠结的事，比如"帮我推演一下要不要辞职创业"，它会自动开始推演。</p>
+      <div class="code">
+        <div class="code-bar"><span>终端</span><button class="copy" type="button" id="copy">复制</button></div>
+        <pre id="install"><span class="c"># 安装到 Claude Code 的技能目录</span>
+git clone __REPO__.git ~/.claude/skills/shijian-tuiyan
+cd ~/.claude/skills/shijian-tuiyan
+pip install -r requirements.txt
+<span class="c"># 下载《史记》《资治通鉴》原文，一两分钟</span>
+python scripts/fetch_corpus.py
+<span class="c"># 校验全部引文，应输出 FAIL 0 条</span>
+python scripts/verify_quotes.py</pre>
+      </div>
+      <p class="use-note">源码、案例库和校验脚本都在 <a href="__REPO__">GitHub</a>。</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>需求、验收标准和真实场景试用：曹嘉鹏。实现借助 Claude Code 完成。</p>
+    <p>代码使用 MIT 许可，案例文字使用 CC BY 4.0。原文语料来自维基文库。</p>
+    <p>推演结果是决策参考，不构成法律、财务、医疗或心理方面的专业意见。</p>
+  </div>
+</footer>
+
+<script>
+const DATA = /*__DATA__*/null;
+const REPO = "__REPO__";
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const caseById = Object.fromEntries(DATA.cases.map(c => [c.id, c]));
+const themeByCode = Object.fromEntries(DATA.themes.map(t => [t.code, t]));
+const BOARD_HINT = {位: "你在结构里的位置", 力: "手里的资源", 人: "关键的他人", 时: "窗口期", 势: "大势", 退: "最坏结果"};
+
+/* ---------- 首屏 ---------- */
+$("#pairs").innerHTML = DATA.hero.map(p => {
+  const c = caseById[p.case];
+  return `<li class="pair"><span class="now">${esc(p.now)}</span><span class="dot" aria-hidden="true"></span>
+    <a class="then" href="#case-${c.id}">${esc(c.title)}<small>${esc(c.src)}</small></a></li>`;
+}).join("");
+
+/* ---------- 推演演示 ---------- */
+const STEPS = [
+  ["立局", "把处境拆成六个要素。拿不准的地方标成假设，不装作知道。"],
+  ["定母题", "对应案例库里的 16 类处境。一个决定常常同时落在两三类里。"],
+  ["照镜", "每个选项都配正例和反例，写清像在哪里、不像在哪里。不像的地方如果正是关键变量，这个案例就只作参考。"],
+  ["推演", "每个选项走近期、中期、远期三段，写出它会像谁那样翻车，看到什么信号就该调整。"],
+  ["换位", "站到关键他人的位置上，再推一遍。"],
+  ["太史公曰", "推荐、前提、止损线，外加一张本周就能动手的行动卡。"],
+];
+const caseLink = id => { const c = caseById[id]; return `<a href="#case-${id}">${esc(c.title)}</a>`; };
+
+function renderDemo(d) {
+  const board = d.board.map(b => `<div class="cell"><b>${esc(b.k)}</b><span class="hint">${esc(BOARD_HINT[b.k] || "")}</span>
+      <p>${esc(b.v)}${b.assume ? '<span class="assume">假设</span>' : ""}</p></div>`).join("");
+  const themes = d.themes.map(code => { const t = themeByCode[code];
+    return `<a class="theme-link" href="#library" data-theme="${code}"><b>${esc(t.code + " " + t.name)}</b><span>${esc(t.sub)}</span></a>`; }).join("");
+  const mirrors = d.mirrors.map(m => { const c = caseById[m.case]; const pos = m.role === "正例";
+    const ref = m.use.startsWith("降为参考");
+    return `<div class="mrow">
+      <div class="m-now"><div class="m-opt">选项：${esc(m.option)}</div><p>${esc(m.same)}</p></div>
+      <div class="m-axis"><span class="knob ${pos ? "pos" : "neg"}" title="${esc(m.role)}">${pos ? "正" : "反"}</span></div>
+      <div class="m-then">${caseLink(m.case)}<div class="src">${esc(c.src)}</div></div>
+      <div class="m-diff"><span>不像的地方：${esc(m.diff)}</span><span class="use${ref ? " ref" : ""}">${esc(m.use)}</span></div>
+    </div>`; }).join("");
+  const opts = d.options.map(o => `<div class="opt${o.pick ? " pick" : ""}">
+      <h4>${esc(o.name)}${o.pick ? '<span class="rec">推荐</span>' : ""}</h4>
+      <ul class="timeline"><li><span>近期 0–6 个月</span>${esc(o.near)}</li><li><span>中期 1–2 年</span>${esc(o.mid)}</li><li><span>远期 3–5 年</span>${esc(o.far)}</li></ul>
+      <p class="risk"><b>会怎么翻车</b>${esc(o.fail)}</p>
+      <p class="sig"><b>看到这个信号就调整</b>${esc(o.signal)}</p></div>`).join("");
+  const swaps = d.swap.map(s => `<div><h4>站在${esc(s.who)}的位置</h4><p>${esc(s.v)}</p></div>`).join("");
+  const v = d.verdict, qc = caseById[v.quote_case];
+  const verdict = `<div class="verdict"><div class="seal" aria-hidden="true">太史公曰</div><div>
+      <p class="v-pick">${esc(v.pick)}</p>
+      <p class="v-quote">「${esc(v.quote)}」<a href="#case-${qc.id}">${esc(qc.title)}</a></p>
+      <p class="v-why">${esc(v.why)}</p>
+      <dl class="v-terms"><div class="v-premise"><dt>前提</dt><dd>${esc(v.premise)}</dd></div>
+        <div class="v-stop"><dt>止损线</dt><dd>${esc(v.stop)}</dd></div></dl>
+      <div class="card">
+        <div><h4>本周做</h4><ol>${d.actions.do.map(x => `<li>${esc(x)}</li>`).join("")}</ol></div>
+        <div><h4>盯住的信号</h4><ul>${d.actions.watch.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h4>底线</h4><p>${esc(d.actions.line)}</p></div>
+      </div></div></div>`;
+  const bodies = [`<div class="board">${board}</div>`, `<div class="themes-used">${themes}</div>`,
+    `<div class="mrows">${mirrors}</div><div class="legend"><span><span class="knob pos">正</span>走对了的先例</span><span><span class="knob neg">反</span>走错了的先例</span></div>`,
+    `<div class="opts">${opts}</div>`, `<div class="swaps">${swaps}</div>`, verdict];
+  $("#panel").innerHTML = `<p class="question"><span class="who">来问的人说</span>${esc(d.question)}</p>
+    <ol class="steps">${STEPS.map(([t, p], i) => `<li class="step"><div class="step-head"><h3>${t}</h3><p>${p}</p></div><div>${bodies[i]}</div></li>`).join("")}</ol>`;
+}
+const tabs = $("#tabs");
+tabs.innerHTML = DATA.demos.map((d, i) => `<button class="tab" role="tab" id="tab-${d.id}" aria-controls="panel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${esc(d.tab)}</button>`).join("");
+function selectTab(i, focus) {
+  [...tabs.children].forEach((b, j) => { b.setAttribute("aria-selected", j === i); b.tabIndex = j === i ? 0 : -1; });
+  $("#panel").setAttribute("aria-labelledby", tabs.children[i].id);
+  renderDemo(DATA.demos[i]);
+  if (focus) tabs.children[i].focus();
+}
+tabs.addEventListener("click", e => { const b = e.target.closest(".tab"); if (b) selectTab([...tabs.children].indexOf(b)); });
+tabs.addEventListener("keydown", e => {
+  const i = [...tabs.children].indexOf(document.activeElement); if (i < 0) return;
+  const n = tabs.children.length;
+  if (e.key === "ArrowRight") selectTab((i + 1) % n, true);
+  else if (e.key === "ArrowLeft") selectTab((i - 1 + n) % n, true);
+});
+selectTab(0);
+
+/* ---------- 案例库 ---------- */
+$("#lib-count").textContent = DATA.cases.length;
+let theme = "all", showAll = false;
+const PREVIEW = 12;
+const FIELDS = [["处境", ""], ["选项", ""], ["抉择", ""], ["原文", "quote"], ["结果", ""], ["决定变量", ""], ["可迁移", ""], ["边界", "bound"], ["现代映射", ""], ["对照", "refs"]];
+function linkRefs(s) { return esc(s).replace(/\d{2}-\d{2}/g, id => caseById[id] ? `<a href="#case-${id}">${id}</a>` : id); }
+function renderFilters() {
+  $("#filters").innerHTML = [`<button class="chip" data-t="all" aria-pressed="${theme === "all"}">全部</button>`]
+    .concat(DATA.themes.map(t => `<button class="chip" data-t="${t.code}" aria-pressed="${theme === t.code}">${esc(t.code + " " + t.name)}</button>`)).join("");
+  const t = themeByCode[theme];
+  $("#theme-note").textContent = t ? `适用于：${t.modern}` : "16 类处境，覆盖去留、创业、合伙、站队、交班、转型等常见抉择。";
+}
+function renderCases() {
+  const q = $("#q").value.trim();
+  const list = DATA.cases.filter(c => (theme === "all" || c.theme === theme) &&
+    (!q || [c.title, c.src, ...Object.values(c.fields)].join(" ").includes(q)));
+  $("#count").textContent = `${list.length} 个`;
+  const folded = theme === "all" && !q && !showAll && list.length > PREVIEW;
+  $("#more").innerHTML = folded ? `<button class="btn btn-ghost" type="button" id="show-all">显示全部 ${list.length} 个案例</button>` : "";
+  $("#cases").innerHTML = list.length ? (folded ? list.slice(0, PREVIEW) : list).map(c => `<details class="case" id="case-${c.id}">
+      <summary><span class="t">${esc(c.title)}<small>${esc(c.id)} ${esc(c.src)}</small></span><span class="m">${esc(c.fields["现代映射"])}</span></summary>
+      <dl>${FIELDS.filter(([k]) => c.fields[k]).map(([k, cls]) => `<dt>${k}</dt><dd class="${cls}">${cls === "refs" ? linkRefs(c.fields[k]) : esc(c.fields[k])}</dd>`).join("")}</dl>
+    </details>`).join("") : `<p class="empty">没有找到匹配的案例。换个说法试试，比如把"老板"换成"上级"，或者直接选上面的处境类别。</p>`;
+}
+$("#filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; theme = b.dataset.t; renderFilters(); renderCases(); });
+$("#q").addEventListener("input", () => { if ($("#q").value.trim() && theme !== "all") { theme = "all"; renderFilters(); } renderCases(); });
+$("#more").addEventListener("click", e => { if (e.target.id === "show-all") { showAll = true; renderCases(); } });
+document.addEventListener("click", e => {
+  const a = e.target.closest("a.theme-link"); if (!a) return;
+  theme = a.dataset.theme; $("#q").value = ""; renderFilters(); renderCases();
+});
+function openFromHash() {
+  const m = location.hash.match(/^#case-(\d{2}-\d{2})$/); if (!m || !caseById[m[1]]) return;
+  if (!document.getElementById("case-" + m[1])) { theme = "all"; showAll = true; $("#q").value = ""; renderFilters(); renderCases(); }
+  const el = document.getElementById("case-" + m[1]); el.open = true;
+  document.querySelectorAll(".case.flash").forEach(x => x.classList.remove("flash")); el.classList.add("flash");
+  el.scrollIntoView({block: "start"});
+}
+window.addEventListener("hashchange", openFromHash);
+renderFilters(); renderCases(); openFromHash();
+
+/* ---------- 为什么可信 ---------- */
+function diffMark(a, b) { // 逐字 LCS，标出 a 中被删、b 中新增的字
+  const n = a.length, m = b.length, L = Array.from({length: n + 1}, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  let i = 0, j = 0, A = "", B = "";
+  while (i < n || j < m) {
+    if (i < n && j < m && a[i] === b[j]) { A += esc(a[i]); B += esc(b[j]); i++; j++; }
+    else if (j < m && (i >= n || L[i][j + 1] >= L[i + 1][j])) { B += `<ins>${esc(b[j])}</ins>`; j++; }
+    else { A += `<del>${esc(a[i])}</del>`; i++; }
+  }
+  return [A.replace(/<\/del><del>/g, ""), B.replace(/<\/ins><ins>/g, "")];
+}
+const s = DATA.stats;
+$("#trust-body").innerHTML = `
+  <div><h3>每句古文都对过原文</h3><p>${s.quotes} 句引文，逐字比对《史记》${s.shiji_juan} 卷、《资治通鉴》${s.tongjian_juan} 卷全文，并定位到具体的卷。每次更新自动重跑，对不上的案例不能入库。<a href="${REPO}/actions/workflows/verify.yml">查看最近一次校验</a></p></div>
+  <div><h3>每个案例都写明了边界</h3><p>历史经验在什么条件下不成立，和它在什么条件下成立一样重要。推演时，现实和案例的差异如果正好落在关键变量上，这个案例只作参考。</p></div>
+  <div><h3>正反例一起看</h3><p>每个选项至少配一个走对的、一个走错的先例，避免只挑对自己有利的故事讲。</p></div>
+  <div><h3>知道什么时候不该推演</h3><p>对方流露出轻生念头时，先关心人，不推演；涉及医疗、法律、税务，会提醒找专业人士；不讲宿命，历史给的是变量，不是剧本。</p></div>
+  <details class="errata"><summary>初稿里，大模型凭记忆写的古文有 ${DATA.errata.length} 句和原文对不上</summary>
+    <div class="tbl-wrap"><table><thead><tr><th>人物</th><th>凭记忆写的</th><th>原文</th><th>所在案例</th></tr></thead><tbody>
+    ${DATA.errata.map(e => { const [w, r] = diffMark(e.wrong, e.right); return `<tr><td>${esc(e.who)}</td><td class="cn">${w}</td><td class="cn">${r}</td><td>${caseLink(e.case)}</td></tr>`; }).join("")}
+    </tbody></table>
+    <p class="foot">这些句子读起来都像古文，意思也大多没错，人工审稿很难发现。现在它们都被校验脚本拦下并改正了。</p></div>
+  </details>`;
+
+/* ---------- 复制安装命令 ---------- */
+$("#copy").addEventListener("click", async () => {
+  const text = $("#install").innerText.split("\n").filter(l => !l.startsWith("#")).join("\n");
+  try { await navigator.clipboard.writeText(text); $("#copy").textContent = "已复制"; }
+  catch { $("#copy").textContent = "请手动复制"; }
+  setTimeout(() => { $("#copy").textContent = "复制"; }, 1800);
+});
+</script>
+</body>
+</html>
