@@ -133,8 +133,10 @@ function showError(err, retry) {
   busy = false;
 }
 function showCare(text) {
-  addBot(`<div class="care" role="status">${esc(text)}
-    <p style="margin: 10px 0 0">如果你正处在危险中，请马上联系身边信任的人，或拨打 110、120；也可以拨打全国心理援助热线 12356。这一次先不做推演。</p></div>`);
+  const el = addBot(`<div class="care" role="status">${esc(text)}
+    <p style="margin: 10px 0 0">如果你正处在危险中，请马上联系身边信任的人，或拨打 110、120；也可以拨打全国心理援助热线 12356。这一次先不做推演。</p>
+    <div class="dlg-actions" style="margin-top: 10px"><button type="button" class="linkish" data-act="restart">重新开始</button></div></div>`);
+  el.addEventListener("click", e => { if (e.target.dataset.act === "restart") restart(); });
   busy = false;
 }
 
@@ -147,12 +149,13 @@ ui.collapseBtn.addEventListener("click", () => {
   collapse(); $("#dlg-expand").focus();
 });
 $("#dlg-expand").addEventListener("click", expand);
-$("#dlg-restart").addEventListener("click", () => {
+function restart() {
   if (busy) return;
   ui.thread.innerHTML = ""; ui.thread.hidden = true; ui.form.hidden = false; ui.collapseBtn.hidden = true; ui.hint.hidden = false;
   $("#bar-sum").textContent = ""; $("#bar-meta").textContent = ""; $("#mine").hidden = true;
   expand(); ui.now.focus();
-});
+}
+$("#dlg-restart").addEventListener("click", restart);
 
 function finish(d, meta) {
   $("#bar-sum").textContent = meta.summary;

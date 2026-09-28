@@ -6,21 +6,27 @@
 前提：终端里的 claude 命令已经登录（claude auth login）；docs/index.html 已生成（build_site.py）。
 安全：只监听 127.0.0.1；/api/claude 只接受本页发出的请求（校验 Host、Origin 和自定义请求头），
       别的网站没法借你的浏览器调用它；claude 以关闭全部工具、安全模式运行，只生成文字。
+日志：每次推演的开始、结束、耗时和任何异常都记在 logs/serve_local.log，出问题时先看这里。
 测试：环境变量 SHIJIAN_CLAUDE_CMD 可换成假的 claude 命令（路径用正斜杠）。
 """
 import argparse
 import json
+import logging
 import os
 import shlex
 import shutil
 import subprocess
 import sys
 import threading
+import time
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 DOCS = Path(__file__).resolve().parent.parent / "docs"
+LOG_FILE = DOCS.parent / "logs" / "serve_local.log"
+LOG = logging.getLogger("shijian")
 LOCK = threading.Lock()  # 一次只跑一个推演，避免连点把额度烧掉
 CFG = {"port": 8765, "model": None, "cmd": [], "status": {}}
 
@@ -153,12 +159,32 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(400, {"ok": False, "error": "请求格式不对"})
         if not LOCK.acquire(blocking=False):
             return self.send_json(429, {"ok": False, "error": "上一个推演还没结束，稍等一下。"})
+        kind = "追问" if "questions" in schema.get("properties", {}) else "推演"
+        t0 = time.time()
+        LOG.info("开始%s：提示词 %d 字", kind, len(prompt))
         try:
-            return self.send_json(200, {"ok": True, "data": ask_claude(system, prompt, schema)})
+            data = ask_claude(system, prompt, schema)
+            LOG.info("完成%s：用时 %.0f 秒", kind, time.time() - t0)
+            return self.send_json(200, {"ok": True, "data": data})
         except ClaudeError as e:
+            LOG.warning("%s失败（%.0f 秒）：%s", kind, time.time() - t0, e)
             return self.send_json(502, {"ok": False, "error": str(e)})
+        except Exception:  # noqa: BLE001  意外错误也给页面一个明确答复，不让连接直接断掉
+            LOG.exception("%s时出现意外错误", kind)
+            return self.send_json(500, {"ok": False, "error": f"本地服务出现意外错误，详情记在 {LOG_FILE}"})
         finally:
             LOCK.release()
+
+
+def setup_logging():
+    LOG_FILE.parent.mkdir(exist_ok=True)
+    handler = RotatingFileHandler(LOG_FILE, maxBytes=1_000_000, backupCount=2, encoding="utf-8")
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s", "%m-%d %H:%M:%S"))
+    LOG.addHandler(handler)
+    LOG.setLevel(logging.INFO)
+    # 主线程和请求线程里没接住的异常，也写进日志，服务意外退出时有据可查
+    sys.excepthook = lambda *exc: LOG.critical("服务意外退出", exc_info=exc)
+    threading.excepthook = lambda a: LOG.error("请求线程出错", exc_info=(a.exc_type, a.exc_value, a.exc_traceback))
 
 
 def main():
@@ -169,6 +195,7 @@ def main():
     args = ap.parse_args()
     if not (DOCS / "index.html").exists():
         sys.exit("还没有 docs/index.html：先运行 python scripts/build_site.py")
+    setup_logging()
     CFG.update(port=args.port, model=args.model, cmd=claude_cmd())
     CFG["status"] = probe()
     st = CFG["status"]
@@ -189,6 +216,8 @@ def main():
               "  还没登录：之后在任意终端运行 claude auth login，再到页面上点「重新检测」即可。")
     else:
         print(f"  已连上 Claude Code {st.get('version') or ''}，对话框会用你的订阅额度推演。")
+    LOG.info("启动：端口 %d，claude %s，已登录=%s", args.port, st.get("version"), st.get("loggedIn"))
+    print(f"  推演期间请一直开着这个窗口，关掉就不能推演了。日志：{LOG_FILE}")
     print("  按 Ctrl+C 停止。")
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     if not args.no_browser:
@@ -196,6 +225,7 @@ def main():
     try:
         server.serve_forever()
     except KeyboardInterrupt:
+        LOG.info("收到 Ctrl+C，停止")
         print("\n已停止。")
 
 
