@@ -28,7 +28,7 @@ function renderLocalHelp() {
     ? `<p>本地服务已经连上，但你电脑上的 <code>claude</code> 命令还没登录。</p><ol>${login}<li>登录完成后点「重新检测」，不用重启服务。</li></ol>
        <div class="dlg-actions"><button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button></div>`
     : `<p>网页不能直接调用你电脑上的 <code>claude</code> 命令，要先在本机启动本地服务，再从它打开本页。</p>
-       <ol>${login}<li>双击仓库根目录的 <code>启动本地推演.bat</code>，或在仓库目录运行 <code>python scripts/serve_local.py</code>。浏览器会自动打开本地页面，在那里选这一项。</li></ol>
+       <ol>${login}<li>双击仓库根目录的 <code>启动本地推演.bat</code>：服务在后台运行，不占窗口，浏览器会自动打开本地页面，在那里选这一项。用完双击 <code>停止本地推演.bat</code>。也可以在仓库目录运行 <code>python scripts/serve_local.py --background</code>。</li></ol>
        <div class="dlg-actions">${LOCAL_HOST ? '<button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button>'
          : `<a class="btn btn-ghost btn-sm" href="${LOCAL_URL}">已经启动了，打开本地页面</a>`}</div>`;
 }

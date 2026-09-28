@@ -1,6 +1,8 @@
 """在本机打开展示页，用本机的 Claude Code（你自己的 Claude 订阅额度）驱动对话框。
 
-用法：python scripts/serve_local.py                 # 打开 http://127.0.0.1:8765/
+用法：python scripts/serve_local.py                 # 打开 http://127.0.0.1:8765/，服务占着这个终端
+      python scripts/serve_local.py --background    # 在后台运行，不占窗口（双击「启动本地推演.bat」就是这个）
+      python scripts/serve_local.py --stop          # 停止后台服务（双击「停止本地推演.bat」就是这个）
       python scripts/serve_local.py --model opus    # 指定模型（claude 命令支持的写法）
       python scripts/serve_local.py --no-browser --port 9000
 前提：终端里的 claude 命令已经登录（claude auth login）；docs/index.html 已生成（build_site.py）。
@@ -15,10 +17,12 @@ import logging
 import os
 import shlex
 import shutil
+import signal
 import subprocess
 import sys
 import threading
 import time
+import urllib.request
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from logging.handlers import RotatingFileHandler
@@ -28,6 +32,8 @@ DOCS = Path(__file__).resolve().parent.parent / "docs"
 LOG_FILE = DOCS.parent / "logs" / "serve_local.log"
 LOG = logging.getLogger("shijian")
 LOCK = threading.Lock()  # 一次只跑一个推演，避免连点把额度烧掉
+APP = "shijian-tuiyan"
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)  # Windows：调用 claude 时不弹黑色窗口
 CFG = {"port": 8765, "model": None, "cmd": [], "status": {}}
 
 
@@ -49,7 +55,7 @@ def claude_cmd():
 
 def run(args, stdin="", timeout=600):
     return subprocess.run([*CFG["cmd"], *args], input=stdin, capture_output=True, text=True,
-                          encoding="utf-8", errors="replace", timeout=timeout)
+                          encoding="utf-8", errors="replace", timeout=timeout, creationflags=NO_WINDOW)
 
 
 def logged_in():
@@ -116,7 +122,7 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*a, directory=str(DOCS), **kw)
 
     def log_message(self, fmt, *args):
-        if self.path.startswith("/api/claude"):
+        if self.path.startswith("/api/claude") and sys.stderr:  # 后台运行时可能没有 stderr
             sys.stderr.write("[推演] " + (fmt % args) + "\n")
 
     def send_json(self, code, obj):
@@ -136,6 +142,8 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if not self.same_origin():
             return self.send_json(403, {"ok": False, "error": "只接受本机页面的请求"})
+        if self.path == "/api/ping":  # 启动、停止脚本用它认出正在运行的服务
+            return self.send_json(200, {"ok": True, "app": APP, "pid": os.getpid()})
         if self.path == "/api/health":
             if not CFG["status"].get("error"):
                 CFG["status"]["loggedIn"] = logged_in()
@@ -187,18 +195,108 @@ def setup_logging():
     threading.excepthook = lambda a: LOG.error("请求线程出错", exc_info=(a.exc_type, a.exc_value, a.exc_traceback))
 
 
+class Server(ThreadingHTTPServer):
+    # Windows 上开着端口复用，第二个服务也能绑上同一个端口；关掉它，重复启动时直接报错
+    allow_reuse_address = os.name != "nt"
+
+
+def make_server(port):
+    try:
+        return Server(("127.0.0.1", port), Handler)
+    except OSError as e:
+        LOG.error("端口 %d 打不开：%s", port, e)
+        sys.exit(f"端口 {port} 被别的程序占用了，换一个端口试试，例如加 --port 9000。")
+
+
+def ping(port):
+    """这个端口上有史鉴推演的本地服务在跑，就返回它的进程号，否则返回 None。"""
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))  # 本机地址不走代理
+    try:
+        with opener.open(f"http://127.0.0.1:{port}/api/ping", timeout=3) as r:
+            info = json.loads(r.read())
+    except (OSError, ValueError):
+        return None
+    return info.get("pid") if info.get("app") == APP else None
+
+
+def start_background(args, url):
+    """另起一个不带窗口的进程跑服务，启动它的窗口关掉也不影响。"""
+    if ping(args.port):
+        print("  本地服务已经在后台运行，直接打开页面。")
+    else:
+        cmd = [sys.executable, str(Path(__file__).resolve()), "--quiet", "--port", str(args.port)]
+        if args.model:
+            cmd += ["--model", args.model]
+        kw = {"stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "cwd": str(DOCS.parent)}
+        if os.name == "nt":
+            flags = NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP
+            try:  # 有的终端关闭时会连带结束它启动过的进程，先试着脱离出来
+                child = subprocess.Popen(cmd, creationflags=flags | subprocess.CREATE_BREAKAWAY_FROM_JOB, **kw)
+            except OSError:
+                child = subprocess.Popen(cmd, creationflags=flags, **kw)
+        else:
+            child = subprocess.Popen(cmd, start_new_session=True, **kw)
+        for _ in range(120):
+            if ping(args.port) or child.poll() is not None:
+                break
+            time.sleep(0.5)
+        if not ping(args.port):
+            try:
+                tail = LOG_FILE.read_text(encoding="utf-8").splitlines()[-5:]
+            except OSError:
+                tail = []
+            print("  后台服务没有启动起来。日志最后几行：\n" + "\n".join("    " + t for t in tail))
+            return 1
+        print("  已在后台启动。")
+    print("  这个窗口可以关掉，不影响推演。用完想停，双击「停止本地推演.bat」；电脑重启后，再双击一次「启动本地推演.bat」。")
+    if not args.no_browser:
+        webbrowser.open(url)
+    return 0
+
+
+def stop(port):
+    pid = ping(port)
+    if not pid:
+        print("本地服务没有在运行。")
+        return 0
+    if os.name == "nt":  # /T 连同正在跑的 claude 一起结束，免得它在后台接着耗额度
+        subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True)
+    elif os.getpgid(pid) == pid:
+        os.killpg(pid, signal.SIGTERM)
+    else:
+        os.kill(pid, signal.SIGTERM)
+    for _ in range(20):
+        if not ping(port):
+            setup_logging()
+            LOG.info("停止：进程 %d（停止命令）", pid)
+            print("本地服务已停止。")
+            return 0
+        time.sleep(0.25)
+    print(f"没能停止本地服务（进程 {pid}），可以在任务管理器里结束它。")
+    return 1
+
+
 def main():
     ap = argparse.ArgumentParser(description="在本机打开史鉴推演，用你自己的 Claude 订阅推演")
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--model", default=None, help="传给 claude --model，例如 opus、sonnet")
     ap.add_argument("--no-browser", action="store_true")
+    ap.add_argument("--background", action="store_true", help="在后台运行，不占窗口")
+    ap.add_argument("--stop", action="store_true", help="停止后台运行的本地服务")
+    ap.add_argument("--quiet", action="store_true", help=argparse.SUPPRESS)  # 后台服务进程自己用：不提问、不开浏览器
     args = ap.parse_args()
+    if args.stop:
+        return stop(args.port)
     if not (DOCS / "index.html").exists():
         sys.exit("还没有 docs/index.html：先运行 python scripts/build_site.py")
     setup_logging()
     CFG.update(port=args.port, model=args.model, cmd=claude_cmd())
-    CFG["status"] = probe()
-    st = CFG["status"]
+    CFG["status"] = st = probe()
+    if args.quiet:
+        server = make_server(args.port)
+        LOG.info("启动（后台）：端口 %d，进程 %d，claude %s，已登录=%s", args.port, os.getpid(), st.get("version"), st.get("loggedIn"))
+        server.serve_forever()
+        return 0
     url = f"http://127.0.0.1:{args.port}/"
     print(f"史鉴推演本地版：{url}")
     if st.get("error"):
@@ -216,10 +314,12 @@ def main():
               "  还没登录：之后在任意终端运行 claude auth login，再到页面上点「重新检测」即可。")
     else:
         print(f"  已连上 Claude Code {st.get('version') or ''}，对话框会用你的订阅额度推演。")
+    if args.background:
+        return start_background(args, url)
+    server = make_server(args.port)
     LOG.info("启动：端口 %d，claude %s，已登录=%s", args.port, st.get("version"), st.get("loggedIn"))
-    print(f"  推演期间请一直开着这个窗口，关掉就不能推演了。日志：{LOG_FILE}")
+    print(f"  服务占着这个窗口，关掉就停了；想在后台运行，加 --background。日志：{LOG_FILE}")
     print("  按 Ctrl+C 停止。")
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     if not args.no_browser:
         webbrowser.open(url)
     try:
@@ -227,7 +327,8 @@ def main():
     except KeyboardInterrupt:
         LOG.info("收到 Ctrl+C，停止")
         print("\n已停止。")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

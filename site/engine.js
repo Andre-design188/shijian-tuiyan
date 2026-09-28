@@ -122,7 +122,7 @@ async function callLocal(system, prompt, schema) {
     const alive = await fetch("/api/health", {cache: "no-store"}).then(r => r.ok).catch(() => false);
     throw new Error(alive
       ? "和本地服务的连接意外断开了，点「重试」再来一次。反复出现的话，看一下仓库里 logs/serve_local.log 的记录。"
-      : "本地服务已经停止了，可能是启动它的黑色命令行窗口被关掉了。重新双击「启动本地推演.bat」，让那个窗口一直开着，再点「重试」。");
+      : "本地服务没有在运行，可能是电脑重启过，或者停止过它。双击仓库里的「启动本地推演.bat」，它会在后台启动，再点「重试」。");
   }
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.ok) throw new Error(j.error || `本地服务出错（${r.status}）。`);

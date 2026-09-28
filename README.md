@@ -76,16 +76,19 @@ git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.cl
 |---|---|---|
 | 示范模式 | 线上页面的默认选项，回放三个预先推演好的示范 | 免费 |
 | 自带 API Key | 填入自己的 Anthropic API Key；Key 只存在你的浏览器里，由官方 SDK 直接发给 Anthropic，本页没有服务器 | 记在你的 API 账户上 |
-| 本机 Claude 订阅 | 本机运行 `python scripts/serve_local.py` 打开页面，对话框通过本机的 `claude` 命令推演 | 用你的 Claude 订阅额度 |
+| 本机 Claude 订阅 | 本机双击 `启动本地推演.bat`（或运行 `python scripts/serve_local.py --background`）打开页面，对话框通过本机的 `claude` 命令推演 | 用你的 Claude 订阅额度 |
 
 不管用哪种引擎，模型给出的古文都会在浏览器里和案例原文逐字核对，对不上的不显示，并在结果里说明隐藏了什么。
 
-本机订阅模式：Windows 上双击仓库根目录的 `启动本地推演.bat` 即可。如果本机的 `claude` 命令还没登录，它会问你要不要现在登录；登录后浏览器会自动打开 http://127.0.0.1:8765/ 。也可以手动运行：
+本机订阅模式：Windows 上双击仓库根目录的 `启动本地推演.bat` 即可。如果本机的 `claude` 命令还没登录，它会问你要不要现在登录；之后服务转到后台运行，启动窗口几秒后自动关闭，浏览器打开 http://127.0.0.1:8765/ 。用完双击 `停止本地推演.bat`；电脑重启后再双击一次启动。也可以手动运行：
 
 ```bash
-claude auth login                   # 只需一次：登录 Claude Code，用你的 Claude 订阅
-python scripts/serve_local.py       # 启动本地页面，自动打开 http://127.0.0.1:8765/
+claude auth login                               # 只需一次：登录 Claude Code，用你的 Claude 订阅
+python scripts/serve_local.py --background      # 在后台启动本地页面，自动打开 http://127.0.0.1:8765/
+python scripts/serve_local.py --stop            # 停止后台服务
 ```
+
+不加 `--background` 时，服务占着当前终端，按 Ctrl+C 停止。每次推演的开始、结束和出错都记在 `logs/serve_local.log`。
 
 线上页面没法直接调用你电脑上的 `claude`，所以在线上选「本机 Claude 订阅」时，页面会给出这两步指引和打开本地页面的链接。
 
@@ -120,7 +123,7 @@ python scripts/find_cases.py 合伙 股权          # 按关键词找案例
 python scripts/grep_source.py 暴得大名          # 在两书全文里检索（要先下载语料）
 python scripts/check_plain.py                  # 说人话检查
 python scripts/build_site.py                   # 重新生成展示页与示范文件
-python scripts/serve_local.py                  # 本机打开页面，用 Claude 订阅推演
+python scripts/serve_local.py --background     # 本机打开页面，用 Claude 订阅推演（后台运行）
 ```
 
 ## 目录

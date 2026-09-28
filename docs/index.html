@@ -398,7 +398,7 @@ footer p { margin: 0 0 6px; max-width: 60em; }
               <legend>用什么来推演</legend>
               <label class="opt-line"><input type="radio" name="engine" value="demo"><span>示范模式<small>不接模型，只能回放三个预先推演好的示范。</small></span></label>
               <label class="opt-line"><input type="radio" name="engine" value="byok"><span>用我自己的 API Key<small>Key 只保存在你的浏览器里，直接发给 Anthropic；本页没有服务器，费用记在你的账户上。</small></span></label>
-              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
+              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py --background</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
             </fieldset>
             <div class="local-help" id="local-help" role="status" hidden></div>
             <div id="byok-fields" hidden>
@@ -480,9 +480,12 @@ python scripts/verify_quotes.py</pre>
         <div class="code-bar"><span>终端</span></div>
         <pre><span class="c"># 只需一次：登录 Claude Code（用你的 Claude 订阅）</span>
 claude auth login
-<span class="c"># 启动本地页面，浏览器会自动打开 http://127.0.0.1:8765/</span>
-python scripts/serve_local.py</pre>
+<span class="c"># 在后台启动本地页面，浏览器会自动打开 http://127.0.0.1:8765/</span>
+python scripts/serve_local.py --background
+<span class="c"># 用完停止</span>
+python scripts/serve_local.py --stop</pre>
       </div>
+      <p class="use-note">Windows 上不用敲命令：双击仓库里的 <code>启动本地推演.bat</code>，服务在后台运行，不占窗口；用完双击 <code>停止本地推演.bat</code>。</p>
       <p class="use-note">源码、案例库和校验脚本都在 <a href="https://github.com/gavincao6313-jpg/shijian-tuiyan">GitHub</a>。</p>
     </div>
   </section>
@@ -782,7 +785,7 @@ async function callLocal(system, prompt, schema) {
     const alive = await fetch("/api/health", {cache: "no-store"}).then(r => r.ok).catch(() => false);
     throw new Error(alive
       ? "和本地服务的连接意外断开了，点「重试」再来一次。反复出现的话，看一下仓库里 logs/serve_local.log 的记录。"
-      : "本地服务已经停止了，可能是启动它的黑色命令行窗口被关掉了。重新双击「启动本地推演.bat」，让那个窗口一直开着，再点「重试」。");
+      : "本地服务没有在运行，可能是电脑重启过，或者停止过它。双击仓库里的「启动本地推演.bat」，它会在后台启动，再点「重试」。");
   }
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.ok) throw new Error(j.error || `本地服务出错（${r.status}）。`);
@@ -867,7 +870,7 @@ function renderLocalHelp() {
     ? `<p>本地服务已经连上，但你电脑上的 <code>claude</code> 命令还没登录。</p><ol>${login}<li>登录完成后点「重新检测」，不用重启服务。</li></ol>
        <div class="dlg-actions"><button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button></div>`
     : `<p>网页不能直接调用你电脑上的 <code>claude</code> 命令，要先在本机启动本地服务，再从它打开本页。</p>
-       <ol>${login}<li>双击仓库根目录的 <code>启动本地推演.bat</code>，或在仓库目录运行 <code>python scripts/serve_local.py</code>。浏览器会自动打开本地页面，在那里选这一项。</li></ol>
+       <ol>${login}<li>双击仓库根目录的 <code>启动本地推演.bat</code>：服务在后台运行，不占窗口，浏览器会自动打开本地页面，在那里选这一项。用完双击 <code>停止本地推演.bat</code>。也可以在仓库目录运行 <code>python scripts/serve_local.py --background</code>。</li></ol>
        <div class="dlg-actions">${LOCAL_HOST ? '<button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button>'
          : `<a class="btn btn-ghost btn-sm" href="${LOCAL_URL}">已经启动了，打开本地页面</a>`}</div>`;
 }

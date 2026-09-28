@@ -398,7 +398,7 @@ footer p { margin: 0 0 6px; max-width: 60em; }
               <legend>用什么来推演</legend>
               <label class="opt-line"><input type="radio" name="engine" value="demo"><span>示范模式<small>不接模型，只能回放三个预先推演好的示范。</small></span></label>
               <label class="opt-line"><input type="radio" name="engine" value="byok"><span>用我自己的 API Key<small>Key 只保存在你的浏览器里，直接发给 Anthropic；本页没有服务器，费用记在你的账户上。</small></span></label>
-              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
+              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py --background</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
             </fieldset>
             <div class="local-help" id="local-help" role="status" hidden></div>
             <div id="byok-fields" hidden>
@@ -480,9 +480,12 @@ python scripts/verify_quotes.py</pre>
         <div class="code-bar"><span>终端</span></div>
         <pre><span class="c"># 只需一次：登录 Claude Code（用你的 Claude 订阅）</span>
 claude auth login
-<span class="c"># 启动本地页面，浏览器会自动打开 http://127.0.0.1:8765/</span>
-python scripts/serve_local.py</pre>
+<span class="c"># 在后台启动本地页面，浏览器会自动打开 http://127.0.0.1:8765/</span>
+python scripts/serve_local.py --background
+<span class="c"># 用完停止</span>
+python scripts/serve_local.py --stop</pre>
       </div>
+      <p class="use-note">Windows 上不用敲命令：双击仓库里的 <code>启动本地推演.bat</code>，服务在后台运行，不占窗口；用完双击 <code>停止本地推演.bat</code>。</p>
       <p class="use-note">源码、案例库和校验脚本都在 <a href="__REPO__">GitHub</a>。</p>
     </div>
   </section>
