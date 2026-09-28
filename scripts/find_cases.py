@@ -5,13 +5,14 @@
   python find_cases.py --theme 05             # 列出某母题全部案例（05 或 功高）
   python find_cases.py --id 03-01 09-03       # 输出完整案例
   python find_cases.py --list                 # 母题总览（每个母题的案例标题）
-  加 --full 输出完整字段；默认只输出 标题/出处/可迁移/边界/现代映射。
+  加 --full 输出完整字段；默认只输出 标题/出处/史料/可迁移/边界/现代映射。
+  史料等级：A 可作依据；B 只依据抉择和结局；C 只作参照。
 """
 import sys
 
-from caselib import load_cases
+from caselib import grade_of, load_cases
 
-BRIEF = ["出处", "可迁移", "边界", "现代映射"]
+BRIEF = ["出处", "史料", "可迁移", "边界", "现代映射"]
 WEIGHT = {"现代映射": 3, "可迁移": 2, "决定变量": 2, "处境": 1, "选项": 1}
 
 
@@ -34,7 +35,7 @@ def main():
             if c["theme"] != theme:
                 theme = c["theme"]
                 print(f"\n{theme}")
-            print(f"  {c['id']} {c['title']}  | {c['fields'].get('现代映射', '')[:40]}")
+            print(f"  {c['id']} {c['title']} [{grade_of(c) or '?'}]  | {c['fields'].get('现代映射', '')[:40]}")
         return
     if argv[0] == "--id":
         for c in cases:

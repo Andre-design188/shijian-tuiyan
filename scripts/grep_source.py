@@ -9,7 +9,7 @@
 import re
 import sys
 
-from caselib import load_corpus
+from caselib import FETCH_HINT, corpus_ready, load_corpus
 
 
 def arg(name, default):
@@ -23,6 +23,9 @@ def main():
     if len(sys.argv) < 2:
         print(__doc__)
         return
+    if not corpus_ready():
+        print(f"还没有下载两书原文，全文检索用不了（案例库照常可用）。下载：{FETCH_HINT}")
+        sys.exit(2)
     pat = sys.argv[1]
     books = [arg("--book", None)] if "--book" in sys.argv else ["史记", "资治通鉴"]
     ctx, cap = int(arg("--ctx", 80)), int(arg("--max", 12))

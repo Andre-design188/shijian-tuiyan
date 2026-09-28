@@ -14,7 +14,12 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-from opencc import OpenCC
+from caselib import utf8_stdio
+
+try:
+    from opencc import OpenCC
+except ImportError:
+    sys.exit("缺少繁转简依赖：先运行 pip install -r requirements.txt")
 
 T2S = OpenCC("t2s").convert
 ROOT = Path(__file__).resolve().parent.parent / "corpus"
@@ -118,6 +123,7 @@ def clean(wt: str) -> str:
 
 
 def main():
+    utf8_stdio()
     force = "--force" in sys.argv
     for book, (pattern, total) in BOOKS.items():
         out_dir = ROOT / book

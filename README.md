@@ -2,9 +2,16 @@
 
 纠结一个决定的时候，把你的处境说给它听。它会从《史记》《资治通鉴》里找出走过同样局面的人，走对的和走错的都找，逐个推演每个选项的去向，最后给你一条带止损线的建议。
 
-**在线使用**：<https://gavincao6313-jpg.github.io/shijian-tuiyan/>。在对话框里写下当前处境和所求，它会追问最多三个问题，推演完成后对话框自动折叠、展开结果。页面里还有三次完整示范，以及可按处境筛选的 92 个历史案例。
+**在线使用**：<https://gavincao6313-jpg.github.io/shijian-tuiyan/>。在对话框里写下当前处境和所求，它会追问最多三个问题，推演完成后对话框自动折叠、展开结果。页面里还有三次完整示范，以及可按处境、史料等级筛选的 92 个历史案例。
+
+**装成 Claude Code 技能只要一行**（装完就能用，详见[下文](#安装为-claude-code-技能)）：
+
+```bash
+git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.claude/skills/shijian-tuiyan
+```
 
 [![引文校验](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/verify.yml/badge.svg)](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/verify.yml)
+[![说人话检查](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/plain.yml/badge.svg)](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/plain.yml)
 
 ---
 
@@ -38,16 +45,28 @@
 
 16 个母题、92 个案例：去留、择主、起事、合伙、功高、蛰伏、进谏、站队、对手、用人、交班、孤注、名实、恩怨、晚成、家教。
 
-每个案例的字段都一样：处境、选项、抉择、原文、结果、**决定变量**、可迁移、对照、**边界**、现代映射。其中"决定变量"和"边界"两个字段，逼着每个案例说清楚它在什么条件下成立、什么条件下不成立，防止历史类比变成"讲个故事就下结论"。
+每个案例的字段都一样：出处、**史料**、处境、选项、抉择、原文、结果、**决定变量**、可迁移、对照、**边界**、现代映射。其中"决定变量"和"边界"两个字段，逼着每个案例说清楚它在什么条件下成立、什么条件下不成立，防止历史类比变成"讲个故事就下结论"。
+
+"史料"字段标明这段记载有多可靠，并写出理由：
+
+| 等级 | 个数 | 什么样的案例 | 推演时怎么用 |
+|---|---|---|---|
+| A 可作依据 | 56 | 抉择和结局都是公开发生的事（出走、任免、战役、死亡），没有已知的反证 | 可以当依据 |
+| B 依据主干 | 31 | 主干可信，但用到的对话、场面只见于一处，或者出土文献另有说法 | 只依据抉择和结局，不依据细节 |
+| C 只作参照 | 5 | 传说时代、带神异情节、主干被认为不可靠，或者是史家的议论 | 只当比喻，推演时一律降为参考 |
+
+例如，沙丘之谋定为 B，因为北大汉简《赵正书》记载秦始皇临终自己同意立胡亥。苏秦"佩六国相印"定为 C，因为马王堆帛书显示苏秦的活动年代比史记晚几十年。晚成母题的 6 个案例里有 3 个是 C 级：大器晚成的故事最容易被传成神话。判定标准见 [SKILL.md](SKILL.md) 的「史料等级」一节。
 
 ## 质量保障
 
 - **正反例配对**：每个选项至少配一个走对的、一个走错的先例，避免只挑对自己有利的故事讲。
 - **差异检验**：每个案例都要写"不像的地方"；差异落在关键变量上，就降为参考。
+- **史料分级**：每个案例标 A、B、C 三级并写明理由（见上文"案例库"）。C 级案例不能当推演依据；网页上的模型如果把它当依据，页面会自动降为参考。
 - **安全边界**：对方流露轻生念头时先关怀、不推演；涉及医疗、法律、税务会提醒找专业人士；不讲宿命论，并提醒幸存者偏差。
-- **引文逐字校验**：102 句古文全部逐字比对《史记》130 卷、《资治通鉴》294 卷原文，并定位到卷；每次推送由 GitHub Actions 重新下载原文、全量重跑，对不上的案例不能入库。
+- **引文逐字校验**：148 句古文全部逐字比对《史记》130 卷、《资治通鉴》294 卷原文，并定位到卷。原文栏里的要查，处境、结果这些栏里顺手引的古文也要查。每次推送由 GitHub Actions 重新下载原文、全量重跑，对不上的案例不能入库。
 
-  这道校验是必要的：初稿由大模型凭记忆写出，100 句里有 12 句和原文对不上。例如把"良为他人**者**"写成"良为他人**言**"，把"独孤误我"写成"独孤**诚**误我"。这类错读起来都像古文，人工审稿几乎发现不了。完整对照见展示页的「为什么可信」一节。
+  这道校验是必要的：初稿由大模型凭记忆写出，100 句里有 12 句和原文对不上。例如把"良为他人**者**"写成"良为他人**言**"，把"独孤误我"写成"独孤**诚**误我"。这类错读起来都像古文，人工审稿几乎发现不了。起初只校验了原文栏，后来把校验扩到所有字段，又查出 5 处：比如把"秦不听臣计"写成"秦**王**不听臣计"，还有把出自《报任安书》的"究天人之际，通古今之变"当成了《史记》原文。完整对照见展示页的「为什么可信」一节。
+- **说人话检查**：案例和示范的文字每次推送都过一遍机器检查。查六类问题：字段超长；"本质上""赋能"这类套话和黑话；感叹号；一个字段里用了不止一个破折号；给建议时出现"赐死""注定"这类吓人的词；没用「」标出的古文。规则和每条规则的来由写在 [scripts/check_plain.py](scripts/check_plain.py) 里；网页推演的提示词也用同一份词表。
 
 ## 在网页上推演
 
@@ -74,24 +93,32 @@ python scripts/serve_local.py       # 启动本地页面，自动打开 http://1
 
 ## 安装为 Claude Code 技能
 
-需要 [Claude Code](https://claude.com/claude-code) 和 Python 3.10+。
+需要 [Claude Code](https://claude.com/claude-code) 和 Python 3.10+。一行装好，不用装依赖：
 
 ```bash
-git clone https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.claude/skills/shijian-tuiyan
+git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.claude/skills/shijian-tuiyan
+```
+
+Windows 的 PowerShell 里把 `~` 换成 `$HOME`。然后在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职去创业"，技能会自动开始推演。
+
+推演只用案例库，装完就能用。想在两书全文里检索、找案例库以外的先例，或者改了案例要重跑引文校验，再下载原文语料。这一步可选：
+
+```bash
 cd ~/.claude/skills/shijian-tuiyan
 pip install -r requirements.txt
 python scripts/fetch_corpus.py      # 下载原文语料，一两分钟
 python scripts/verify_quotes.py     # 应输出：FAIL 0 条
 ```
 
-然后在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职去创业"，技能会自动开始推演。
+**用在 Codex 等其他 AI 工具里**：把仓库克隆到任意目录，在那个目录里打开工具即可，根目录的 [AGENTS.md](AGENTS.md) 会让它按 SKILL.md 推演。想在任何目录都能用，就在工具的全局说明里（Codex 是 `~/.codex/AGENTS.md`）加一句："遇到人生抉择类问题，按 <克隆目录>/SKILL.md 执行。"
 
 脚本也可以单独用：
 
 ```bash
-python scripts/find_cases.py --list            # 母题总览
+python scripts/find_cases.py --list            # 母题总览（带史料等级）
 python scripts/find_cases.py 合伙 股权          # 按关键词找案例
-python scripts/grep_source.py 暴得大名          # 在两书全文里检索
+python scripts/grep_source.py 暴得大名          # 在两书全文里检索（要先下载语料）
+python scripts/check_plain.py                  # 说人话检查
 python scripts/build_site.py                   # 重新生成展示页与示范文件
 python scripts/serve_local.py                  # 本机打开页面，用 Claude 订阅推演
 ```
@@ -99,10 +126,11 @@ python scripts/serve_local.py                  # 本机打开页面，用 Claude
 ## 目录
 
 ```
-SKILL.md                  技能主文件：流程、输出模板、纪律（Claude 读这个）
+SKILL.md                  技能主文件：流程、输出模板、纪律、史料等级标准（Claude 读这个）
+AGENTS.md                 给 Codex 等其他 AI 工具的入口，指向 SKILL.md
 references/cases/         16 个母题的案例库
 examples/demos.json       三次示范推演（展示页和示范文件都由它生成）
-scripts/                  检索、校验、语料下载、展示页生成、本地服务
+scripts/                  检索、引文校验、说人话检查、语料下载、展示页生成、本地服务
 site/                     展示页模板、对话框脚本（dialog.js）、推演引擎（engine.js）、勘误数据
 docs/                     生成的展示页（GitHub Pages）
 corpus/                   原文语料（下载生成，不入库）

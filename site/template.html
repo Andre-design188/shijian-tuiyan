@@ -296,6 +296,15 @@ a:hover { text-decoration-thickness: 2px; }
 .case dd.quote { font-family: var(--serif); color: var(--gu); font-size: 16px; }
 .case dd.bound { color: var(--jin); }
 .case:target summary .t, .case.flash summary .t { color: var(--gu); }
+/* 史料等级：A 实底、B 实线框、C 虚线框，越往后越"只作参照" */
+.grade { display: inline-block; font: 500 12px/1 var(--sans); padding: 3px 6px; border-radius: 2px; vertical-align: 1px; white-space: nowrap; border: 1px solid transparent; }
+.grade.g-A { background: var(--gu-soft); color: var(--gu); }
+.grade.g-B { border-color: var(--jin); color: var(--jin); }
+.grade.g-C { border: 1px dashed var(--ink-3); color: var(--ink-3); }
+.case .t small .grade { margin-right: 6px; }
+.m-then .src .grade { margin-left: 6px; }
+.grade-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -4px 0 16px; font-size: 14px; color: var(--ink-3); }
+.grade-filters .chip { font-size: 14px; padding: 6px 10px; }
 .empty { padding: 24px 0; color: var(--ink-2); }
 .more { margin-top: 20px; }
 
@@ -314,6 +323,8 @@ a:hover { text-decoration-thickness: 2px; }
 .errata del { color: var(--jin); text-decoration-thickness: 1.5px; }
 .errata ins { color: var(--gu); text-decoration: none; border-bottom: 2px solid var(--gu); }
 .errata .foot { font-size: 14px; color: var(--ink-3); margin: 12px 0 0; }
+.errata .later { display: inline-block; font-size: 12px; line-height: 1; padding: 3px 5px; margin-left: 6px; border: 1px dashed var(--ink-3); border-radius: 2px; color: var(--ink-3); white-space: nowrap; }
+.errata .note { display: block; font-family: var(--sans); font-size: 13px; color: var(--ink-3); margin-top: 2px; }
 
 /* ---------- 怎么用 ---------- */
 .code { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; max-width: 760px; }
@@ -424,9 +435,10 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <section class="section" id="library" aria-labelledby="lib-title">
     <div class="wrap">
       <h2 id="lib-title"><span id="lib-count"></span> 个历史案例</h2>
-      <p class="intro">按你正在经历的处境找。每个案例都写了它在什么条件下成立，也写了什么条件下不成立。</p>
+      <p class="intro">按你正在经历的处境找。每个案例都写了它在什么条件下成立、什么条件下不成立，也标了这段史料有多可靠。</p>
       <div class="filters" role="group" aria-label="按处境筛选" id="filters"></div>
       <p class="theme-note" id="theme-note" aria-live="polite"></p>
+      <div class="grade-filters" role="group" aria-label="按史料等级筛选" id="grade-filters"></div>
       <div class="search">
         <label class="visually-hidden" for="q">搜索案例</label>
         <input id="q" type="search" placeholder="搜处境或人物，比如：合伙、接班、韩信" autocomplete="off">
@@ -448,14 +460,17 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <section class="section" id="use" aria-labelledby="use-title">
     <div class="wrap">
       <h2 id="use-title">怎么用</h2>
-      <p class="intro">有三种用法：直接在这个页面填自己的 API Key；在本机打开页面，用你自己的 Claude 订阅额度；或者装成 Claude Code 技能，在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职创业"。后两种都从下面的安装开始。</p>
+      <p class="intro">有三种用法：直接在这个页面填自己的 API Key；在本机打开页面，用你自己的 Claude 订阅额度；或者装成 Claude Code 技能，在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职创业"。后两种都从下面这一行开始，装完就能用。</p>
       <div class="code">
-        <div class="code-bar"><span>终端</span><button class="copy" type="button" id="copy">复制</button></div>
-        <pre id="install"><span class="c"># 安装到 Claude Code 的技能目录</span>
-git clone __REPO__.git ~/.claude/skills/shijian-tuiyan
-cd ~/.claude/skills/shijian-tuiyan
+        <div class="code-bar"><span>终端 · 一行安装</span><button class="copy" type="button" id="copy">复制</button></div>
+        <pre id="install">git clone --depth 1 __REPO__.git ~/.claude/skills/shijian-tuiyan</pre>
+      </div>
+      <p class="use-note">在 Windows 的 PowerShell 里，把 <code>~</code> 换成 <code>$HOME</code>。用 Codex 等其他 AI 工具的，克隆到任意目录，仓库根目录的 AGENTS.md 会告诉它怎么用。</p>
+      <p class="use-note">想在两书全文里检索，或者改了案例要重跑引文校验，再下载原文语料。这一步可选，一两分钟：</p>
+      <div class="code">
+        <div class="code-bar"><span>终端 · 可选</span></div>
+        <pre>cd ~/.claude/skills/shijian-tuiyan
 pip install -r requirements.txt
-<span class="c"># 下载《史记》《资治通鉴》原文，一两分钟</span>
 python scripts/fetch_corpus.py
 <span class="c"># 校验全部引文，应输出 FAIL 0 条</span>
 python scripts/verify_quotes.py</pre>
@@ -500,6 +515,7 @@ const STEPS = [
   ["太史公曰", "推荐、前提、止损线，外加一张本周就能动手的行动卡。"],
 ];
 const caseLink = id => { const c = caseById[id]; return c ? `<a href="#case-${id}">${esc(c.title)}</a>` : ""; };
+const gradeTag = g => DATA.grades[g] ? `<span class="grade g-${g}" title="史料等级 ${g}：${DATA.grades[g]}">${g} ${DATA.grades[g]}</span>` : "";
 
 /* 一次推演 → HTML；示范区和「你的推演」共用。d 的结构见 examples/demos.json */
 function planHTML(d) {
@@ -512,7 +528,7 @@ function planHTML(d) {
     return `<div class="mrow">
       <div class="m-now"><div class="m-opt">选项：${esc(m.option)}</div><p>${esc(m.same)}</p></div>
       <div class="m-axis"><span class="knob ${pos ? "pos" : "neg"}" title="${esc(m.role)}">${pos ? "正" : "反"}</span></div>
-      <div class="m-then">${caseLink(m.case)}<div class="src">${esc(c.src)}</div></div>
+      <div class="m-then">${caseLink(m.case)}<div class="src">${esc(c.src)}${gradeTag(c.grade)}</div></div>
       <div class="m-diff"><span>不像的地方：${esc(m.diff)}</span><span class="use${ref ? " ref" : ""}">${esc(m.use)}</span></div>
     </div>`; }).join("");
   const opts = d.options.map(o => `<div class="opt${o.pick ? " pick" : ""}">
@@ -534,7 +550,7 @@ function planHTML(d) {
         <div><h4>底线</h4><p>${esc(d.actions.line)}</p></div>
       </div></div></div>`;
   const bodies = [`<div class="board">${board}</div>`, `<div class="themes-used">${themes}</div>`,
-    `<div class="mrows">${mirrors}</div><div class="legend"><span><span class="knob pos">正</span>走对了的先例</span><span><span class="knob neg">反</span>走错了的先例</span></div>`,
+    `<div class="mrows">${mirrors}</div><div class="legend"><span><span class="knob pos">正</span>走对了的先例</span><span><span class="knob neg">反</span>走错了的先例</span><span>史料等级：A 可作依据，B 只依据抉择和结局，C 只作参照</span></div>`,
     `<div class="opts">${opts}</div>`, `<div class="swaps">${swaps}</div>`, verdict];
   const qa = (d.questions || []).filter(q => q.pick).map(q => `<li>${esc(q.q)}<b>${esc(q.pick)}</b></li>`).join("");
   return `<div class="question"><span class="who">来问的人说</span>${esc(d.question)}
@@ -563,38 +579,43 @@ selectTab(0);
 
 /* ---------- 案例库 ---------- */
 $("#lib-count").textContent = DATA.cases.length;
-let theme = "all", showAll = false;
+let theme = "all", grade = "all", showAll = false;
 const PREVIEW = 12;
-const FIELDS = [["处境", ""], ["选项", ""], ["抉择", ""], ["原文", "quote"], ["结果", ""], ["决定变量", ""], ["可迁移", ""], ["边界", "bound"], ["现代映射", ""], ["对照", "refs"]];
+const FIELDS = [["处境", ""], ["选项", ""], ["抉择", ""], ["原文", "quote"], ["史料", "grade-cell"], ["结果", ""], ["决定变量", ""], ["可迁移", ""], ["边界", "bound"], ["现代映射", ""], ["对照", "refs"]];
 function linkRefs(s) { return esc(s).replace(/\d{2}-\d{2}/g, id => caseById[id] ? `<a href="#case-${id}">${id}</a>` : id); }
+const gradeCell = c => `${gradeTag(c.grade)} ${esc(String(c.fields["史料"]).split("｜").slice(1).join("｜"))}`;
 function renderFilters() {
   $("#filters").innerHTML = [`<button class="chip" data-t="all" aria-pressed="${theme === "all"}">全部</button>`]
     .concat(DATA.themes.map(t => `<button class="chip" data-t="${t.code}" aria-pressed="${theme === t.code}">${esc(t.code + " " + t.name)}</button>`)).join("");
   const t = themeByCode[theme];
   $("#theme-note").textContent = t ? `适用于：${t.modern}` : "16 类处境，覆盖去留、创业、合伙、站队、交班、转型等常见抉择。";
+  const n = DATA.stats.grades;
+  $("#grade-filters").innerHTML = `<span>史料等级</span>` + [`<button class="chip" data-g="all" aria-pressed="${grade === "all"}">不限</button>`]
+    .concat(Object.entries(DATA.grades).map(([g, label]) => `<button class="chip" data-g="${g}" aria-pressed="${grade === g}">${g} ${label}（${n[g]}）</button>`)).join("");
 }
 function renderCases() {
   const q = $("#q").value.trim();
-  const list = DATA.cases.filter(c => (theme === "all" || c.theme === theme) &&
+  const list = DATA.cases.filter(c => (theme === "all" || c.theme === theme) && (grade === "all" || c.grade === grade) &&
     (!q || [c.title, c.src, ...Object.values(c.fields)].join(" ").includes(q)));
   $("#count").textContent = `${list.length} 个`;
-  const folded = theme === "all" && !q && !showAll && list.length > PREVIEW;
+  const folded = theme === "all" && grade === "all" && !q && !showAll && list.length > PREVIEW;
   $("#more").innerHTML = folded ? `<button class="btn btn-ghost" type="button" id="show-all">显示全部 ${list.length} 个案例</button>` : "";
   $("#cases").innerHTML = list.length ? (folded ? list.slice(0, PREVIEW) : list).map(c => `<details class="case" id="case-${c.id}">
-      <summary><span class="t">${esc(c.title)}<small>${esc(c.id)} ${esc(c.src)}</small></span><span class="m">${esc(c.fields["现代映射"])}</span></summary>
-      <dl>${FIELDS.filter(([k]) => c.fields[k]).map(([k, cls]) => `<dt>${k}</dt><dd class="${cls}">${cls === "refs" ? linkRefs(c.fields[k]) : esc(c.fields[k])}</dd>`).join("")}</dl>
+      <summary><span class="t">${esc(c.title)}<small>${gradeTag(c.grade)}${esc(c.id)} ${esc(c.src)}</small></span><span class="m">${esc(c.fields["现代映射"])}</span></summary>
+      <dl>${FIELDS.filter(([k]) => c.fields[k]).map(([k, cls]) => `<dt>${k}</dt><dd class="${cls}">${cls === "refs" ? linkRefs(c.fields[k]) : cls === "grade-cell" ? gradeCell(c) : esc(c.fields[k])}</dd>`).join("")}</dl>
     </details>`).join("") : `<p class="empty">没有找到匹配的案例。换个说法试试，比如把"老板"换成"上级"，或者直接选上面的处境类别。</p>`;
 }
 $("#filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; theme = b.dataset.t; renderFilters(); renderCases(); });
+$("#grade-filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; grade = b.dataset.g; renderFilters(); renderCases(); });
 $("#q").addEventListener("input", () => { if ($("#q").value.trim() && theme !== "all") { theme = "all"; renderFilters(); } renderCases(); });
 $("#more").addEventListener("click", e => { if (e.target.id === "show-all") { showAll = true; renderCases(); } });
 document.addEventListener("click", e => {
   const a = e.target.closest("a.theme-link"); if (!a) return;
-  theme = a.dataset.theme; $("#q").value = ""; renderFilters(); renderCases();
+  theme = a.dataset.theme; grade = "all"; $("#q").value = ""; renderFilters(); renderCases();
 });
 function openFromHash() {
   const m = location.hash.match(/^#case-(\d{2}-\d{2})$/); if (!m || !caseById[m[1]]) return;
-  if (!document.getElementById("case-" + m[1])) { theme = "all"; showAll = true; $("#q").value = ""; renderFilters(); renderCases(); }
+  if (!document.getElementById("case-" + m[1])) { theme = "all"; grade = "all"; showAll = true; $("#q").value = ""; renderFilters(); renderCases(); }
   const el = document.getElementById("case-" + m[1]); el.open = true;
   document.querySelectorAll(".case.flash").forEach(x => x.classList.remove("flash")); el.classList.add("flash");
   el.scrollIntoView({block: "start"});
@@ -616,14 +637,15 @@ function diffMark(a, b) { // 逐字 LCS，标出 a 中被删、b 中新增的字
 }
 const s = DATA.stats;
 $("#trust-body").innerHTML = `
-  <div><h3>每句古文都对过原文</h3><p>${s.quotes} 句引文，逐字比对《史记》${s.shiji_juan} 卷、《资治通鉴》${s.tongjian_juan} 卷全文，并定位到具体的卷。每次更新自动重跑，对不上的案例不能入库。<a href="${REPO}/actions/workflows/verify.yml">查看最近一次校验</a></p></div>
+  <div><h3>每句古文都对过原文</h3><p>案例里出现的 ${s.quotes} 句古文，不管写在原文栏还是顺手引在别处，都逐字比对《史记》${s.shiji_juan} 卷、《资治通鉴》${s.tongjian_juan} 卷全文，并定位到具体的卷。每次更新自动重跑，对不上的案例不能入库。<a href="${REPO}/actions/workflows/verify.yml">查看最近一次校验</a></p></div>
+  <div><h3>每段史料都标了可靠程度</h3><p>史书里的故事可靠程度不一。A 级 ${s.grades.A} 个：抉择和结局都是公开发生的事，可作依据。B 级 ${s.grades.B} 个：主干可信，但对话和场面只见于一处或有异说，只依据主干。C 级 ${s.grades.C} 个：传说、有争议或史家议论，只作参照。每条都写了理由，可以在案例库里按等级筛。</p></div>
   <div><h3>每个案例都写明了边界</h3><p>历史经验在什么条件下不成立，和它在什么条件下成立一样重要。推演时，现实和案例的差异如果正好落在关键变量上，这个案例只作参考。</p></div>
-  <div><h3>页面上的推演守同样的规矩</h3><p>用 API Key 或本机订阅实时推演时，模型只能从案例原文里摘引古文；页面会逐字核对，对不上的引文不显示，并告诉你隐藏了什么。</p></div>
+  <div><h3>页面上的推演守同样的规矩</h3><p>用 API Key 或本机订阅实时推演时，模型只能从案例原文里摘引古文；页面会逐字核对，对不上的引文不显示，并告诉你隐藏了什么。模型把 C 级案例当成依据时，页面会自动降为参考。</p></div>
   <div><h3>正反例一起看</h3><p>每个选项至少配一个走对的、一个走错的先例，避免只挑对自己有利的故事讲。</p></div>
   <div><h3>知道什么时候不该推演</h3><p>对方流露出轻生念头时，先关心人，不推演；涉及医疗、法律、税务，会提醒找专业人士；不讲宿命，历史给的是变量，不是剧本。</p></div>
-  <details class="errata"><summary>初稿里，大模型凭记忆写的古文有 ${DATA.errata.length} 句和原文对不上</summary>
+  <details class="errata"><summary>初稿里，大模型凭记忆写的古文有 ${DATA.errata.filter(e => !e.later).length} 句和原文对不上；后来把校验扩到所有字段，又查出 ${DATA.errata.filter(e => e.later).length} 句</summary>
     <div class="tbl-wrap"><table><thead><tr><th>人物</th><th>凭记忆写的</th><th>原文</th><th>所在案例</th></tr></thead><tbody>
-    ${DATA.errata.map(e => { const [w, r] = diffMark(e.wrong, e.right); return `<tr><td>${esc(e.who)}</td><td class="cn">${w}</td><td class="cn">${r}</td><td>${caseLink(e.case)}</td></tr>`; }).join("")}
+    ${DATA.errata.map(e => { const [w, r] = diffMark(e.wrong, e.right); return `<tr><td>${esc(e.who)}${e.later ? '<span class="later">后查</span>' : ""}</td><td class="cn">${w}</td><td class="cn">${r}${e.note ? `<span class="note">${esc(e.note)}</span>` : ""}</td><td>${caseLink(e.case)}</td></tr>`; }).join("")}
     </tbody></table>
     <p class="foot">这些句子读起来都像古文，意思也大多没错，人工审稿很难发现。现在它们都被校验脚本拦下并改正了。</p></div>
   </details>`;
