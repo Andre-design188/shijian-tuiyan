@@ -118,6 +118,11 @@ a:hover { text-decoration-thickness: 2px; }
 .engine-panel .row { display: grid; grid-template-columns: minmax(0, 1fr) 170px; gap: 10px; }
 .engine-panel .check { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--ink-2); }
 .engine-panel .check input { width: auto; }
+.local-help { padding: 14px 16px; border-radius: 4px; background: var(--gu-soft); font-size: 14.5px; }
+.local-help p { margin: 0 0 6px; }
+.local-help ol { margin: 0 0 10px; padding-left: 1.3em; }
+.local-help li + li { margin-top: 4px; }
+.local-help code, .engine-panel code { font: 13.5px var(--mono); padding: 1px 5px; border-radius: 3px; background: var(--bg); color: var(--ink); }
 /* 对话线程 */
 .thread { display: flex; flex-direction: column; gap: 18px; }
 .msg-user { align-self: flex-end; max-width: 90%; background: var(--jin-soft); border-radius: 6px; padding: 12px 16px; font-size: 15.5px; }
@@ -384,6 +389,7 @@ footer p { margin: 0 0 6px; max-width: 60em; }
               <label class="opt-line"><input type="radio" name="engine" value="byok"><span>用我自己的 API Key<small>Key 只保存在你的浏览器里，直接发给 Anthropic；本页没有服务器，费用记在你的账户上。</small></span></label>
               <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
             </fieldset>
+            <div class="local-help" id="local-help" role="status" hidden></div>
             <div id="byok-fields" hidden>
               <div class="row">
                 <div class="field"><label for="f-key">Anthropic API Key</label><input id="f-key" type="password" autocomplete="off" placeholder="sk-ant-…"></div>

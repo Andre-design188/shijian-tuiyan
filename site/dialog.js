@@ -1,5 +1,5 @@
 /* ---------- 对话框：输入 → 追问 → 推演 → 折叠 ---------- */
-const ENGINE = {kind: "demo", key: "", model: "claude-opus-5", localOk: false};
+const ENGINE = {kind: "demo", key: "", model: "claude-opus-5", localState: "none"};
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = ms => new Promise(r => setTimeout(r, REDUCED ? 0 : ms));
 const store = {
@@ -13,16 +13,34 @@ const ui = {
 let busy = false;
 
 /* 引擎设置 */
-const ENGINE_LABEL = () => ({demo: "示范模式", local: "本机 Claude 订阅",
+// 本机订阅的状态：none = 没检测到本地服务；login = 服务在，但 claude 没登录；ok = 可以推演
+const LOCAL_HOST = ["127.0.0.1", "localhost"].includes(location.hostname);
+const LOCAL_URL = "http://127.0.0.1:8765/";
+const ENGINE_LABEL = () => ({demo: "示范模式",
+  local: ENGINE.localState === "ok" ? "本机 Claude 订阅" : "本机 Claude 订阅（还没连上）",
   byok: `自带 API Key（${$("#f-model").selectedOptions[0].textContent}）`})[ENGINE.kind];
+function renderLocalHelp() {
+  const box = $("#local-help");
+  box.hidden = ENGINE.kind !== "local" || ENGINE.localState === "ok";
+  if (box.hidden) return;
+  const login = "<li>登录一次 Claude Code（用你的 Claude 订阅）：在终端运行 <code>claude auth login</code>，按提示在浏览器里授权。</li>";
+  box.innerHTML = ENGINE.localState === "login"
+    ? `<p>本地服务已经连上，但你电脑上的 <code>claude</code> 命令还没登录。</p><ol>${login}<li>登录完成后点「重新检测」，不用重启服务。</li></ol>
+       <div class="dlg-actions"><button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button></div>`
+    : `<p>网页不能直接调用你电脑上的 <code>claude</code> 命令，要先在本机启动本地服务，再从它打开本页。</p>
+       <ol>${login}<li>双击仓库根目录的 <code>启动本地推演.bat</code>，或在仓库目录运行 <code>python scripts/serve_local.py</code>。浏览器会自动打开本地页面，在那里选这一项。</li></ol>
+       <div class="dlg-actions">${LOCAL_HOST ? '<button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button>'
+         : `<a class="btn btn-ghost btn-sm" href="${LOCAL_URL}">已经启动了，打开本地页面</a>`}</div>`;
+}
 function setEngine(kind) {
-  if (kind === "local" && !ENGINE.localOk) kind = "demo";
   ENGINE.kind = kind;
   document.querySelectorAll('input[name="engine"]').forEach(r => { r.checked = r.value === kind; });
   $("#byok-fields").hidden = kind !== "byok";
   $("#engine-name").textContent = ENGINE_LABEL();
+  renderLocalHelp();
   store.set("engine", kind);
 }
+function openPanel() { ui.panel.hidden = false; $("#engine-btn").setAttribute("aria-expanded", "true"); }
 $("#engine-btn").addEventListener("click", () => {
   ui.panel.hidden = !ui.panel.hidden;
   $("#engine-btn").setAttribute("aria-expanded", String(!ui.panel.hidden));
@@ -32,26 +50,30 @@ ui.panel.addEventListener("change", e => {
   if (e.target.id === "f-model") { ENGINE.model = e.target.value; store.set("model", ENGINE.model); setEngine(ENGINE.kind); }
   if (e.target.id === "f-remember") store.set("key", e.target.checked ? ENGINE.key : "");
 });
+ui.panel.addEventListener("click", e => {
+  if (e.target.id === "local-recheck") { e.target.textContent = "检测中…"; e.target.disabled = true; checkLocal(); }
+});
 $("#f-key").addEventListener("input", e => {
   ENGINE.key = e.target.value.trim();
   if ($("#f-remember").checked) store.set("key", ENGINE.key);
 });
+function checkLocal() { // 只有从本地服务打开时才检测；每次都重新读登录状态
+  if (!LOCAL_HOST) return Promise.resolve();
+  return fetch("/api/health", {cache: "no-store"}).then(r => r.json()).then(h => {
+    if (!h.ok) return;
+    ENGINE.localState = h.loggedIn === false ? "login" : "ok";
+    $("#local-note").textContent = ENGINE.localState === "ok"
+      ? `已连上本机 Claude Code（${h.version || "版本未知"}），用你自己的订阅额度。`
+      : "本地服务已连上，但本机的 claude 命令还没登录。";
+  }).catch(() => {}).finally(() => setEngine(ENGINE.kind));
+}
 (function initEngine() {
   ENGINE.key = store.get("key");
   $("#f-key").value = ENGINE.key; $("#f-remember").checked = Boolean(ENGINE.key);
   ENGINE.model = store.get("model") || ENGINE.model; $("#f-model").value = ENGINE.model;
-  $("#engine-local").disabled = true;
-  setEngine(store.get("engine") || (ENGINE.key ? "byok" : "demo"));
-  if (!["127.0.0.1", "localhost"].includes(location.hostname)) return;
-  fetch("/api/health").then(r => r.json()).then(h => {
-    if (!h.ok) return;
-    ENGINE.localOk = h.loggedIn !== false;
-    $("#engine-local").disabled = !ENGINE.localOk;
-    $("#local-note").textContent = ENGINE.localOk
-      ? `已连上本机 Claude Code（${h.version || "版本未知"}），用你自己的订阅额度。`
-      : "本机 Claude Code 还没登录：在终端运行 claude auth login，完成后刷新本页。";
-    if (ENGINE.localOk && store.get("engine") !== "byok") setEngine("local");
-  }).catch(() => {});
+  const saved = store.get("engine");
+  setEngine(saved || (ENGINE.key ? "byok" : "demo"));
+  checkLocal().then(() => { if (ENGINE.localState === "ok" && saved !== "byok") setEngine("local"); });
 })();
 
 /* 线程里的各种消息 */
@@ -198,14 +220,16 @@ async function runPlan(ctx) {
 function explainDemoMode(ctx) {
   const el = addBot(`<p>现在是示范模式，页面没有接模型，没法推演你自己的事。二选一：</p>
     <div class="dlg-actions"><button type="button" class="btn btn-primary btn-sm" data-act="byok">填我自己的 API Key</button>
-    <a class="btn btn-ghost btn-sm" href="#use">在本机用 Claude 订阅</a></div>
+    <button type="button" class="btn btn-ghost btn-sm" data-act="local">在本机用 Claude 订阅</button></div>
     <p class="note">也可以先看一个示范，看看完整推演长什么样：</p>
     <div class="dlg-actions">${DATA.demos.map((d, i) => `<button type="button" class="demo-pick" data-demo="${i}">${esc(d.tab)}</button>`).join("")}</div>`);
   el.addEventListener("click", e => {
     const demo = e.target.closest("[data-demo]");
     if (demo) { runReplay(DATA.demos[Number(demo.dataset.demo)]); return; }
-    if (e.target.dataset.act !== "byok") return;
-    setEngine("byok"); ui.panel.hidden = false; $("#engine-btn").setAttribute("aria-expanded", "true"); $("#f-key").focus();
+    const act = e.target.dataset.act;
+    if (act !== "byok" && act !== "local") return;
+    setEngine(act); openPanel();
+    if (act === "byok") $("#f-key").focus(); else $("#local-help").scrollIntoView({block: "nearest"});
     el.remove(); ui.thread.hidden = true; ui.form.hidden = false; ui.collapseBtn.hidden = true; ui.hint.hidden = false;
   });
 }
@@ -219,9 +243,9 @@ ui.form.addEventListener("submit", e => {
     ui.now.reportValidity(); ui.now.setCustomValidity("");
     return;
   }
-  if (ENGINE.kind === "byok" && !ENGINE.key) {
-    ui.panel.hidden = false; $("#engine-btn").setAttribute("aria-expanded", "true"); $("#f-key").focus();
-    return;
+  if (ENGINE.kind === "byok" && !ENGINE.key) { openPanel(); $("#f-key").focus(); return; }
+  if (ENGINE.kind === "local" && ENGINE.localState !== "ok") {
+    openPanel(); renderLocalHelp(); $("#local-help").scrollIntoView({block: "nearest"}); return;
   }
   startThread(ctx);
   if (ENGINE.kind === "demo") return explainDemoMode(ctx);

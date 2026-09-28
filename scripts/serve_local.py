@@ -46,15 +46,24 @@ def run(args, stdin="", timeout=600):
                           encoding="utf-8", errors="replace", timeout=timeout)
 
 
+def logged_in():
+    """每次都重新读，登录后页面点「重新检测」即可，不用重启服务。"""
+    try:
+        return bool(json.loads(run(["auth", "status"], timeout=30).stdout).get("loggedIn"))
+    except (FileNotFoundError, json.JSONDecodeError, subprocess.TimeoutExpired):
+        return None
+
+
 def probe():
     status = {"version": None, "loggedIn": None}
     try:
         status["version"] = run(["--version"], timeout=30).stdout.strip() or None
-        status["loggedIn"] = bool(json.loads(run(["auth", "status"], timeout=30).stdout).get("loggedIn"))
     except FileNotFoundError:
         status["error"] = "找不到 claude 命令"
-    except (json.JSONDecodeError, subprocess.TimeoutExpired):
+        return status
+    except subprocess.TimeoutExpired:
         pass
+    status["loggedIn"] = logged_in()
     return status
 
 
@@ -122,6 +131,8 @@ class Handler(SimpleHTTPRequestHandler):
         if not self.same_origin():
             return self.send_json(403, {"ok": False, "error": "只接受本机页面的请求"})
         if self.path == "/api/health":
+            if not CFG["status"].get("error"):
+                CFG["status"]["loggedIn"] = logged_in()
             return self.send_json(200, {"ok": True, **CFG["status"]})
         if self.path.startswith("/api/"):
             return self.send_json(404, {"ok": False, "error": "没有这个接口"})
@@ -166,7 +177,16 @@ def main():
     if st.get("error"):
         print(f"  注意：{st['error']}。页面仍可打开，但只能用示范模式或自带 Key。")
     elif st.get("loggedIn") is False:
-        print("  注意：claude 还没登录。在另一个终端运行 claude auth login，然后刷新页面。")
+        print("  claude 还没登录，登录后才能用你的订阅额度推演。")
+        try:  # Windows 上重定向到 NUL 时 isatty() 也为真，读不到输入就跳过
+            want = sys.stdin.isatty() and input("  现在登录吗？会打开浏览器让你授权。[Y/n] ").strip().lower() in ("", "y", "yes")
+        except (EOFError, KeyboardInterrupt):
+            want = False
+        if want:
+            subprocess.run([*CFG["cmd"], "auth", "login"])
+            st["loggedIn"] = logged_in()
+        print("  已登录，对话框会用你的订阅额度推演。" if st.get("loggedIn") else
+              "  还没登录：之后在任意终端运行 claude auth login，再到页面上点「重新检测」即可。")
     else:
         print(f"  已连上 Claude Code {st.get('version') or ''}，对话框会用你的订阅额度推演。")
     print("  按 Ctrl+C 停止。")
