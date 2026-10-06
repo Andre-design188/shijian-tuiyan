@@ -86,7 +86,7 @@ function addBot(html) {
   el.className = "msg-bot"; el.innerHTML = html; ui.thread.append(el);
   return el;
 }
-const STEP_NAMES = ["立局", "定母题", "照镜", "推演", "换位", "太史公曰"];
+const STEP_NAMES = ["立局", "定母题", "照镜", "推演", "换位", "易经方法", "太史公曰"];
 const progHTML = (done, now) => `<div class="prog">${STEP_NAMES.map((n, i) =>
   `<span class="${i < done ? "done" : i === now ? "now" : ""}"><i>${i + 1}</i>${n}</span>`).join("")}</div>`;
 function renderQuestions(qs, interactive) {
@@ -160,7 +160,7 @@ $("#dlg-restart").addEventListener("click", restart);
 function finish(d, meta) {
   $("#bar-sum").textContent = meta.summary;
   $("#bar-meta").textContent = meta.replay ? "示范回放，推演已完成" : `追问了 ${meta.n} 个问题，推演已完成`;
-  addBot(progHTML(6, -1) + `<p>推演完成，结果在下面。</p>`);
+  addBot(progHTML(7, -1) + `<p>推演完成，结果在下面。</p>`);
   collapse();
   $("#mine-intro").innerHTML = meta.replay
     ? "这是示范回放：问题和推演都是预先做好的。想推演你自己的事，在上面的对话框里点「重新推演」，再到「设置」里换一种推演引擎。"
@@ -184,7 +184,7 @@ async function runReplay(d) {
   for (let i = 0; i < d.questions.length; i++) { await wait(600); pickOption(block, i, d.questions[i].pick); }
   await wait(500);
   const prog = addBot(progHTML(0, 0));
-  for (let i = 1; i <= 6; i++) { await wait(380); prog.innerHTML = progHTML(i, i); }
+  for (let i = 1; i <= 7; i++) { await wait(380); prog.innerHTML = progHTML(i, i); }
   prog.remove();
   finish(d, {summary: d.summary, n: d.questions.length, replay: true});
 }

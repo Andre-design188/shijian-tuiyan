@@ -1,0 +1,50 @@
+{
+  "project": "史鉴推演",
+  "last_updated": "2026-10-06",
+  "current_focus": "把《史记》《资治通鉴》史料视角与《易经》决策方法共同落实到网页展示和实时推演逻辑；完成本轮唯一任务后等待人工评审和 GitHub 发布条件确认。",
+  "execution_policy": {
+    "order": "tasks 数组顺序",
+    "max_tasks_per_run": 1,
+    "require_progress_entry_before_done": true,
+    "require_human_confirmation_before_next_task": true,
+    "github_push": "首条任务完成后执行版本管理；若远程仓库尚未创建，等待维护者提供或确认仓库地址和访问权限后再推送。"
+  },
+  "tasks": [
+    {
+      "id": "feature-yijing-01",
+      "title": "整合易经决策思想、案例展示并评审系统",
+      "description": "保留历史案例和易经旧内容；让《史记》《资治通鉴》不同史料视角与《易经》九步决策方法同时进入网页说明、实时推演逻辑及结果依据展示。",
+      "status": "in_progress",
+      "priority": "high",
+      "verify": "运行 python scripts/check_plain.py；python scripts/build_site.py；python scripts/verify_quotes.py（如本地语料已准备）。检查 docs/index.html 同时含旧六条易经精要、完整九步方法、三源协同逻辑、两书内容及历史案例库、三个综合示范和每次推演的三源依据说明；确认三份示范、92 条完整案例及勘误内容均默认展开，不依赖点击或显示更多；检查进度记录写明验证与未解决事项并重新读取核对。",
+      "requires_eval": true
+    },
+    {
+      "id": "quality-01",
+      "title": "准备原文语料并运行完整引文核验",
+      "description": "按项目许可说明下载维基文库原文语料，再运行完整案例引文校验，记录通过数量及未通过项。该任务依赖可用网络。",
+      "status": "pending",
+      "priority": "high",
+      "verify": "运行 python scripts/fetch_corpus.py；随后运行 python scripts/verify_quotes.py，要求退出码为 0。",
+      "requires_eval": false
+    },
+    {
+      "id": "product-01",
+      "title": "定义独立用户试用反馈方式",
+      "description": "确定试用对象、反馈问题、隐私要求和结果记录方式，以验证推演是否帮助用户发现新的决策变量。",
+      "status": "pending",
+      "priority": "medium",
+      "verify": "维护者确认一份包含试用对象、至少 3 个反馈问题和数据处理说明的文档，并将文档路径写入 docs/business-solution.md。",
+      "requires_eval": false
+    },
+    {
+      "id": "quality-02",
+      "title": "评估本机推演流程的交互回归覆盖",
+      "description": "盘点启动、健康检查、模型请求失败和安全校验等关键路径，提出可维护的自动化验证范围。实施新测试前先确认方案和运行环境。",
+      "status": "pending",
+      "priority": "low",
+      "verify": "提交一份测试范围方案，至少覆盖正常请求、错误响应及本地服务来源限制，并说明是否需要浏览器自动化依赖。",
+      "requires_eval": true
+    }
+  ]
+}

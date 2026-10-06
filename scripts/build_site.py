@@ -47,7 +47,7 @@ def strings(o, skip=()):
                 yield from strings(x, skip)
 
 
-def demo_markdown(d, cases):
+def demo_markdown(d, cases, yijing):
     t = lambda i: cases[i]["title"]  # noqa: E731
     g = lambda i: grade_of(cases[i])  # noqa: E731
     lines = [f"# 示范：{d['tab']}", "",
@@ -66,6 +66,15 @@ def demo_markdown(d, cases):
                   f"- 近期（0–6 个月）：{o['near']}", f"- 中期（1–2 年）：{o['mid']}", f"- 远期（3–5 年）：{o['far']}",
                   f"- **会怎么翻车**：{o['fail']}", f"- **看到这个信号就调整**：{o['signal']}", ""]
     lines += ["## 换位"] + [f"- **{s['who']}**：{s['v']}" for s in d["swap"]]
+    lines += ["", "## 易经决策方法：贯穿全程的复核", "本方法是项目基于经传材料形成的现代综合，不是古代固定步骤。"]
+    apps = {a["case"]: a for a in yijing["caseApplications"]}
+    app = apps[d["id"]]
+    lines += [f"**案例应用：{app['title']}**：{app['application']}", "", "| 步骤 | 经传要点 | 对本案例的提问 | 原文与出处 |",
+              "|---|---|---|---|"]
+    for sid in yijing["workflow"]:
+        step = next(x for x in yijing["principles"] if x["id"] == sid)
+        lines += [f"| {step['name']} | {step['reading']} | {step['question']} | [{step['source']}：{step['phrase']}]({step['url']}) |"]
+    lines += ["", f"> 方法边界：{yijing['methodBoundary']}"]
     v = d["verdict"]
     lines += ["", "## 太史公曰", f"推荐 **{v['pick']}**。「{v['quote']}」（{t(v['quote_case'])}）{v['why']}",
               f"- 前提：{v['premise']}", f"- 止损线：{v['stop']}", "", "## 行动卡",
@@ -80,10 +89,44 @@ def main():
     themes = load_themes()
     codes = {t["code"] for t in themes}
     demos = json.loads((SKILL / "examples" / "demos.json").read_text(encoding="utf-8"))
+    yijing = json.loads((SKILL / "references" / "yijing" / "decision-method.json").read_text(encoding="utf-8"))
     errata = json.loads((SKILL / "site" / "errata.json").read_text(encoding="utf-8"))
     quotes = {c["id"]: [norm(q) for q in quotes_of(c)] for c in cases}
     verified = [norm(q) for c in cases for _, q in all_quotes_of(c)]  # verify_quotes 已逐字对过原文
     errors = []
+    principles = {item["id"]: item for item in yijing["principles"]}
+    check(len(principles) == len(yijing["principles"]) and len(principles) >= 8,
+          "易经原则 ID 须唯一，至少八项", errors)
+    essentials = {item["id"]: item for item in yijing.get("essentials", [])}
+    check(len(essentials) == 6 and len(essentials) == len(yijing.get("essentials", [])),
+          "易经思想精要需保留六条且 ID 唯一", errors)
+    for item in yijing.get("essentials", []):
+        for key in ("id", "name", "phrase", "source", "url", "method", "question", "boundary", "example", "case"):
+            check(bool(item.get(key)), f"易经精要 {item.get('id', '?')} 缺少 {key}", errors)
+        check(item.get("url", "").startswith("https://"), f"易经精要 {item.get('id')} 来源须为 HTTPS 链接", errors)
+        check(any(d.get("id") == item.get("case") for d in demos), f"易经精要 {item.get('id')} 的案例不存在", errors)
+    for item in yijing["principles"]:
+        for key in ("id", "name", "phrase", "source", "url", "reading", "question", "boundary"):
+            check(bool(item.get(key)), f"易经原则 {item.get('id', '?')} 缺少 {key}", errors)
+        check(item.get("url", "").startswith("https://"), f"易经原则 {item.get('id')} 来源须为 HTTPS 链接", errors)
+        check(len(norm(item.get("phrase", ""))) >= 4, f"易经原则 {item.get('id')} 引句太短或为空", errors)
+    check(len(yijing["workflow"]) == len(set(yijing["workflow"])) and set(yijing["workflow"]) == set(principles),
+          "工作流必须覆盖全部唯一原则", errors)
+    check(yijing.get("workflowMeaning") == "→".join(principles[s]["name"].split("：")[0].split("：")[0] for s in yijing["workflow"]),
+          "易经工作流摘要需与实际步骤一致", errors)
+    check(bool(yijing.get("methodBoundary")), "易经方法须声明现代综合与使用边界", errors)
+    for step in yijing["workflow"]:
+        item = principles.get(step, {})
+        url = item.get("url", "")
+        check(url.startswith("https://") and bool(norm(item.get("phrase", ""))),
+              f"易经步骤 {step} 缺少有效原文数据", errors)
+        check(item.get("source") and item.get("reading") and item.get("question") and item.get("boundary"),
+              f"易经步骤 {step} 缺少出处、转译、自检问题或边界", errors)
+    check(len({a["case"] for a in yijing["caseApplications"]}) == len(yijing["caseApplications"])
+          and {a["case"] for a in yijing["caseApplications"]} == {d["id"] for d in demos},
+          "每个示范都必须且只能对应一个易经综合应用", errors)
+    for a in yijing["caseApplications"]:
+        check(bool(a.get("title") and a.get("application")), f"案例 {a.get('case')} 缺少易经综合应用", errors)
 
     for c in cases:
         check(grade_of(c) in GRADES, f"[{c['id']}] 缺少史料等级（「史料：A｜理由」），先跑 verify_quotes.py", errors)
@@ -91,6 +134,8 @@ def main():
         name = d["id"]
         for k in ("question", "goal", "summary"):
             check(bool(d.get(k)), f"[{name}] 缺少 {k}", errors)
+        check(d.get("id") in {a["case"] for a in yijing["caseApplications"]},
+              f"[{name}] 缺少易经综合案例应用", errors)
         qs = d.get("questions", [])
         check(1 <= len(qs) <= 3, f"[{name}] 追问应为 1 到 3 个", errors)
         for q in qs:
@@ -128,10 +173,14 @@ def main():
         "cases": [{"id": c["id"], "title": c["title"], "theme": c["file"][:2], "grade": grade_of(c),
                    "src": c["fields"].get("出处", ""), "fields": c["fields"]} for c in cases],
         "demos": demos, "errata": errata,
+        "yijing": yijing,
     }
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     html = (SKILL / "site" / "template.html").read_text(encoding="utf-8")
     html = html.replace("/*__DATA__*/null", payload).replace("__REPO__", REPO)
+    html = html.replace("${esc(DATA.stats.cases)}", str(data["stats"]["cases"]))
+    html = html.replace("${esc(DATA.yijing.workflowMeaning)}", data["yijing"]["workflowMeaning"])
+    html = html.replace("${esc(DATA.yijing.methodBoundary)}", data["yijing"]["methodBoundary"])
     for tag, name in (("/*__ENGINE_JS__*/", "engine.js"), ("/*__DIALOG_JS__*/", "dialog.js")):
         js = (SKILL / "site" / name).read_text(encoding="utf-8")
         assert "</script" not in js.lower(), f"{name} 里不能出现 </script>"
@@ -146,7 +195,7 @@ def main():
         old.unlink()
     for d in demos:
         fname = "示范-" + re.sub(r"[\s，,]", "", d["tab"]) + ".md"
-        (ex / fname).write_text(demo_markdown(d, by_id), encoding="utf-8", newline="\n")
+        (ex / fname).write_text(demo_markdown(d, by_id, yijing), encoding="utf-8", newline="\n")
     print(f"已生成 docs/index.html（{len(html) // 1024} KB）与 {len(demos)} 份示范；"
           f"案例 {len(cases)}（史料 " + " / ".join(f"{k} {grades[k]}" for k in GRADES) + "），"
           f"引文 {data['stats']['quotes']}，勘误 {len(errata)}。")

@@ -14,6 +14,10 @@ const allQuotes = DATA.cases.flatMap(c => Object.values(c.fields).flatMap(quotes
 const GRADE_NOTE = Object.entries(DATA.grades).map(([k, v]) => `${k} ${v}`).join("；");
 
 const THEME_LIST = DATA.themes.map(t => `${t.code} ${t.name}：${t.modern}`).join("\n");
+const YIJING_STEPS = DATA.yijing.workflow.map((id, i) => {
+  const p = DATA.yijing.principles.find(item => item.id === id);
+  return `${i + 1}. ${p.name}｜原典：${p.phrase}（${p.source}）｜含义：${p.reading}｜自检：${p.question}｜边界：${p.boundary}`;
+}).join("\n");
 
 const ASK_SYSTEM = `你是「史鉴推演」的立局助手。用户会给出"当前处境"和"所求为何"。
 
@@ -26,14 +30,21 @@ const ASK_SYSTEM = `你是「史鉴推演」的立局助手。用户会给出"�
 16 个母题：
 ${THEME_LIST}`;
 
-const PLAN_SYSTEM = `你是「史鉴推演」：用《史记》《资治通鉴》里的先例，为用户的抉择做推演。历史提供的是同构的局和被验证过的变量，不提供答案。
+const PLAN_SYSTEM = `你是「史鉴推演」：把用户现实处境、《史记》《资治通鉴》的历史案例和《易经》决策思想放进同一条推演链。历史提供可核对的行动与后果，不提供答案；《易经》提供逐步检查变化与行动的方法，不是占筮或预测。
 
-按六步产出，每一步对应输出里的一个字段：
+三源分工必须清楚：
+- 《史记》案例侧重具体人物的位置、关系、动机、关键选择及其得失；只能依据下方提供的案例文字与史料等级。
+- 《资治通鉴》案例侧重事件时序、各方行动、局势演变及连锁后果；只能依据下方提供的案例文字与史料等级。
+- 《易经》只按固定九步工作流检查处境、变化、时机、责任、风险、调整和复盘；用可观察事实与行动表达，不把古文解释成预言。
+- mirrors 是史书证据，yijingAnalysis 是决策检查方法。综合推荐时要说明历史类比成立的条件和现实差异，不可把三种来源混成一句古训。
+
+按七步产出，每一步对应输出里的一个字段：
 - board（立局）：位、力、人、时、势、退六个要素各写一句，紧扣用户的处境。位是他在结构里的位置；力是手里的资源，分清哪些带得走；人是关键他人的性格与利益；时是窗口期；势是大势；退是最坏结果能否承受、能否挽回。拿不准的地方写成合理假设，并把 assume 设为 true。
 - themes（定母题）：1 到 3 个母题编号。
-- mirrors（照镜）：3 到 5 条，case 只能填下面"可用案例"里的编号。每个选项至少配一个正例和一个反例。same 写像在哪里，diff 写不像的地方。如果不像的地方正好落在该案例的"决定变量"上，use 写"降为参考"，否则写"可作依据"，可以加一句前提。每个案例都标了史料等级（${GRADE_NOTE}）：B 级只依据抉择和结局，不依据对话和场面细节；C 级是传说、有争议或史家的议论，use 只能写"降为参考"，也不能单独撑起一个选项。
+- mirrors（照镜）：3 到 5 条，case 只能填下面"可用案例"里的编号。每个选项至少配一个正例和一个反例。若可用案例中两部书都有相关材料，镜子应覆盖《史记》和《资治通鉴》，并利用各自不同视角；若其中一本没有相关案例，不得伪造或声称使用。same 写像在哪里，diff 写不像的地方。如果不像的地方正好落在该案例的"决定变量"上，use 写"降为参考"，否则写"可作依据"，可以加一句前提。每个案例都标了史料等级（${GRADE_NOTE}）：B 级只依据抉择和结局，不依据对话和场面细节；C 级是传说、有争议或史家的议论，use 只能写"降为参考"，也不能单独撑起一个选项。
 - options（推演）：2 到 3 个选项；合适的话，主动加一个低成本试探的中间选项（先兼职、先签短约、先谈条款）。每个选项写 near（0–6 个月）、mid（1–2 年）、far（3–5 年）的走向，fail 写它会像哪个反例那样翻车，signal 写成"一旦出现某个情况，就做某件事"。恰好一个选项的 pick 为 true。
 - swap（换位）：2 个关键他人，who 写身份，v 写他此刻最怕什么、会怎么想。
+- yijingAnalysis（易经决策方法）：按完整工作流输出每一步；每一步写 principle（下列固定 ID）、reading（1句结合本处境的分析）、evidence（可观察事实或明确标为未知）、action（下一步可执行动作）。不得删步骤。古文原句与出处由程序按原则 ID 补入，不要自行生成。必须标明这是项目的现代综合，不是占筮，不预测结果。
 - verdict（太史公曰）：pick 写推荐；quote 必须是某个可用案例"原文"里逐字的一小段（不超过 20 个字），quote_case 填该案例编号；why 写一两句理由；premise 写推荐成立的前提；stop 写止损线。
 - actions（行动卡）：do 写本周就能做的 3 件事，watch 写要盯住的 2 个信号，line 写 1 条底线。
 
@@ -42,6 +53,7 @@ const PLAN_SYSTEM = `你是「史鉴推演」：用《史记》《资治通鉴�
 - 不讲宿命论：史书里"赐死""族诛"这类结局，翻译成现代的出局、背锅、被清洗，给建议时不出现${DATA.plain.scary.join("、")}这些词。成功的先例背后有幸存者偏差，孤注一掷、出头单干类的正例要打折扣。
 - 涉及医疗、法律、税务或具体投资标的时，在 premise 里写明需要专业意见。
 - 如果用户流露出自伤或轻生的念头，只写 care（一段温和、关心的话），其余字段给空值；否则 care 留空字符串。
+- 易经决策方法工作流（完整应用，古文只可引用下面固定目录）：\n${YIJING_STEPS}
 - 用简体中文，说人话，具体，落在用户下一步做什么；每个字段一两句、不超过 ${DATA.plain.cap} 个字，不堆典故，不用感叹号，不用这些词：${DATA.plain.banned.join("、")}。`;
 
 const S = {type: "string"};
@@ -55,6 +67,7 @@ const PLAN_SCHEMA = obj({
   mirrors: arr(obj({option: S, case: S, role: {type: "string", enum: ["正例", "反例"]}, same: S, diff: S, use: S})),
   options: arr(obj({name: S, near: S, mid: S, far: S, fail: S, signal: S, pick: {type: "boolean"}})),
   swap: arr(obj({who: S, v: S})),
+  yijingAnalysis: arr(obj({principle: {type: "string", enum: DATA.yijing.principles.map(item => item.id)}, reading: S, evidence: S, action: S})),
   verdict: obj({pick: S, quote: S, quote_case: S, why: S, premise: S, stop: S}),
   actions: obj({do: arr(S), watch: arr(S), line: S}),
 });
@@ -67,7 +80,14 @@ function buildAskPrompt(ctx) {
 function casesFor(themes) {
   const ids = new Set(DATA.cases.filter(c => themes.includes(c.theme)).map(c => c.id));
   for (const id of [...ids]) for (const r of String(caseById[id].fields["对照"] || "").match(/\d{2}-\d{2}/g) || []) if (caseById[r]) ids.add(r);
-  return [...ids].slice(0, 30).map(id => caseById[id]);
+  const candidates = [...ids].map(id => caseById[id]);
+  const selected = [];
+  for (const book of ["史记", "资治通鉴"]) {
+    const found = candidates.find(c => String(c.src).includes(book));
+    if (found) selected.push(found);
+  }
+  for (const c of candidates) if (!selected.includes(c) && selected.length < 30) selected.push(c);
+  return selected;
 }
 function buildPlanPrompt(ctx) {
   const qa = ctx.questions.map(q => `- ${q.q} 回答：${q.pick}`).join("\n");
@@ -77,7 +97,7 @@ function buildPlanPrompt(ctx) {
   }).join("\n\n");
   return `当前处境：${ctx.question}\n所求为何：${ctx.goal || "（没写，按常理推断）"}\n` +
     (qa ? `追问与回答：\n${qa}\n` : "") + (ctx.extra ? `补充：${ctx.extra}\n` : "") +
-    `相关母题：${ctx.themes.join("、")}\n\n可用案例：\n\n${cases}`;
+    `相关母题：${ctx.themes.join("、")}\n\n可用案例：\n\n${cases}\n\n必须完整应用易经决策方法，逐步结合处境。仅可使用以下原则 ID；原句与来源由程序补入：\n${YIJING_STEPS}`;
 }
 
 function parseJSON(text) {
@@ -173,6 +193,17 @@ function sanitizePlan(p, fallbackThemes) {
     else { dropped.push(`模型给出的引文「${v.quote}」在原文里对不上，已隐藏。`); v.quote = ""; v.quote_case = ""; }
   }
   const a = p.actions || {};
+  const byPrinciple = Object.fromEntries(DATA.yijing.principles.map(item => [item.id, item]));
+  const rawYi = p.yijingAnalysis || [];
+  const yi = DATA.yijing.workflow.map(id => {
+    const item = rawYi.find(row => row.principle === id);
+    return {principle: id, reading: clean(item?.reading || "尚需结合具体事实核对。"),
+      evidence: clean(item?.evidence || "目前信息不足，需补充核实。"),
+      action: clean(item?.action || "先补充事实并在设定日期复核。")};
+  });
+  if (rawYi.length !== DATA.yijing.workflow.length || rawYi.some(row => !byPrinciple[row.principle]))
+    dropped.push("易经分析步骤缺漏或 ID 无效，已按固定完整流程补齐，并提示需结合事实核对。");
   return {plan: {board, themes, mirrors, options, swap: p.swap || [], verdict: v,
+    yijing: {steps: yi},
     actions: {do: a.do || [], watch: a.watch || [], line: a.line || ""}}, dropped};
 }
