@@ -15,7 +15,7 @@
 - 文档：同步修订 README 品牌、架构说明、质量验收条目、当前任务焦点及验收步骤。
 - 验证：用工作区自带 Python 运行 `scripts/build_site.py`（92 案例、148 引文、17 勘误、3 示范生成成功）、`scripts/check_plain.py`（0 处问题）及 Python 编译；用工作区 Node 对 `site/engine.js`、`site/dialog.js` 执行 `--check`；`git diff --check` 通过。浏览器检查确认导航及专区顺序、页面标题、三个示范入口卡、选中后只渲染一个完整示范、三组易经精简复核及九步独立专区、历史案例显示 6 / 92；截图复核深色视觉。
 - 未解决：`feature-yijing-01` 仍需独立评审，上一轮评审器曾超时；史书全文语料尚未下载，完整引文复核仍待执行。任务保持 `in_progress`，不将实现检查冒充独立评审。
-- 本轮代码改动将按项目 Harness 规则进行 Git 版本管理并推送至已授权的个人仓库；提交号在提交后补记。
+- 版本管理：本轮代码、生成页和进度记录提交为 `697ca4f`（`feat(ui): prioritize decision method and dark archive design`）。向已授权个人仓库 `origin/main` 推送两次均因当前环境无法连接 GitHub 443（连接重置/超时）失败；远端当前提交无法核验，稍后网络恢复后需重试推送。
 
 ## 2026-10-06 网页 UX 重排、易经思想案例化与青瓷视觉重设计（feature-yijing-01）
 
