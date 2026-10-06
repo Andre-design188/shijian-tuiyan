@@ -6,6 +6,14 @@
 
 ---
 
+## 2026-10-06 推送项目至 Andre-design188 GitHub 仓库（feature-yijing-01 版本管理）
+
+- 用户明确授权使用其已登录的 GitHub 账号推送项目。
+- 目标账号原先没有该仓库；在已登录的 `Andre-design188` 账号下创建了 `shijian-tuiyan` fork，并将本地功能改动叠加到 fork 最新的 `main`（保留原项目提交，不覆盖远端历史）。
+- 推送：`main` 从 `e2650ea` 更新至 `7064f8f`，成功推送至 `https://github.com/Andre-design188/shijian-tuiyan`。本地 `origin` 已切换到该仓库，原项目配置为 `upstream`。
+- 验证：GitHub 接受推送，返回 `e2650ea..7064f8f main -> main`；随后远端 `main` 的只读核验返回 `7064f8f`。本地工作区干净。
+- 未解决：原项目仓库及其 GitHub Pages 未被修改；本次只推送到用户账号下的 fork，未核验 fork 的 Pages 发布状态。
+
 ## 2026-10-06 全部示范与历史案例默认展开（feature-yijing-01）
 
 - 用户要求其列出的网页内容全部直接显示，不要依赖点击或隐藏。
