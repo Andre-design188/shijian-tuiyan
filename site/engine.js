@@ -123,7 +123,7 @@ async function callAnthropic(system, prompt, schema) {
     if (e instanceof Anthropic.PermissionDeniedError) throw new Error("这个 Key 没有调用该模型的权限（403）。换个模型或检查账户。");
     if (e instanceof Anthropic.RateLimitError) throw new Error("请求太频繁或额度不足（429），稍等一会儿再试。");
     if (e instanceof Anthropic.BadRequestError) throw new Error(`请求被拒绝（400）：${e.message}`);
-    if (e instanceof Anthropic.APIConnectionError) throw new Error("连不上 Anthropic 的服务器。检查网络（在国内可能需要代理），或者改用本机 Claude 订阅。");
+    if (e instanceof Anthropic.APIConnectionError) throw new Error("连不上 Anthropic 的服务器。检查网络（在国内可能需要代理），或者改用本机 Codex。");
     if (e instanceof Anthropic.APIError) throw new Error(`模型服务出错（${e.status ?? "未知"}），稍后再试。`);
     throw e;
   }
@@ -135,7 +135,7 @@ async function callAnthropic(system, prompt, schema) {
 async function callLocal(system, prompt, schema) {
   let r;
   try {
-    r = await fetch("/api/claude", {method: "POST", headers: {"Content-Type": "application/json", "X-Shijian-Local": "1"},
+    r = await fetch("/api/codex", {method: "POST", headers: {"Content-Type": "application/json", "X-Shijian-Local": "1"},
       body: JSON.stringify({system, prompt, schema})});
   } catch {
     // 连接直接断了：再探一次，分清是服务停了还是这一次意外断开

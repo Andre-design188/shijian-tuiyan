@@ -26,7 +26,7 @@
 | 用户需要比较多个现实选项 | 从16个母题的案例库检索正反先例，并要求写明相似点与关键差异 | 让类比有条件、有反例，不只讲成功故事 | `scripts/find_cases.py`、`references/cases/*.md`、`site/engine.js` |
 | 引文或史料等级可能误导用户 | `verify_quotes.py` 校验案例字段和引文；页面过滤无法对上的模型引文，并降级 C 级史料 | 降低伪造引文及把传说当依据的风险 | `scripts/verify_quotes.py`、`site/engine.js`、`.github/workflows/verify.yml` |
 | 推演建议需要落到行动 | 输出近期/中期/远期推演、预警信号、前提、止损线和行动卡 | 帮用户把比较结果转为可检查的下一步 | `SKILL.md` 输出模板；`site/engine.js` 的结构化输出 |
-| 用户希望以不同方式运行 | 静态示范网页、自带 Anthropic Key、本机 Claude 命令三种引擎 | 可在无 API 配置时看示范，也可由用户自备模型账户实际推演 | `site/dialog.js`、`site/engine.js`、`scripts/serve_local.py`、README |
+| 用户希望以不同方式运行 | 静态示范网页、自带 Anthropic Key、本机 Codex CLI 三种引擎 | 可在无 API 配置时看示范，也可由用户自备模型账户实际推演 | `site/dialog.js`、`site/engine.js`、`scripts/serve_local.py`、README |
 | 用户希望运用易经的决策思想 | 保留六条原有经典思想精要，并增设辨位、察势、审时、谋始、守正、虑患、变通与复盘组成的完整工作流；每步链接原句、现代转译、问题和边界 | 既能了解原典要点，也能用连续流程审视抉择前后的事实、行动与修正 | `references/yijing/decision-method.json`、`site/template.html`、`site/engine.js` |
 
 能力状态根据仓库中的页面脚本、脚本入口和工作流验证；线上部署是否持续可用、模型服务可用性和推演效果未经本次独立验证。
@@ -47,7 +47,7 @@
 3. 从案例库取正反镜像，展示同构点、差异、史料等级和边界。
 4. 对各选项推演近期、中期、远期结果，标明翻车路径和预警信号。
 5. 给出带前提和止损线的建议及本周行动卡。
-6. 网页校验模型输出的案例编号和古文引文；本机推演通过本地服务调用 Claude CLI。
+6. 网页校验模型输出的案例编号和古文引文；本机推演通过本地服务调用只读沙箱内的 Codex CLI。
 
 ## 能力边界
 

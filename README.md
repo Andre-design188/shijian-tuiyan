@@ -4,10 +4,10 @@
 
 **在线使用**：<https://gavincao6313-jpg.github.io/shijian-tuiyan/>。在对话框里写下当前处境和所求，它会追问最多三个问题，推演完成后对话框自动折叠、展开结果。页面里还有三次完整示范，以及可按处境、史料等级筛选的 92 个历史案例。
 
-**装成 Claude Code 技能只要一行**（装完就能用，详见[下文](#安装为-claude-code-技能)）：
+**装成 Codex skill 只要一行**（装完就能用，详见[下文](#安装为-codex-skill)）：
 
 ```bash
-git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.claude/skills/shijian-tuiyan
+git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.codex/skills/shijian-tuiyan
 ```
 
 [![引文校验](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/verify.yml/badge.svg)](https://github.com/gavincao6313-jpg/shijian-tuiyan/actions/workflows/verify.yml)
@@ -76,38 +76,38 @@ git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.cl
 |---|---|---|
 | 示范模式 | 线上页面的默认选项，回放三个预先推演好的示范 | 免费 |
 | 自带 API Key | 填入自己的 Anthropic API Key；Key 只存在你的浏览器里，由官方 SDK 直接发给 Anthropic，本页没有服务器 | 记在你的 API 账户上 |
-| 本机 Claude 订阅 | 本机双击 `启动本地推演.bat`（或运行 `python scripts/serve_local.py --background`）打开页面，对话框通过本机的 `claude` 命令推演 | 用你的 Claude 订阅额度 |
+| 本机 Codex | 本机双击 `启动本地推演.bat`（或运行 `python scripts/serve_local.py --background`）打开页面，对话框通过本机的 `codex exec` 推演 | 使用已登录的 Codex 账户 |
 
 不管用哪种引擎，模型给出的古文都会在浏览器里和案例原文逐字核对，对不上的不显示，并在结果里说明隐藏了什么。
 
-本机订阅模式：Windows 上双击仓库根目录的 `启动本地推演.bat` 即可。如果本机的 `claude` 命令还没登录，它会问你要不要现在登录；之后服务转到后台运行，启动窗口几秒后自动关闭，浏览器打开 http://127.0.0.1:8765/ 。用完双击 `停止本地推演.bat`；电脑重启后再双击一次启动。也可以手动运行：
+本机 Codex 模式：Windows 上双击仓库根目录的 `启动本地推演.bat` 即可。如果 Codex CLI 还没登录，它会提示登录；之后服务转到后台运行，启动窗口几秒后自动关闭，浏览器打开 http://127.0.0.1:8765/ 。用完双击 `停止本地推演.bat`；电脑重启后再双击一次启动。也可以手动运行：
 
 ```bash
-claude auth login                               # 只需一次：登录 Claude Code，用你的 Claude 订阅
+codex login                                     # 只需一次：登录 Codex CLI
 python scripts/serve_local.py --background      # 在后台启动本地页面，自动打开 http://127.0.0.1:8765/
 python scripts/serve_local.py --stop            # 停止后台服务
 ```
 
 不加 `--background` 时，服务占着当前终端，按 Ctrl+C 停止。每次推演的开始、结束和出错都记在 `logs/serve_local.log`。
 
-线上页面没法直接调用你电脑上的 `claude`，所以在线上选「本机 Claude 订阅」时，页面会给出这两步指引和打开本地页面的链接。
+线上页面不能直接调用你电脑上的 `codex`，所以在线上选择「本机 Codex」时，页面会给出启动本地服务的指引和本地页面链接。
 
-本地服务只监听本机，只接受本页发出的请求；`claude` 以关闭全部工具、安全模式运行，只生成文字。
+本地服务只监听本机，只接受本页发出的请求；Codex 通过 `codex exec` 在只读沙箱中运行，输出受 JSON Schema 约束。
 
-## 安装为 Claude Code 技能
+## 安装为 Codex skill
 
-需要 [Claude Code](https://claude.com/claude-code) 和 Python 3.10+。一行装好，不用装依赖：
+需要 [Codex](https://openai.com/codex/) 和 Python 3.10+。一行装好，不用装依赖：
 
 ```bash
-git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.claude/skills/shijian-tuiyan
+git clone --depth 1 https://github.com/gavincao6313-jpg/shijian-tuiyan.git ~/.codex/skills/shijian-tuiyan
 ```
 
-Windows 的 PowerShell 里把 `~` 换成 `$HOME`。然后在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职去创业"，技能会自动开始推演。
+Windows PowerShell 里把 `~` 换成 `$HOME`。安装后重启 Codex；然后说出你纠结的事，比如"帮我推演一下要不要辞职去创业"，Codex 会按 `SKILL.md` 的流程使用本技能。
 
 推演只用案例库，装完就能用。想在两书全文里检索、找案例库以外的先例，或者改了案例要重跑引文校验，再下载原文语料。这一步可选：
 
 ```bash
-cd ~/.claude/skills/shijian-tuiyan
+cd ~/.codex/skills/shijian-tuiyan
 pip install -r requirements.txt
 python scripts/fetch_corpus.py      # 下载原文语料，一两分钟
 python scripts/verify_quotes.py     # 应输出：FAIL 0 条
@@ -123,13 +123,13 @@ python scripts/find_cases.py 合伙 股权          # 按关键词找案例
 python scripts/grep_source.py 暴得大名          # 在两书全文里检索（要先下载语料）
 python scripts/check_plain.py                  # 说人话检查
 python scripts/build_site.py                   # 重新生成展示页与示范文件
-python scripts/serve_local.py --background     # 本机打开页面，用 Claude 订阅推演（后台运行）
+python scripts/serve_local.py --background     # 本机打开页面，用 Codex CLI 推演（后台运行）
 ```
 
 ## 目录
 
 ```
-SKILL.md                  技能主文件：流程、输出模板、纪律、史料等级标准（Claude 读这个）
+SKILL.md                  技能主文件：流程、输出模板、纪律、史料等级标准（Codex skill）
 AGENTS.md                 给 Codex 等其他 AI 工具的入口，指向 SKILL.md
 references/cases/         16 个母题的案例库
 examples/demos.json       三次示范推演（展示页和示范文件都由它生成）
@@ -141,7 +141,7 @@ corpus/                   原文语料（下载生成，不入库）
 
 ## 制作说明
 
-需求、验收标准和真实场景试用由我（曹嘉鹏）负责，实现借助 Claude Code 完成。我拿自己真实的职业决定跑过推演，并在使用中补充了新案例（货殖列传）。
+需求、验收标准和真实场景试用由我（曹嘉鹏）负责，实现由 Codex 协助完成。我拿自己真实的职业决定跑过推演，并在使用中补充了新案例（货殖列传）。
 
 ## 许可与数据来源
 

@@ -392,6 +392,104 @@ a:hover { text-decoration-thickness: 2px; }
 
 footer { border-top: 1px solid var(--rule); padding: 32px 0 48px; font-size: 14px; color: var(--ink-3); }
 footer p { margin: 0 0 6px; max-width: 60em; }
+
+/* ---------- 视觉精修：史书编辑台 ---------- */
+:root { --bg:#e9e2d5; --surface:#f7f2e9; --rule:#d0c5b4; --gu:#87471f; --gu-soft:#eee0ce; }
+body { background-image: radial-gradient(ellipse at 12% 0%, rgba(255,255,255,.44), transparent 38rem), linear-gradient(115deg, transparent 0 48%, rgba(127,92,57,.018) 48% 49%, transparent 49%); }
+.wrap { width:min(1180px, 100% - 48px); }
+.top { position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(14px); border-color:color-mix(in srgb, var(--rule) 78%, transparent); }
+.top .wrap { min-height:68px; }
+.brand { letter-spacing:.1em; }
+.nav { gap:clamp(12px, 1.8vw, 22px); }
+.nav a { font-size:14px; white-space:nowrap; padding:8px 0; transition:color .18s ease; }
+.nav a:hover { color:var(--gu); }
+.hero { padding-top:clamp(48px, 8vw, 104px); }
+.hero h1 { letter-spacing:.12em; text-shadow:0 1px 0 rgba(255,255,255,.38); }
+.hero .lead { line-height:1.8; }
+.dlg,.verdict,.source-book,.yi-step,.basis-card,.opt,.case,.trust>div,.theme-link,.cell { box-shadow:0 5px 20px rgba(55,39,23,.045); }
+.dlg { border-radius:10px; border-color:color-mix(in srgb, var(--rule) 80%, white); overflow:hidden; }
+.dlg-head { padding-top:22px; }
+.btn { border-radius:5px; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; }
+.btn:hover { transform:translateY(-1px); box-shadow:0 5px 15px rgba(76,47,25,.12); }
+.section { padding-block:clamp(68px, 8.5vw, 108px); scroll-margin-top:82px; }
+.section h2 { letter-spacing:.08em; }
+.section .intro { max-width:52em; line-height:1.8; }
+.step { padding-block:38px; }
+.board,.case,.opt,.basis-card,.yi-step,.source-book,.trust>div,.verdict { border-radius:6px; overflow:hidden; }
+.cell { background:color-mix(in srgb, var(--surface) 90%, white); }
+.case { transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease; scroll-margin-top:88px; }
+.case:hover { transform:translateY(-2px); border-color:var(--gu); box-shadow:0 9px 22px rgba(55,39,23,.09); }
+.case.flash { outline:2px solid var(--gu); outline-offset:3px; }
+.errata summary { padding:12px 14px; }
+footer { border-top:1px solid var(--rule); padding-block:28px; color:var(--ink-2); }
+:focus-visible { outline-offset:4px; }
+@media (max-width: 760px) {
+  .wrap { width:min(100% - 32px, 680px); }
+  .top .wrap { align-items:flex-start; flex-direction:column; gap:4px; padding-block:10px; }
+  .nav { width:100%; overflow-x:auto; gap:18px; padding:2px 0 5px; scrollbar-width:thin; }
+  .nav a:not(.nav-gh) { display:inline-flex; }
+  .nav a { font-size:13px; }
+  .hero { padding-top:40px; }
+  .hero h1 { font-size:clamp(52px, 16vw, 82px); }
+  .section { padding-block:58px; scroll-margin-top:112px; }
+  .dlg-head { padding-inline:18px; }
+  .dlg-main { padding-inline:18px; }
+  .engine { padding-inline:18px; }
+  .engine-panel { padding-inline:18px; }
+  .engine-panel .row { grid-template-columns:1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
+}
+/* 青瓷史学馆：清透青瓷底色、深墨文字与朱砂重点 */
+:root { --bg:#edf3ef; --surface:#fbfcf9; --rule:#d4e1da; --ink:#18352f; --ink-2:#49645c; --ink-3:#71857d; --gu:#2f7465; --gu-soft:#dcebe4; --jin:#a94f37; --on-gu:#fff; }
+body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),transparent 34rem); }
+.top { background:color-mix(in srgb,var(--bg) 92%,transparent); border-color:var(--rule); }
+.brand-mark { background:var(--gu); box-shadow:0 0 0 4px var(--gu-soft); }
+.hero { padding-bottom:clamp(54px,7vw,88px); }
+.hero h1 { color:#173b32; text-shadow:none; letter-spacing:.06em; }
+.hero .lead { max-width:34em; }
+.dlg,.source-book,.yi-step,.yi-essential,.verdict,.basis-card,.opt,.trust>div { border-radius:12px; border-color:var(--rule); box-shadow:0 10px 34px rgba(24,53,47,.06); }
+.dlg { background:var(--surface); }
+.section { padding-block:clamp(54px,7vw,84px); }
+.section h2 { letter-spacing:.035em; }
+.section .intro { max-width:58em; }
+.yijing-section { background:linear-gradient(180deg,rgba(220,235,228,.48),rgba(237,243,239,0)); }
+.yi-step { grid-template-columns:52px minmax(190px,.75fr) minmax(0,1.6fr); gap:18px; margin:8px 0; padding:20px; border:1px solid var(--rule); background:var(--surface); }
+.yi-index { display:grid; width:38px; height:38px; place-items:center; border-radius:50%; background:var(--gu-soft); color:var(--gu); font-size:17px; }
+.yi-quote { color:var(--jin); }
+.yi-essentials { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; border:0; margin-top:18px; }
+.yi-essential { padding:22px; border:1px solid var(--rule); background:var(--surface); }
+.yi-essential h4 { margin-top:8px; font-size:19px; }
+.yi-case-label { display:inline-block; padding:4px 9px; border-radius:20px; background:var(--gu-soft); color:var(--gu); font-size:12px; font-weight:700; }
+.yi-scene { padding:10px 12px; background:#f1f5f1; border-left:2px solid var(--gu); color:var(--ink-2); }
+.yi-case-action { padding-top:10px; border-top:1px solid var(--rule); color:var(--ink-2); }
+.yi-case-link { display:inline-block; margin-top:6px; color:var(--gu); font-weight:700; }
+.yi-essential .yi-meta { margin:10px 0; }
+.nav a { font-size:13px; }
+.btn-primary { background:var(--gu); border-color:var(--gu); }
+.btn-primary:hover { background:#245f52; }
+.section#library { background:rgba(251,252,249,.55); }
+.cases { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.case { align-self:start; min-width:0; padding:0; overflow:hidden; border:1px solid var(--rule); border-radius:11px; background:var(--surface); box-shadow:0 6px 22px rgba(24,53,47,.045); scroll-margin-top:90px; }
+.case summary { position:relative; display:flex; min-height:180px; flex-direction:column; align-items:flex-start; gap:8px; padding:18px; cursor:pointer; list-style:none; }
+.case summary::-webkit-details-marker { display:none; }
+.case summary::after { content:"＋"; position:absolute; top:15px; right:16px; color:var(--gu); font-size:19px; }
+.case[open] summary::after { content:"−"; }
+.case-title { max-width:calc(100% - 18px); font:700 19px/1.4 var(--serif); color:var(--ink); }
+.case-source { color:var(--ink-3); font-size:12px; line-height:1.5; }
+.case .m { margin:0; color:var(--ink-2); font-size:14px; line-height:1.65; }
+.case-more { margin-top:auto; color:var(--gu); font-size:12px; font-weight:700; }
+.case dl { grid-template-columns:4.5em minmax(0,1fr); gap:7px 10px; margin:0; padding:16px 18px 20px; border-top:1px solid var(--rule); font-size:14px; }
+.case dd.quote { color:var(--jin); }
+.case:hover { border-color:#8bb4a5; transform:translateY(-2px); box-shadow:0 12px 28px rgba(24,53,47,.1); }
+.case.flash { outline:2px solid var(--jin); }
+.more { display:flex; align-items:center; justify-content:center; gap:12px; color:var(--ink-3); font-size:13px; }
+.more .btn { border-radius:24px; }
+.source-cta { border-radius:10px; background:var(--gu-soft); }
+.theme-note { font-size:13px; }
+@media (max-width:900px) { .cases { grid-template-columns:repeat(2,minmax(0,1fr)); } .yi-essentials { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:760px) { .yi-step { grid-template-columns:42px 1fr; } .yi-essentials,.cases { grid-template-columns:1fr; } .case summary { min-height:0; } }
 </style>
 </head>
 <body>
@@ -401,11 +499,11 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <div class="wrap">
     <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>史鉴推演</a>
     <nav class="nav" aria-label="页面导航">
+      <a href="#yijing">易经九步</a>
       <a href="#demo">看示范</a>
-      <a href="#method">三源决策法</a>
+      <a href="#library">历史案例</a>
       <a href="#sources">史记与通鉴</a>
-      <a href="#yijing">易经方法</a>
-      <a href="#library">案例库</a>
+      <a href="#method">三源决策法</a>
       <a href="#trust">为什么可信</a>
       <a class="nav-gh" href="__REPO__">GitHub</a>
     </nav>
@@ -418,8 +516,8 @@ footer p { margin: 0 0 6px; max-width: 60em; }
       <div>
         <h1 id="hero-title">史鉴推演</h1>
         <p class="lead">纠结一个决定的时候，把你的处境说给它听。</p>
-        <p class="lead">它会用《史记》《资治通鉴》的正反先例分析人物选择与局势变化，再用《易经》的决策思想逐步检查变化、时机和行动，最后给你一条带前提与止损线的建议。</p>
-        <p class="hero-note">三种来源各有分工：史书提供证据，易经提供复核方法；历史给的是变量，不是答案。</p>
+        <p class="lead">结合《史记》《资治通鉴》的历史案例与《易经》的九步决策方法，梳理选项、风险和下一步行动。</p>
+        <p class="hero-note">历史提供参照，易经提供复核方法；结论仍由现实证据决定。</p>
       </div>
       <section class="dlg" id="dlg" aria-labelledby="dlg-title">
         <div class="dlg-bar" id="dlg-bar" hidden>
@@ -456,13 +554,13 @@ footer p { margin: 0 0 6px; max-width: 60em; }
               <legend>用什么来推演</legend>
               <label class="opt-line"><input type="radio" name="engine" value="demo"><span>示范模式<small>不接模型，只能回放三个预先推演好的示范。</small></span></label>
               <label class="opt-line"><input type="radio" name="engine" value="byok"><span>用我自己的 API Key<small>Key 只保存在你的浏览器里，直接发给 Anthropic；本页没有服务器，费用记在你的账户上。</small></span></label>
-              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Claude 订阅<small id="local-note">在本机运行 <code>python scripts/serve_local.py --background</code> 打开本页时可用，用你自己的 Claude 订阅额度。</small></span></label>
+              <label class="opt-line"><input type="radio" name="engine" value="local" id="engine-local"><span>本机 Codex<small id="local-note">在本机运行 <code>python scripts/serve_local.py --background</code> 打开本页时可用，使用你已登录的 Codex 账户。</small></span></label>
             </fieldset>
             <div class="local-help" id="local-help" role="status" hidden></div>
             <div id="byok-fields" hidden>
               <div class="row">
                 <div class="field"><label for="f-key">Anthropic API Key</label><input id="f-key" type="password" autocomplete="off" placeholder="sk-ant-…"></div>
-                <div class="field"><label for="f-model">模型</label><select id="f-model"><option value="claude-opus-5">Claude Opus 5</option><option value="claude-sonnet-5">Claude Sonnet 5</option></select></div>
+                <div class="field"><label for="f-model">Anthropic 模型</label><select id="f-model"><option value="claude-opus-5">Opus 5</option><option value="claude-sonnet-5">Sonnet 5</option></select></div>
               </div>
               <label class="check" style="margin-top: 8px"><input type="checkbox" id="f-remember">在这台设备上记住 Key</label>
             </div>
@@ -481,6 +579,21 @@ footer p { margin: 0 0 6px; max-width: 60em; }
     </div>
   </section>
 
+  <section class="section yijing-section" id="yijing" aria-labelledby="yijing-title">
+    <div class="wrap">
+      <h2 id="yijing-title">易经决策方法</h2>
+      <p class="intro">九步是本项目依据《易传》相关思想整理的现代工作流，并非古书原有的标准程序，也不使用占筮预测。</p>
+      <h3>九步流程</h3>
+      <p class="intro">${esc(DATA.yijing.workflowMeaning)}。每步说明原典出处、现代转译、自检问题与适用边界。</p>
+      <div class="yi-flow" id="yijing-methods"></div>
+      <h3 style="margin-top:42px">思想精要：六个案例</h3>
+      <p class="intro">把经典观点放进具体抉择里，看它如何改变行动与风险控制。</p>
+      <div class="yi-essentials" id="yijing-essentials"></div>
+      <p class="yi-note">${esc(DATA.yijing.methodBoundary)}</p>
+      <div class="yi-sources"><a href="https://www.nlc.cn/upload/attachments/2023-12-01/0932c8ff.pdf" target="_blank" rel="noopener">国家图书馆：《周易》概说（成书与作者问题）</a></div>
+    </div>
+  </section>
+
   <section class="section" id="demo" aria-labelledby="demo-title">
     <div class="wrap">
       <h2 id="demo-title">三个示范推演</h2>
@@ -492,17 +605,13 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <section class="section source-section" id="sources" aria-labelledby="sources-title">
     <div class="wrap">
       <h2 id="sources-title">史记与资治通鉴</h2>
-      <p class="source-intro">这套系统以《史记》和《资治通鉴》的历史人物与事件作为推演案例库：先交代史料原文与出处，再比较人物所处位置、关键选择、结果和局限，帮助今天的决策者识别变量。历史案例是参照材料，不是现实人生的答案。</p>
+      <p class="source-intro">《史记》侧重人物与选择，《资治通鉴》补充事件时序和局势变化。所有历史类比均保留来源、等级与适用边界。</p>
       <div class="source-books">
         <article class="source-book"><h3>《史记》</h3><p>以人物列传、本纪、世家等篇章呈现人物经历、选择与时代局势。本项目选取案例时保留篇名/卷次、关键原文、史料等级和现代映射，方便读者回到来源语境核对。</p><p>案例库覆盖择主、进退、合伙、用人、交班等现实决策母题；现代建议会标明与历史处境相似和不同之处。</p></article>
         <article class="source-book"><h3>《资治通鉴》</h3><p>以编年脉络呈现事件前因后果和各方行动。本项目借此检查决策发生的时序、权力关系和连锁后果，避免把单个人物的成败抽离局势来读。</p><p>使用时区分可核对的行动与史家叙述、评论，并结合案例中的史料等级说明证据边界。</p></article>
       </div>
-      <div class="source-cta"><p>全部案例默认展开出处、原文、决定变量和迁移边界；也可按处境、史料等级筛选定位。</p><a href="#library">前往历史案例库 ↓</a></div>
-      <div class="source-cases">
-        <h3>历史案例库</h3>
-        <p class="intro">当前收录 <b>${esc(DATA.stats.cases)}</b> 条案例，来源涉及《史记》与《资治通鉴》。全部案例及字段默认显示；可以搜索人物/处境，按母题和史料等级筛选定位。</p>
-        <div class="source-cta"><p>例如搜索“韩信”“接班”或“合伙”，查看历史情境与现实问题的对应关系。</p><a href="#library">搜索并展开案例</a></div>
-      </div>
+      <div class="source-cta"><p>92 条案例支持关键词、处境与史料等级检索；完整细节按需展开。</p><a href="#library">前往历史案例库 ↓</a></div>
+      <p class="source-hint">试试搜索“韩信”“接班”或“合伙”。</p>
     </div>
   </section>
 
@@ -522,26 +631,10 @@ footer p { margin: 0 0 6px; max-width: 60em; }
     </div>
   </section>
 
-  <section class="section yijing-section" id="yijing" aria-labelledby="yijing-title">
-    <div class="wrap">
-      <h2 id="yijing-title">易经决策思想与方法</h2>
-      <p class="intro">这里保留《周易》决策思想的原典要点，也新增一套贯穿决策前、中、后的实践流程。经典思想条目帮助理解方法来源；九步流程把它们组织成现代决策复核工具。</p>
-      <h3>易经思想精要</h3>
-      <div class="yi-essentials" id="yijing-essentials"></div>
-      <h3 style="margin-top:40px">易经决策方法：九步流程</h3>
-      <p class="intro">本项目的工作顺序是：<b>${esc(DATA.yijing.workflowMeaning)}</b>。每一步都展示原文依据、现代转译、自检问题和适用边界。</p>
-      <div class="yi-flow" id="yijing-methods"></div>
-      <h3>把方法用于真实抉择</h3>
-      <div class="yi-cases" id="yijing-cases"></div>
-      <p class="yi-note">${esc(DATA.yijing.methodBoundary)}</p>
-      <div class="yi-sources"><a href="https://www.nlc.cn/upload/attachments/2023-12-01/0932c8ff.pdf" target="_blank" rel="noopener">国家图书馆：《周易》概说（成书与作者问题）</a></div>
-    </div>
-  </section>
-
   <section class="section" id="library" aria-labelledby="lib-title">
     <div class="wrap">
       <h2 id="lib-title"><span id="lib-count"></span> 个历史案例</h2>
-      <p class="intro">这里完整展示来自《史记》《资治通鉴》的 92 条历史案例。每条都显示史书原文、卷次、史料等级、决定变量和现代迁移边界；搜索与筛选可帮助定位。</p>
+      <p class="intro">收录 92 条《史记》《资治通鉴》案例。先看 6 张精选卡片；可搜索、筛选或按需展开更多，每条均保留原文、出处与迁移边界。</p>
       <div class="filters" role="group" aria-label="按处境筛选" id="filters"></div>
       <p class="theme-note" id="theme-note" aria-live="polite"></p>
       <div class="grade-filters" role="group" aria-label="按史料等级筛选" id="grade-filters"></div>
@@ -566,26 +659,26 @@ footer p { margin: 0 0 6px; max-width: 60em; }
   <section class="section" id="use" aria-labelledby="use-title">
     <div class="wrap">
       <h2 id="use-title">怎么用</h2>
-      <p class="intro">有三种用法：直接在这个页面填自己的 API Key；在本机打开页面，用你自己的 Claude 订阅额度；或者装成 Claude Code 技能，在 Claude Code 里说出你纠结的事，比如"帮我推演一下要不要辞职创业"。后两种都从下面这一行开始，装完就能用。</p>
+      <p class="intro">可以看示范、使用自己的 Anthropic API Key，也可以在本机通过 Codex CLI 推演；还可以把本项目安装成 Codex skill，在 Codex 里直接说出你纠结的事。</p>
       <div class="code">
         <div class="code-bar"><span>终端 · 一行安装</span><button class="copy" type="button" id="copy">复制</button></div>
-        <pre id="install">git clone --depth 1 __REPO__.git ~/.claude/skills/shijian-tuiyan</pre>
+        <pre id="install">git clone --depth 1 __REPO__.git ~/.codex/skills/shijian-tuiyan</pre>
       </div>
-      <p class="use-note">在 Windows 的 PowerShell 里，把 <code>~</code> 换成 <code>$HOME</code>。用 Codex 等其他 AI 工具的，克隆到任意目录，仓库根目录的 AGENTS.md 会告诉它怎么用。</p>
+      <p class="use-note">Windows PowerShell 可把 <code>~</code> 换成 <code>$HOME</code>。安装后重启 Codex，让它发现 <code>SKILL.md</code>。也可以克隆到任意目录，仓库根目录的 <code>AGENTS.md</code> 会说明项目约定。</p>
       <p class="use-note">想在两书全文里检索，或者改了案例要重跑引文校验，再下载原文语料。这一步可选，一两分钟：</p>
       <div class="code">
         <div class="code-bar"><span>终端 · 可选</span></div>
-        <pre>cd ~/.claude/skills/shijian-tuiyan
+        <pre>cd ~/.codex/skills/shijian-tuiyan
 pip install -r requirements.txt
 python scripts/fetch_corpus.py
 <span class="c"># 校验全部引文，应输出 FAIL 0 条</span>
 python scripts/verify_quotes.py</pre>
       </div>
-      <p class="use-note">想在本机用订阅额度推演：先在终端登录一次 Claude Code，再启动本地页面。页面只在你的电脑上打开，对话框会通过本机的 <code>claude</code> 命令推演。</p>
+      <p class="use-note">想通过 Codex 账户实时推演：先在终端登录 Codex CLI，再启动本地页面。服务只监听本机，对话框通过 <code>codex exec</code> 生成结构化结果。</p>
       <div class="code">
         <div class="code-bar"><span>终端</span></div>
-        <pre><span class="c"># 只需一次：登录 Claude Code（用你的 Claude 订阅）</span>
-claude auth login
+        <pre><span class="c"># 只需一次：登录 Codex CLI</span>
+codex login
 <span class="c"># 在后台启动本地页面，浏览器会自动打开 http://127.0.0.1:8765/</span>
 python scripts/serve_local.py --background
 <span class="c"># 用完停止</span>
@@ -599,7 +692,7 @@ python scripts/serve_local.py --stop</pre>
 
 <footer>
   <div class="wrap">
-    <p>需求、验收标准和真实场景试用：曹嘉鹏。实现借助 Claude Code 完成。</p>
+    <p>需求、验收标准和真实场景试用：曹嘉鹏。实现由 Codex 协助完成。</p>
     <p>代码使用 MIT 许可，案例文字使用 CC BY 4.0。原文语料来自维基文库。</p>
     <p>推演结果是决策参考，不构成法律、财务、医疗或心理方面的专业意见。</p>
   </div>
@@ -620,6 +713,19 @@ $("#yijing-essentials").innerHTML = DATA.yijing.essentials.map(item => {
     <p class="yi-question"><b>可自问：</b>${esc(item.question)}</p><p class="yi-boundary">边界：${esc(item.boundary)}</p>
     <p class="yi-example"><b>案例：</b>${esc(item.example)} ${demo ? `<a href="#demo" data-yijing-demo="${esc(item.case)}">查看「${esc(demo.tab)}」</a>` : ""}</p></article>`;
 }).join("");
+document.querySelectorAll(".yi-essential").forEach((card, i) => {
+  const item = DATA.yijing.essentials[i];
+  const demo = DATA.demos.find(d => d.id === item.case);
+  const label = document.createElement("div"); label.className = "yi-case-label"; label.textContent = `思想案例 · ${item.name}`;
+  const title = card.querySelector("h4"); if (title && demo) title.textContent = demo.tab;
+  title?.before(label);
+  if (demo) {
+    const scene = document.createElement("p"); scene.className = "yi-scene"; scene.textContent = demo.question; title?.after(scene);
+    const action = document.createElement("p"); action.className = "yi-case-action";
+    action.innerHTML = `<b>案例判断：</b>${esc(demo.verdict.pick)}。${esc(item.example)} <a class="yi-case-link" href="#demo-${demo.id}">查看完整推演 →</a>`;
+    card.querySelector(".yi-example")?.replaceWith(action);
+  }
+});
 const BOARD_HINT = {位: "你在结构里的位置", 力: "手里的资源", 人: "关键的他人", 时: "窗口期", 势: "大势", 退: "最坏结果"};
 
 /* ---------- 推演演示 ---------- */
@@ -642,15 +748,6 @@ $("#yijing-methods").innerHTML = DATA.yijing.workflow.map((id, i) => {
     <div class="yi-detail"><p class="yi-reading">${esc(item.reading)}</p>
       <p class="yi-question"><b>决策自检：</b>${esc(item.question)}</p><p class="yi-boundary">边界：${esc(item.boundary)}</p></div></article>`;
 }).join("");
-$("#yijing-cases").innerHTML = DATA.yijing.caseApplications.map(item => {
-  const demo = DATA.demos.find(d => d.id === item.case);
-  return `<article class="yi-case"><h3>${esc(item.title)}</h3><p>${esc(item.application)}</p>
-    ${demo ? `<p style="margin-top:10px"><a href="#demo" data-yijing-demo="${esc(item.case)}">查看完整案例：${esc(demo.tab)}</a></p>` : ""}</article>`;
-}).join("");
-$("#yijing-cases").addEventListener("click", e => {
-  const link = e.target.closest("[data-yijing-demo]"); if (!link) return;
-  const i = DATA.demos.findIndex(d => d.id === link.dataset.yijingDemo); if (i >= 0) selectTab(i);
-});
 $("#yijing-essentials").addEventListener("click", e => {
   const link = e.target.closest("[data-yijing-demo]"); if (!link) return;
   const i = DATA.demos.findIndex(d => d.id === link.dataset.yijingDemo); if (i >= 0) selectTab(i);
@@ -730,7 +827,7 @@ function selectTab(i) {
 
 /* ---------- 案例库 ---------- */
 $("#lib-count").textContent = DATA.cases.length;
-let theme = "all", grade = "all";
+let theme = "all", grade = "all", visibleCount = 6;
 const FIELDS = [["处境", ""], ["选项", ""], ["抉择", ""], ["原文", "quote"], ["史料", "grade-cell"], ["结果", ""], ["决定变量", ""], ["可迁移", ""], ["边界", "bound"], ["现代映射", ""], ["对照", "refs"]];
 function linkRefs(s) { return esc(s).replace(/\d{2}-\d{2}/g, id => caseById[id] ? `<a href="#case-${id}">${id}</a>` : id); }
 const gradeCell = c => `${gradeTag(c.grade)} ${esc(String(c.fields["史料"]).split("｜").slice(1).join("｜"))}`;
@@ -747,25 +844,28 @@ function renderCases() {
   const q = $("#q").value.trim();
   const list = DATA.cases.filter(c => (theme === "all" || c.theme === theme) && (grade === "all" || c.grade === grade) &&
     (!q || [c.title, c.src, ...Object.values(c.fields)].join(" ").includes(q)));
-  $("#count").textContent = `${list.length} 个`;
-  $("#more").innerHTML = "";
-  $("#cases").innerHTML = list.length ? list.map(c => `<article class="case" id="case-${c.id}">
-      <h3 class="case-title">${esc(c.title)} <small>${gradeTag(c.grade)}${esc(c.id)} ${esc(c.src)}</small></h3>
-      <span class="m">${esc(c.fields["现代映射"])}</span>
+  const shown = list.slice(0, visibleCount);
+  $("#count").textContent = list.length ? `显示 ${shown.length} / ${list.length} 条` : "0 条";
+  $("#cases").innerHTML = list.length ? shown.map(c => `<details class="case" id="case-${c.id}">
+      <summary><span class="case-title">${esc(c.title)}</span><span class="case-source">${gradeTag(c.grade)} ${esc(c.src)}</span>
+      <span class="m">${esc(c.fields["现代映射"])}</span><span class="case-more">展开案例与史料 <span aria-hidden="true">＋</span></span></summary>
       <dl>${FIELDS.filter(([k]) => c.fields[k]).map(([k, cls]) => `<dt>${k}</dt><dd class="${cls}">${cls === "refs" ? linkRefs(c.fields[k]) : cls === "grade-cell" ? gradeCell(c) : esc(c.fields[k])}</dd>`).join("")}</dl>
-    </article>`).join("") : `<p class="empty">没有找到匹配的案例。换个说法试试，比如把"老板"换成"上级"，或者直接选上面的处境类别。</p>`;
+    </details>`).join("") : `<p class="empty">没有找到匹配案例。试试人物、处境关键词，或清除筛选条件。</p>`;
+  $("#more").innerHTML = shown.length < list.length ? `<button class="btn btn-ghost" type="button" id="load-more">再看 6 条</button><span> ${list.length - shown.length} 条尚未展开</span>` : "";
+  $("#load-more")?.addEventListener("click", () => { visibleCount += 6; renderCases(); });
 }
-$("#filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; theme = b.dataset.t; renderFilters(); renderCases(); });
-$("#grade-filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; grade = b.dataset.g; renderFilters(); renderCases(); });
-$("#q").addEventListener("input", () => { if ($("#q").value.trim() && theme !== "all") { theme = "all"; renderFilters(); } renderCases(); });
+$("#filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; theme = b.dataset.t; visibleCount = 6; renderFilters(); renderCases(); });
+$("#grade-filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; grade = b.dataset.g; visibleCount = 6; renderFilters(); renderCases(); });
+$("#q").addEventListener("input", () => { visibleCount = 6; if ($("#q").value.trim() && theme !== "all") { theme = "all"; renderFilters(); } renderCases(); });
 document.addEventListener("click", e => {
   const a = e.target.closest("a.theme-link"); if (!a) return;
-  theme = a.dataset.theme; grade = "all"; $("#q").value = ""; renderFilters(); renderCases();
+  theme = a.dataset.theme; grade = "all"; visibleCount = 6; $("#q").value = ""; renderFilters(); renderCases();
 });
 function openFromHash() {
   const m = location.hash.match(/^#case-(\d{2}-\d{2})$/); if (!m || !caseById[m[1]]) return;
-  if (!document.getElementById("case-" + m[1])) { theme = "all"; grade = "all"; $("#q").value = ""; renderFilters(); renderCases(); }
+  if (!document.getElementById("case-" + m[1])) { theme = "all"; grade = "all"; $("#q").value = ""; visibleCount = Math.max(6, DATA.cases.findIndex(c => c.id === m[1]) + 1); renderFilters(); renderCases(); }
   const el = document.getElementById("case-" + m[1]);
+  if (el) el.open = true;
   document.querySelectorAll(".case.flash").forEach(x => x.classList.remove("flash")); el.classList.add("flash");
   el.scrollIntoView({block: "start"});
 }
@@ -789,7 +889,7 @@ $("#trust-body").innerHTML = `
   <div><h3>每句古文都对过原文</h3><p>案例里出现的 ${s.quotes} 句古文，不管写在原文栏还是顺手引在别处，都逐字比对《史记》${s.shiji_juan} 卷、《资治通鉴》${s.tongjian_juan} 卷全文，并定位到具体的卷。每次更新自动重跑，对不上的案例不能入库。<a href="${REPO}/actions/workflows/verify.yml">查看最近一次校验</a></p></div>
   <div><h3>每段史料都标了可靠程度</h3><p>史书里的故事可靠程度不一。A 级 ${s.grades.A} 个：抉择和结局都是公开发生的事，可作依据。B 级 ${s.grades.B} 个：主干可信，但对话和场面只见于一处或有异说，只依据主干。C 级 ${s.grades.C} 个：传说、有争议或史家议论，只作参照。每条都写了理由，可以在案例库里按等级筛。</p></div>
   <div><h3>每个案例都写明了边界</h3><p>历史经验在什么条件下不成立，和它在什么条件下成立一样重要。推演时，现实和案例的差异如果正好落在关键变量上，这个案例只作参考。</p></div>
-  <div><h3>页面上的推演守同样的规矩</h3><p>用 API Key 或本机订阅实时推演时，模型只能从案例原文里摘引古文；页面会逐字核对，对不上的引文不显示，并告诉你隐藏了什么。模型把 C 级案例当成依据时，页面会自动降为参考。</p></div>
+  <div><h3>页面上的推演守同样的规矩</h3><p>用 Anthropic API Key 或本机 Codex 实时推演时，模型只能从案例原文里摘引古文；页面会逐字核对，对不上的引文不显示，并告诉你隐藏了什么。模型把 C 级案例当成依据时，页面会自动降为参考。</p></div>
   <div><h3>正反例一起看</h3><p>每个选项至少配一个走对的、一个走错的先例，避免只挑对自己有利的故事讲。</p></div>
   <div><h3>知道什么时候不该推演</h3><p>对方流露出轻生念头时，先关心人，不推演；涉及医疗、法律、税务，会提醒找专业人士；不讲宿命，历史给的是变量，不是剧本。</p></div>
   <details class="errata" open><summary>初稿里，大模型凭记忆写的古文有 ${DATA.errata.filter(e => !e.later).length} 句和原文对不上；后来把校验扩到所有字段，又查出 ${DATA.errata.filter(e => e.later).length} 句</summary>

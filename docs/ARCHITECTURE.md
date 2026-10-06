@@ -2,7 +2,7 @@
 
 ## 整体结构
 
-项目分为内容源、Python 工具和静态网页三个部分。案例 Markdown 与示范 JSON 是主要内容源；Python 脚本读取这些内容，完成检索、校验和页面生成；网页将生成的数据与模板、浏览器端推演代码组合。可选的本机 HTTP 服务提供静态文件，并代理到用户本机的 Claude CLI。
+项目分为内容源、Python 工具和静态网页三个部分。案例 Markdown 与示范 JSON 是主要内容源；Python 脚本读取这些内容，完成检索、校验和页面生成；网页将生成的数据与模板、浏览器端推演代码组合。可选的本机 HTTP 服务提供静态文件，并通过受限的 Codex CLI 调用本地已登录账户。
 
 ```text
 SKILL.md ───────────── Agent 推演流程
@@ -12,11 +12,11 @@ site/template.html + engine.js + dialog.js + errata.json ─┘
                                          ↓
                                    docs/index.html
                                          ↓
-                           browser demo / Anthropic API
+                           browser demo / Anthropic API（可选）
                                          ↓
                          optional scripts/serve_local.py
                                          ↓
-                                 local Claude CLI
+                                 local Codex CLI
 ```
 
 目录职责：
@@ -32,7 +32,7 @@ site/template.html + engine.js + dialog.js + errata.json ─┘
 
 - `scripts` 内多个工具从 `caselib.py` 读取共享路径、案例和语料函数；`build_site.py` 还导入 `check_plain.py` 中的规则。
 - `site/engine.js` 使用生成页面内嵌的案例数据，不直接请求 Python 服务来检索案例。
-- `serve_local.py` 提供可选静态文件服务和 `/api/claude`，再以受限参数调用本机 `claude` 命令；浏览器页面不直接访问本地进程。
+- `serve_local.py` 提供可选静态文件服务和 `/api/codex`，通过 `codex exec` 的只读沙箱和 JSON Schema 调用本机 Codex；浏览器页面不直接访问本地进程。
 - 内容源 → 构建脚本 → `docs/index.html` / 示例 Markdown 为单向生成关系，禁止编辑生成文件作为唯一修改。
 - GitHub Actions 的 `plain.yml` 运行文本检查；`verify.yml` 安装依赖、下载语料并运行引文核验。
 
@@ -51,7 +51,7 @@ site/template.html + engine.js + dialog.js + errata.json ─┘
 
 ### 用户推演
 
-用户输入 → `dialog.js` 发起追问 → `engine.js` 按母题筛选《史记》《资治通鉴》案例（尽可能确保两书都有相关案例时各纳入一条），并要求模型按两书不同史料视角比较正反先例 → 模型再完成《易经》九步决策复核 → 输出经过案例编号、史料等级和引文清理 → `dialog.js` 展示本次三源依据、推演和行动卡。示范模式回放预设内容；自带 Key 模式由浏览器调用 Anthropic SDK；本机模式调用本地 `/api/claude`，再由 Python 服务调用 Claude CLI。
+用户输入 → `dialog.js` 发起追问 → `engine.js` 按母题筛选《史记》《资治通鉴》案例（尽可能确保两书都有相关案例时各纳入一条），并要求模型按两书不同史料视角比较正反先例 → 模型再完成《易经》九步决策复核 → 输出经过案例编号、史料等级和引文清理 → `dialog.js` 展示本次三源依据、推演和行动卡。示范模式回放预设内容；自带 Anthropic Key 模式由浏览器调用 Anthropic SDK；本机模式调用本地 `/api/codex`，再由 Python 服务调用 Codex CLI。
 
 ## 待补充
 

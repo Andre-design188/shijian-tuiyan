@@ -1,7 +1,7 @@
 {
   "project": "史鉴推演",
   "last_updated": "2026-10-06",
-  "current_focus": "把《史记》《资治通鉴》史料视角与《易经》决策方法共同落实到网页展示和实时推演逻辑；完成本轮唯一任务后等待人工评审和 GitHub 发布条件确认。",
+  "current_focus": "重构网页信息层级：易经九步前置、精要案例化、历史案例首屏卡片按需加载，并采用青瓷视觉系统；保留历史功能和内容。",
   "execution_policy": {
     "order": "tasks 数组顺序",
     "max_tasks_per_run": 1,
@@ -12,11 +12,11 @@
   "tasks": [
     {
       "id": "feature-yijing-01",
-      "title": "整合易经决策思想、案例展示并评审系统",
-      "description": "保留历史案例和易经旧内容；让《史记》《资治通鉴》不同史料视角与《易经》九步决策方法同时进入网页说明、实时推演逻辑及结果依据展示。",
+      "title": "整合三源决策系统、迁移 Codex 并优化网页",
+      "description": "保留历史案例和易经旧内容；让《史记》《资治通鉴》不同史料视角与《易经》九步决策方法进入网页与实时推演；迁移本机推演至 Codex CLI；重排UX并将易经精要改为处境案例、历史案例首屏展示6张卡并按需加载、完成青瓷风格重设计。",
       "status": "in_progress",
       "priority": "high",
-      "verify": "运行 python scripts/check_plain.py；python scripts/build_site.py；python scripts/verify_quotes.py（如本地语料已准备）。检查 docs/index.html 同时含旧六条易经精要、完整九步方法、三源协同逻辑、两书内容及历史案例库、三个综合示范和每次推演的三源依据说明；确认三份示范、92 条完整案例及勘误内容均默认展开，不依赖点击或显示更多；检查进度记录写明验证与未解决事项并重新读取核对。",
+      "verify": "运行 scripts/check_plain.py、scripts/build_site.py、Python 编译、两份前端脚本 node --check 和 git diff --check；模拟检查 Codex CLI 临时工作目录、只读/schema 参数、本机接口成功响应及跨来源 403。浏览器确认九步导航和专区顺序靠前、易经六要点均结合示范案例、历史案例首屏只生成6张可展开卡片且搜索/筛选/按需加载工作、其余三个示范/三源/勘误与全部92条数据仍可访问。更新并复读 progress.md。",
       "requires_eval": true
     },
     {

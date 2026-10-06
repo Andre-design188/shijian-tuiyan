@@ -13,21 +13,21 @@ const ui = {
 let busy = false;
 
 /* 引擎设置 */
-// 本机订阅的状态：none = 没检测到本地服务；login = 服务在，但 claude 没登录；ok = 可以推演
+// 本机 Codex 状态：none = 没检测到本地服务；login = 服务在，但 Codex CLI 没登录；ok = 可以推演
 const LOCAL_HOST = ["127.0.0.1", "localhost"].includes(location.hostname);
 const LOCAL_URL = "http://127.0.0.1:8765/";
 const ENGINE_LABEL = () => ({demo: "示范模式",
-  local: ENGINE.localState === "ok" ? "本机 Claude 订阅" : "本机 Claude 订阅（还没连上）",
+  local: ENGINE.localState === "ok" ? "本机 Codex" : "本机 Codex（还没连上）",
   byok: `自带 API Key（${$("#f-model").selectedOptions[0].textContent}）`})[ENGINE.kind];
 function renderLocalHelp() {
   const box = $("#local-help");
   box.hidden = ENGINE.kind !== "local" || ENGINE.localState === "ok";
   if (box.hidden) return;
-  const login = "<li>登录一次 Claude Code（用你的 Claude 订阅）：在终端运行 <code>claude auth login</code>，按提示在浏览器里授权。</li>";
+  const login = "<li>登录一次 Codex CLI：在终端运行 <code>codex login</code>，按提示在浏览器里授权。</li>";
   box.innerHTML = ENGINE.localState === "login"
-    ? `<p>本地服务已经连上，但你电脑上的 <code>claude</code> 命令还没登录。</p><ol>${login}<li>登录完成后点「重新检测」，不用重启服务。</li></ol>
+    ? `<p>本地服务已经连上，但你电脑上的 <code>codex</code> 命令还没登录。</p><ol>${login}<li>登录完成后点「重新检测」，不用重启服务。</li></ol>
        <div class="dlg-actions"><button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button></div>`
-    : `<p>网页不能直接调用你电脑上的 <code>claude</code> 命令，要先在本机启动本地服务，再从它打开本页。</p>
+    : `<p>网页不能直接调用你电脑上的 <code>codex</code> 命令，要先在本机启动本地服务，再从它打开本页。</p>
        <ol>${login}<li>双击仓库根目录的 <code>启动本地推演.bat</code>：服务在后台运行，不占窗口，浏览器会自动打开本地页面，在那里选这一项。用完双击 <code>停止本地推演.bat</code>。也可以在仓库目录运行 <code>python scripts/serve_local.py --background</code>。</li></ol>
        <div class="dlg-actions">${LOCAL_HOST ? '<button type="button" class="btn btn-ghost btn-sm" id="local-recheck">重新检测</button>'
          : `<a class="btn btn-ghost btn-sm" href="${LOCAL_URL}">已经启动了，打开本地页面</a>`}</div>`;
@@ -61,10 +61,10 @@ function checkLocal() { // 只有从本地服务打开时才检测；每次都�
   if (!LOCAL_HOST) return Promise.resolve();
   return fetch("/api/health", {cache: "no-store"}).then(r => r.json()).then(h => {
     if (!h.ok) return;
-    ENGINE.localState = h.loggedIn === false ? "login" : "ok";
+    ENGINE.localState = h.error ? "none" : h.loggedIn === true ? "ok" : "login";
     $("#local-note").textContent = ENGINE.localState === "ok"
-      ? `已连上本机 Claude Code（${h.version || "版本未知"}），用你自己的订阅额度。`
-      : "本地服务已连上，但本机的 claude 命令还没登录。";
+      ? `已连上 Codex CLI（${h.version || "版本未知"}），用你的 Codex 账户推演。`
+      : h.error || "本地服务已连上，但本机的 codex 命令还没登录。";
   }).catch(() => {}).finally(() => setEngine(ENGINE.kind));
 }
 (function initEngine() {
@@ -223,7 +223,7 @@ async function runPlan(ctx) {
 function explainDemoMode(ctx) {
   const el = addBot(`<p>现在是示范模式，页面没有接模型，没法推演你自己的事。二选一：</p>
     <div class="dlg-actions"><button type="button" class="btn btn-primary btn-sm" data-act="byok">填我自己的 API Key</button>
-    <button type="button" class="btn btn-ghost btn-sm" data-act="local">在本机用 Claude 订阅</button></div>
+    <button type="button" class="btn btn-ghost btn-sm" data-act="local">在本机用 Codex</button></div>
     <p class="note">也可以先看一个示范，看看完整推演长什么样：</p>
     <div class="dlg-actions">${DATA.demos.map((d, i) => `<button type="button" class="demo-pick" data-demo="${i}">${esc(d.tab)}</button>`).join("")}</div>`);
   el.addEventListener("click", e => {

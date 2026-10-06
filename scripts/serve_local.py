@@ -1,15 +1,15 @@
-"""在本机打开展示页，用本机的 Claude Code（你自己的 Claude 订阅额度）驱动对话框。
+"""在本机打开展示页，用本机已登录的 Codex CLI 驱动对话框。
 
 用法：python scripts/serve_local.py                 # 打开 http://127.0.0.1:8765/，服务占着这个终端
       python scripts/serve_local.py --background    # 在后台运行，不占窗口（双击「启动本地推演.bat」就是这个）
       python scripts/serve_local.py --stop          # 停止后台服务（双击「停止本地推演.bat」就是这个）
-      python scripts/serve_local.py --model opus    # 指定模型（claude 命令支持的写法）
+      python scripts/serve_local.py --model gpt-5-codex    # 可选：指定 Codex 模型
       python scripts/serve_local.py --no-browser --port 9000
-前提：终端里的 claude 命令已经登录（claude auth login）；docs/index.html 已生成（build_site.py）。
-安全：只监听 127.0.0.1；/api/claude 只接受本页发出的请求（校验 Host、Origin 和自定义请求头），
-      别的网站没法借你的浏览器调用它；claude 以关闭全部工具、安全模式运行，只生成文字。
+前提：Codex CLI 已安装并登录（codex login）；docs/index.html 已生成（build_site.py）。
+安全：只监听 127.0.0.1；/api/codex 只接受本页发出的请求（校验 Host、Origin 和自定义请求头），
+      Codex 在只读沙箱中运行，提示词要求仅输出结构化结果，不执行工具或修改文件。
 日志：每次推演的开始、结束、耗时和任何异常都记在 logs/serve_local.log，出问题时先看这里。
-测试：环境变量 SHIJIAN_CLAUDE_CMD 可换成假的 claude 命令（路径用正斜杠）。
+测试：环境变量 SHIJIAN_CODEX_CMD 可指定 Codex CLI 可执行文件。
 """
 import argparse
 import json
@@ -21,6 +21,7 @@ import signal
 import subprocess
 import sys
 import threading
+import tempfile
 import time
 import urllib.request
 import webbrowser
@@ -33,36 +34,36 @@ LOG_FILE = DOCS.parent / "logs" / "serve_local.log"
 LOG = logging.getLogger("shijian")
 LOCK = threading.Lock()  # 一次只跑一个推演，避免连点把额度烧掉
 APP = "shijian-tuiyan"
-NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)  # Windows：调用 claude 时不弹黑色窗口
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)  # Windows：调用 codex 时不弹黑色窗口
 CFG = {"port": 8765, "model": None, "cmd": [], "status": {}}
 
 
-class ClaudeError(Exception):
+class CodexError(Exception):
     pass
 
 
-def claude_cmd():
-    if os.environ.get("SHIJIAN_CLAUDE_CMD"):
-        return shlex.split(os.environ["SHIJIAN_CLAUDE_CMD"])
-    found = shutil.which("claude")
-    if found and found.lower().endswith((".cmd", ".bat")):
-        # Windows 上 npm 装的是转发脚本；直接调它背后的 exe，长参数和引号不会被 cmd.exe 改写
-        exe = Path(found).parent / "node_modules" / "@anthropic-ai" / "claude-code" / "bin" / "claude.exe"
-        if exe.exists():
-            return [str(exe)]
-    return [found or "claude"]
+def codex_cmd():
+    if os.environ.get("SHIJIAN_CODEX_CMD"):
+        return shlex.split(os.environ["SHIJIAN_CODEX_CMD"])
+    found = shutil.which("codex")
+    if not found and os.name == "nt":
+        base = Path(os.environ.get("LOCALAPPDATA", "")) / "OpenAI" / "Codex" / "bin"
+        candidates = list(base.glob("*/codex.exe")) if base.exists() else []
+        if candidates:
+            found = str(max(candidates, key=lambda p: p.stat().st_mtime))
+    return [found or "codex"]
 
 
-def run(args, stdin="", timeout=600):
+def run(args, stdin="", timeout=600, cwd=None):
     return subprocess.run([*CFG["cmd"], *args], input=stdin, capture_output=True, text=True,
-                          encoding="utf-8", errors="replace", timeout=timeout, creationflags=NO_WINDOW)
+                          encoding="utf-8", errors="replace", timeout=timeout, cwd=cwd, creationflags=NO_WINDOW)
 
 
 def logged_in():
-    """每次都重新读，登录后页面点「重新检测」即可，不用重启服务。"""
+    """每次重新检查 Codex CLI 登录状态。"""
     try:
-        return bool(json.loads(run(["auth", "status"], timeout=30).stdout).get("loggedIn"))
-    except (FileNotFoundError, json.JSONDecodeError, subprocess.TimeoutExpired):
+        return run(["login", "status"], timeout=30).returncode == 0
+    except (FileNotFoundError, subprocess.TimeoutExpired):
         return None
 
 
@@ -71,7 +72,7 @@ def probe():
     try:
         status["version"] = run(["--version"], timeout=30).stdout.strip() or None
     except FileNotFoundError:
-        status["error"] = "找不到 claude 命令"
+        status["error"] = "找不到 codex 命令"
         return status
     except subprocess.TimeoutExpired:
         pass
@@ -89,32 +90,34 @@ def parse_json(text):
                 return json.loads(text[a:b + 1])
             except json.JSONDecodeError:
                 pass
-    raise ClaudeError("模型没有按约定的格式回答，请再试一次。")
+    raise CodexError("模型没有按约定的格式回答，请再试一次。")
 
 
-def ask_claude(system, prompt, schema):
-    args = ["-p", "--output-format", "json", "--json-schema", json.dumps(schema, ensure_ascii=False),
-            "--tools", "", "--safe-mode", "--no-session-persistence", "--strict-mcp-config", "--system-prompt", system]
-    if CFG["model"]:
-        args += ["--model", CFG["model"]]
+def ask_codex(system, prompt, schema):
+    """调用 Codex 非交互执行，只读沙箱；最终答复按 JSON Schema 输出。"""
+    request = f"{system}\n\n本次任务的用户输入如下。只做推演并输出符合 JSON Schema 的最终结果；不要调用工具，不要读取或修改文件。\n\n{prompt}"
     try:
-        p = run(args, stdin=prompt)
+        with tempfile.TemporaryDirectory(prefix="shijian-codex-") as temp:
+            schema_path = Path(temp) / "schema.json"
+            output_path = Path(temp) / "answer.json"
+            schema_path.write_text(json.dumps(schema, ensure_ascii=False), encoding="utf-8")
+            args = ["exec", "--ephemeral", "--sandbox", "read-only", "--output-schema", str(schema_path),
+                    "--output-last-message", str(output_path), "-"]
+            if CFG["model"]:
+                args[1:1] = ["--model", CFG["model"]]
+            # 在临时工作目录调用，避免 Codex 读取仓库 AGENTS.md 或访问项目文件。
+            p = run(args, stdin=request, cwd=temp)
+            if p.returncode != 0:
+                hint = "登录状态无效，请在终端运行 codex login。" if not logged_in() else "检查 Codex CLI 输出或网络后重试。"
+                raise CodexError(f"Codex 推演失败。{hint}")
+            try:
+                return parse_json(output_path.read_text(encoding="utf-8"))
+            except (OSError, CodexError):
+                raise CodexError("Codex 没有返回符合格式的结果，请重试。")
     except FileNotFoundError:
-        raise ClaudeError("找不到 claude 命令。先安装 Claude Code，再在终端运行 claude auth login。")
+        raise CodexError("找不到 Codex CLI。请安装 Codex CLI 并运行 codex login。")
     except subprocess.TimeoutExpired:
-        raise ClaudeError("推演超过 10 分钟没有结束，已停止。请再试一次。")
-    try:
-        out = json.loads(p.stdout)
-    except json.JSONDecodeError:
-        raise ClaudeError(f"claude 没有返回可解析的结果：{(p.stderr or p.stdout).strip()[:300]}")
-    if out.get("is_error"):
-        msg = str(out.get("result") or "")
-        if any(w in msg.lower() for w in ("authenticat", "login", "oauth")):
-            raise ClaudeError("本机 Claude Code 还没登录或登录已过期：在终端运行 claude auth login，完成后重试。")
-        raise ClaudeError(f"claude 报错：{msg[:300]}")
-    if isinstance(out.get("structured_output"), dict):
-        return out["structured_output"]
-    return parse_json(str(out.get("result") or ""))
+        raise CodexError("推演超过 10 分钟没有结束，已停止。请再试一次。")
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -122,7 +125,7 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*a, directory=str(DOCS), **kw)
 
     def log_message(self, fmt, *args):
-        if self.path.startswith("/api/claude") and sys.stderr:  # 后台运行时可能没有 stderr
+        if self.path.startswith("/api/codex") and sys.stderr:  # 后台运行时可能没有 stderr
             sys.stderr.write("[推演] " + (fmt % args) + "\n")
 
     def send_json(self, code, obj):
@@ -131,8 +134,10 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        self.send_header("Connection", "close")
         self.end_headers()
         self.wfile.write(body)
+        self.close_connection = True
 
     def same_origin(self):
         hosts = {f"127.0.0.1:{CFG['port']}", f"localhost:{CFG['port']}"}
@@ -153,15 +158,22 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
-        if self.path != "/api/claude":
+        if self.path != "/api/codex":
             return self.send_json(404, {"ok": False, "error": "没有这个接口"})
-        if not self.same_origin() or self.headers.get("X-Shijian-Local") != "1":
-            return self.send_json(403, {"ok": False, "error": "只接受本机页面的请求"})
-        length = int(self.headers.get("Content-Length") or 0)
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return self.send_json(400, {"ok": False, "error": "请求格式不对"})
         if not 0 < length <= 400_000:
             return self.send_json(413, {"ok": False, "error": "请求太大"})
+        # 先读取上限内的请求体，再拒绝来源，确保浏览器能收到明确的 403 响应而非连接重置。
+        raw = self.rfile.read(length)
+        if len(raw) != length:
+            return self.send_json(400, {"ok": False, "error": "请求格式不对"})
+        if not self.same_origin() or self.headers.get("X-Shijian-Local") != "1":
+            return self.send_json(403, {"ok": False, "error": "只接受本机页面的请求"})
         try:
-            req = json.loads(self.rfile.read(length).decode("utf-8"))
+            req = json.loads(raw.decode("utf-8"))
             system, prompt, schema = str(req["system"]), str(req["prompt"]), dict(req["schema"])
         except (ValueError, KeyError, TypeError):
             return self.send_json(400, {"ok": False, "error": "请求格式不对"})
@@ -171,10 +183,10 @@ class Handler(SimpleHTTPRequestHandler):
         t0 = time.time()
         LOG.info("开始%s：提示词 %d 字", kind, len(prompt))
         try:
-            data = ask_claude(system, prompt, schema)
+            data = ask_codex(system, prompt, schema)
             LOG.info("完成%s：用时 %.0f 秒", kind, time.time() - t0)
             return self.send_json(200, {"ok": True, "data": data})
-        except ClaudeError as e:
+        except CodexError as e:
             LOG.warning("%s失败（%.0f 秒）：%s", kind, time.time() - t0, e)
             return self.send_json(502, {"ok": False, "error": str(e)})
         except Exception:  # noqa: BLE001  意外错误也给页面一个明确答复，不让连接直接断掉
@@ -259,7 +271,7 @@ def stop(port):
     if not pid:
         print("本地服务没有在运行。")
         return 0
-    if os.name == "nt":  # /T 连同正在跑的 claude 一起结束，免得它在后台接着耗额度
+    if os.name == "nt":  # /T 连同正在运行的 codex 一起结束
         subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True)
     elif os.getpgid(pid) == pid:
         os.killpg(pid, signal.SIGTERM)
@@ -277,9 +289,9 @@ def stop(port):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="在本机打开史鉴推演，用你自己的 Claude 订阅推演")
+    ap = argparse.ArgumentParser(description="在本机打开史鉴推演，用 Codex CLI 推演")
     ap.add_argument("--port", type=int, default=8765)
-    ap.add_argument("--model", default=None, help="传给 claude --model，例如 opus、sonnet")
+    ap.add_argument("--model", default=None, help="传给 codex exec --model；默认使用 Codex 配置模型")
     ap.add_argument("--no-browser", action="store_true")
     ap.add_argument("--background", action="store_true", help="在后台运行，不占窗口")
     ap.add_argument("--stop", action="store_true", help="停止后台运行的本地服务")
@@ -290,34 +302,34 @@ def main():
     if not (DOCS / "index.html").exists():
         sys.exit("还没有 docs/index.html：先运行 python scripts/build_site.py")
     setup_logging()
-    CFG.update(port=args.port, model=args.model, cmd=claude_cmd())
+    CFG.update(port=args.port, model=args.model, cmd=codex_cmd())
     CFG["status"] = st = probe()
     if args.quiet:
         server = make_server(args.port)
-        LOG.info("启动（后台）：端口 %d，进程 %d，claude %s，已登录=%s", args.port, os.getpid(), st.get("version"), st.get("loggedIn"))
+        LOG.info("启动（后台）：端口 %d，进程 %d，codex %s，已登录=%s", args.port, os.getpid(), st.get("version"), st.get("loggedIn"))
         server.serve_forever()
         return 0
     url = f"http://127.0.0.1:{args.port}/"
     print(f"史鉴推演本地版：{url}")
     if st.get("error"):
-        print(f"  注意：{st['error']}。页面仍可打开，但只能用示范模式或自带 Key。")
-    elif st.get("loggedIn") is False:
-        print("  claude 还没登录，登录后才能用你的订阅额度推演。")
+        print(f"  注意：{st['error']}。页面仍可打开，但只能用示范模式或 Anthropic API Key。")
+    elif st.get("loggedIn") is not True:
+        print("  Codex CLI 还没登录，登录后才能用你的 Codex 账户推演。")
         try:  # Windows 上重定向到 NUL 时 isatty() 也为真，读不到输入就跳过
             want = sys.stdin.isatty() and input("  现在登录吗？会打开浏览器让你授权。[Y/n] ").strip().lower() in ("", "y", "yes")
         except (EOFError, KeyboardInterrupt):
             want = False
         if want:
-            subprocess.run([*CFG["cmd"], "auth", "login"])
+            subprocess.run([*CFG["cmd"], "login"])
             st["loggedIn"] = logged_in()
-        print("  已登录，对话框会用你的订阅额度推演。" if st.get("loggedIn") else
-              "  还没登录：之后在任意终端运行 claude auth login，再到页面上点「重新检测」即可。")
+        print("  已登录，对话框会通过 Codex 推演。" if st.get("loggedIn") else
+              "  还没登录：之后在任意终端运行 codex login，再到页面上点「重新检测」即可。")
     else:
-        print(f"  已连上 Claude Code {st.get('version') or ''}，对话框会用你的订阅额度推演。")
+        print(f"  已连上 Codex CLI {st.get('version') or ''}，对话框会使用 Codex 账户。")
     if args.background:
         return start_background(args, url)
     server = make_server(args.port)
-    LOG.info("启动：端口 %d，claude %s，已登录=%s", args.port, st.get("version"), st.get("loggedIn"))
+    LOG.info("启动：端口 %d，codex %s，已登录=%s", args.port, st.get("version"), st.get("loggedIn"))
     print(f"  服务占着这个窗口，关掉就停了；想在后台运行，加 --background。日志：{LOG_FILE}")
     print("  按 Ctrl+C 停止。")
     if not args.no_browser:
