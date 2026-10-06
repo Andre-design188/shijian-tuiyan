@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>史鉴推演</title>
+<title>鉴势 · 三源决策</title>
 <meta name="description" content="纠结一个决定时，从《史记》《资治通鉴》里找出走过同样局面的人，推演每个选项的去向，给出带止损线的建议。">
-<meta property="og:title" content="史鉴推演">
+<meta property="og:title" content="鉴势 · 三源决策">
 <meta property="og:description" content="用《史记》《资治通鉴》推演人生抉择：立局、照镜、推演、太史公曰。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%238F4E24' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%239B2C22' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%238F4E24'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M6 3h28l3 3v28l-3 3H6l-3-3V6z' fill='%23b95742' stroke='%23d3b06f' stroke-width='2'/%3E%3Cpath d='M12 11h16M12 17h16M12 23h16M12 29h16M18 8v24' stroke='%23f1e5c8' stroke-width='1.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- 字体异步加载：拿不到时（例如网络受限）直接用系统宋体/黑体，不阻塞渲染 -->
@@ -441,37 +441,40 @@ footer { border-top:1px solid var(--rule); padding-block:28px; color:var(--ink-2
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
 }
-/* 青瓷史学馆：清透青瓷底色、深墨文字与朱砂重点 */
-:root { --bg:#edf3ef; --surface:#fbfcf9; --rule:#d4e1da; --ink:#18352f; --ink-2:#49645c; --ink-3:#71857d; --gu:#2f7465; --gu-soft:#dcebe4; --jin:#a94f37; --on-gu:#fff; }
-body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),transparent 34rem); }
+/* 墨色决策剧场：档案室的黑曜底、暖金题签与朱砂印记 */
+:root { --bg:#111310; --surface:#1a1c18; --ink:#eee7d9; --ink-2:#c2b9a8; --ink-3:#a59a87; --rule:#393a32; --gu:#d2b16d; --gu-soft:#302a1e; --on-gu:#171712; --jin:#d7a85d; --jin-soft:#29251d; --seal:#c45b45; --on-seal:#fff2e9; color-scheme:dark; }
+body { background-image:radial-gradient(ellipse at 75% -8%,rgba(167,124,52,.14),transparent 38rem),linear-gradient(90deg,transparent 0 6%,rgba(255,255,255,.018) 6.1%,transparent 6.2%); }
 .top { background:color-mix(in srgb,var(--bg) 92%,transparent); border-color:var(--rule); }
-.brand-mark { background:var(--gu); box-shadow:0 0 0 4px var(--gu-soft); }
+.brand { gap:12px; letter-spacing:.08em; }
+.brand-mark { width:34px; height:34px; border:1px solid var(--gu); border-radius:3px; background:var(--seal); box-shadow:inset 0 0 0 3px var(--bg),inset 0 0 0 4px var(--gu); position:relative; }
+.brand-mark::after { content:"鉴"; position:absolute; inset:0; display:grid; place-items:center; color:#f4e8cc; font:700 20px/1 var(--serif); }
 .hero { padding-bottom:clamp(54px,7vw,88px); }
-.hero h1 { color:#173b32; text-shadow:none; letter-spacing:.06em; }
+.hero h1 { color:#f1e2c0; text-shadow:none; letter-spacing:.14em; }
+.hero h1::after { content:"以史照局 · 以易察变"; display:block; margin-top:22px; color:var(--seal); font:500 14px/1.6 var(--sans); letter-spacing:.22em; }
 .hero .lead { max-width:34em; }
-.dlg,.source-book,.yi-step,.yi-essential,.verdict,.basis-card,.opt,.trust>div { border-radius:12px; border-color:var(--rule); box-shadow:0 10px 34px rgba(24,53,47,.06); }
-.dlg { background:var(--surface); }
-.section { padding-block:clamp(54px,7vw,84px); }
-.section h2 { letter-spacing:.035em; }
+.dlg,.source-book,.yi-step,.yi-essential,.verdict,.basis-card,.opt,.trust>div { border-radius:5px; border-color:var(--rule); box-shadow:0 12px 34px rgba(0,0,0,.22); }
+.dlg { background:linear-gradient(145deg,#20221d,var(--surface)); }
+.section { padding-block:clamp(58px,7.5vw,92px); border-top:1px solid rgba(210,177,109,.1); }
+.section h2 { letter-spacing:.07em; color:#e9d8b3; }
 .section .intro { max-width:58em; }
-.yijing-section { background:linear-gradient(180deg,rgba(220,235,228,.48),rgba(237,243,239,0)); }
+.yijing-section { background:linear-gradient(180deg,rgba(210,177,109,.045),transparent 55%); }
 .yi-step { grid-template-columns:52px minmax(190px,.75fr) minmax(0,1.6fr); gap:18px; margin:8px 0; padding:20px; border:1px solid var(--rule); background:var(--surface); }
-.yi-index { display:grid; width:38px; height:38px; place-items:center; border-radius:50%; background:var(--gu-soft); color:var(--gu); font-size:17px; }
+.yi-index { display:grid; width:38px; height:38px; place-items:center; border-radius:2px; background:var(--gu-soft); color:var(--gu); font-size:15px; }
 .yi-quote { color:var(--jin); }
 .yi-essentials { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; border:0; margin-top:18px; }
 .yi-essential { padding:22px; border:1px solid var(--rule); background:var(--surface); }
 .yi-essential h4 { margin-top:8px; font-size:19px; }
-.yi-case-label { display:inline-block; padding:4px 9px; border-radius:20px; background:var(--gu-soft); color:var(--gu); font-size:12px; font-weight:700; }
-.yi-scene { padding:10px 12px; background:#f1f5f1; border-left:2px solid var(--gu); color:var(--ink-2); }
+.yi-case-label { display:inline-block; padding:4px 9px; border:1px solid color-mix(in srgb,var(--gu) 42%,transparent); color:var(--gu); font-size:12px; font-weight:700; letter-spacing:.06em; }
+.yi-scene { padding:10px 12px; background:rgba(255,255,255,.035); border-left:2px solid var(--seal); color:var(--ink-2); }
 .yi-case-action { padding-top:10px; border-top:1px solid var(--rule); color:var(--ink-2); }
 .yi-case-link { display:inline-block; margin-top:6px; color:var(--gu); font-weight:700; }
 .yi-essential .yi-meta { margin:10px 0; }
 .nav a { font-size:13px; }
 .btn-primary { background:var(--gu); border-color:var(--gu); }
-.btn-primary:hover { background:#245f52; }
-.section#library { background:rgba(251,252,249,.55); }
+.btn-primary:hover { background:#e0c27f; }
+.section#library { background:rgba(255,255,255,.018); }
 .cases { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
-.case { align-self:start; min-width:0; padding:0; overflow:hidden; border:1px solid var(--rule); border-radius:11px; background:var(--surface); box-shadow:0 6px 22px rgba(24,53,47,.045); scroll-margin-top:90px; }
+.case { align-self:start; min-width:0; padding:0; overflow:hidden; border:1px solid var(--rule); border-radius:4px; background:var(--surface); box-shadow:0 8px 24px rgba(0,0,0,.16); scroll-margin-top:90px; }
 .case summary { position:relative; display:flex; min-height:180px; flex-direction:column; align-items:flex-start; gap:8px; padding:18px; cursor:pointer; list-style:none; }
 .case summary::-webkit-details-marker { display:none; }
 .case summary::after { content:"＋"; position:absolute; top:15px; right:16px; color:var(--gu); font-size:19px; }
@@ -482,14 +485,29 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),
 .case-more { margin-top:auto; color:var(--gu); font-size:12px; font-weight:700; }
 .case dl { grid-template-columns:4.5em minmax(0,1fr); gap:7px 10px; margin:0; padding:16px 18px 20px; border-top:1px solid var(--rule); font-size:14px; }
 .case dd.quote { color:var(--jin); }
-.case:hover { border-color:#8bb4a5; transform:translateY(-2px); box-shadow:0 12px 28px rgba(24,53,47,.1); }
-.case.flash { outline:2px solid var(--jin); }
+.case:hover { border-color:var(--gu); transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.28); }
+.case.flash { outline:2px solid var(--seal); }
 .more { display:flex; align-items:center; justify-content:center; gap:12px; color:var(--ink-3); font-size:13px; }
-.more .btn { border-radius:24px; }
-.source-cta { border-radius:10px; background:var(--gu-soft); }
+.more .btn { border-radius:2px; }
+.source-cta { border-radius:3px; background:var(--gu-soft); }
 .theme-note { font-size:13px; }
-@media (max-width:900px) { .cases { grid-template-columns:repeat(2,minmax(0,1fr)); } .yi-essentials { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (max-width:760px) { .yi-step { grid-template-columns:42px 1fr; } .yi-essentials,.cases { grid-template-columns:1fr; } .case summary { min-height:0; } }
+.demo-entry-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:28px; }
+.demo-entry { position:relative; display:flex; min-height:188px; flex-direction:column; align-items:flex-start; gap:12px; padding:22px; border:1px solid var(--rule); background:linear-gradient(150deg,#20221d,var(--surface)); color:var(--ink); text-align:left; cursor:pointer; transition:border-color .2s,transform .2s,background .2s; }
+.demo-entry:hover,.demo-entry[aria-pressed="true"] { border-color:var(--gu); transform:translateY(-2px); background:linear-gradient(150deg,#28261f,var(--surface)); }
+.demo-entry .entry-no { color:var(--seal); font:700 12px var(--mono); letter-spacing:.12em; }
+.demo-entry strong { font:700 20px/1.45 var(--serif); }
+.demo-entry .entry-desc { color:var(--ink-3); font-size:14px; }
+.demo-entry .entry-action { margin-top:auto; color:var(--gu); font-size:13px; }
+.demo-detail { margin-top:26px; padding-top:26px; border-top:1px solid var(--rule); scroll-margin-top:92px; }
+.demo-detail:empty { display:none; }
+.demo-detail-title { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:0 0 20px; font:700 clamp(22px,3vw,30px)/1.35 var(--serif); color:#eadbb9; }
+.demo-close { border:1px solid var(--rule); padding:8px 12px; background:transparent; color:var(--ink-2); cursor:pointer; }
+.yi-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.yi-summary article { padding:14px; border:1px solid var(--rule); background:rgba(255,255,255,.025); }
+.yi-summary b { color:var(--gu); }
+.yi-summary p { margin:6px 0 0; color:var(--ink-2); font-size:14px; }
+@media (max-width:900px) { .cases,.demo-entry-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .yi-essentials { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:760px) { .yi-step { grid-template-columns:42px 1fr; } .yi-essentials,.cases,.demo-entry-grid,.yi-summary { grid-template-columns:1fr; } .case summary { min-height:0; } .demo-entry { min-height:140px; } }
 </style>
 </head>
 <body>
@@ -497,13 +515,13 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>史鉴推演</a>
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>鉴势 <small>三源决策</small></a>
     <nav class="nav" aria-label="页面导航">
-      <a href="#yijing">易经九步</a>
-      <a href="#demo">看示范</a>
-      <a href="#library">历史案例</a>
-      <a href="#sources">史记与通鉴</a>
       <a href="#method">三源决策法</a>
+      <a href="#sources">史鉴方法论</a>
+      <a href="#yijing">易经九步</a>
+      <a href="#demo">案例示范</a>
+      <a href="#library">历史案例</a>
       <a href="#trust">为什么可信</a>
       <a class="nav-gh" href="https://github.com/gavincao6313-jpg/shijian-tuiyan">GitHub</a>
     </nav>
@@ -514,7 +532,7 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
       <div>
-        <h1 id="hero-title">史鉴推演</h1>
+        <h1 id="hero-title">鉴势</h1>
         <p class="lead">纠结一个决定的时候，把你的处境说给它听。</p>
         <p class="lead">结合《史记》《资治通鉴》的历史案例与《易经》的九步决策方法，梳理选项、风险和下一步行动。</p>
         <p class="hero-note">历史提供参照，易经提供复核方法；结论仍由现实证据决定。</p>
@@ -579,45 +597,9 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),
     </div>
   </section>
 
-  <section class="section yijing-section" id="yijing" aria-labelledby="yijing-title">
-    <div class="wrap">
-      <h2 id="yijing-title">易经决策方法</h2>
-      <p class="intro">九步是本项目依据《易传》相关思想整理的现代工作流，并非古书原有的标准程序，也不使用占筮预测。</p>
-      <h3>九步流程</h3>
-      <p class="intro">辨位→观势→察几→审时→谋始→守正→虑患→变通→复盘。每步说明原典出处、现代转译、自检问题与适用边界。</p>
-      <div class="yi-flow" id="yijing-methods"></div>
-      <h3 style="margin-top:42px">思想精要：六个案例</h3>
-      <p class="intro">把经典观点放进具体抉择里，看它如何改变行动与风险控制。</p>
-      <div class="yi-essentials" id="yijing-essentials"></div>
-      <p class="yi-note">本工作流是当代决策辅助的项目综合，不是《周易》原有固定程序。经、传文本层累与作者归属存在学术讨论；引文链接供读者查阅，页面所述应用属于现代解释。此处不以卦象、爻辞替用户占断，也不把类比包装成预测。</p>
-      <div class="yi-sources"><a href="https://www.nlc.cn/upload/attachments/2023-12-01/0932c8ff.pdf" target="_blank" rel="noopener">国家图书馆：《周易》概说（成书与作者问题）</a></div>
-    </div>
-  </section>
-
-  <section class="section" id="demo" aria-labelledby="demo-title">
-    <div class="wrap">
-      <h2 id="demo-title">三个示范推演</h2>
-      <p class="intro">三个常见抉择全部展开，每个都按同一套流程展示：立局、定母题、照镜、推演、换位、易经方法和太史公曰。点开案例名可跳到案例库中的史料原貌。</p>
-      <div id="demos-list"></div>
-    </div>
-  </section>
-
-  <section class="section source-section" id="sources" aria-labelledby="sources-title">
-    <div class="wrap">
-      <h2 id="sources-title">史记与资治通鉴</h2>
-      <p class="source-intro">《史记》侧重人物与选择，《资治通鉴》补充事件时序和局势变化。所有历史类比均保留来源、等级与适用边界。</p>
-      <div class="source-books">
-        <article class="source-book"><h3>《史记》</h3><p>以人物列传、本纪、世家等篇章呈现人物经历、选择与时代局势。本项目选取案例时保留篇名/卷次、关键原文、史料等级和现代映射，方便读者回到来源语境核对。</p><p>案例库覆盖择主、进退、合伙、用人、交班等现实决策母题；现代建议会标明与历史处境相似和不同之处。</p></article>
-        <article class="source-book"><h3>《资治通鉴》</h3><p>以编年脉络呈现事件前因后果和各方行动。本项目借此检查决策发生的时序、权力关系和连锁后果，避免把单个人物的成败抽离局势来读。</p><p>使用时区分可核对的行动与史家叙述、评论，并结合案例中的史料等级说明证据边界。</p></article>
-      </div>
-      <div class="source-cta"><p>92 条案例支持关键词、处境与史料等级检索；完整细节按需展开。</p><a href="#library">前往历史案例库 ↓</a></div>
-      <p class="source-hint">试试搜索“韩信”“接班”或“合伙”。</p>
-    </div>
-  </section>
-
   <section class="section method-section" id="method" aria-labelledby="method-title">
     <div class="wrap">
-      <h2 id="method-title">三源如何共同参与决策</h2>
+      <h2 id="method-title">三源决策法</h2>
       <p class="intro">每次实时推演都把现实处境、史书案例和易经方法放在同一条分析链里。史书提供可核对的行动与后果，易经提供逐步检查变化与行动的办法；系统综合证据后给出带前提和止损线的建议。</p>
       <div class="source-books method-books">
         <article class="source-book"><h3>《史记》｜看人物与选择</h3><p>从本纪、世家、列传中的人物处境、动机、关系与关键选择，比较正例和反例。案例保留篇章出处、原文、史料等级和现实迁移边界。</p><p><b>在推演中：</b>回答“当事人是谁、手里有什么、为什么这样选、付出了什么代价”。</p></article>
@@ -628,6 +610,42 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(194,222,210,.35),
         <b>现实处境与选项</b><span aria-hidden="true">→</span><b>两书正反案例与史料等级</b><span aria-hidden="true">→</span><b>易经九步检查变化与行动</b><span aria-hidden="true">→</span><b>建议、前提、止损线</b>
       </div>
       <p class="yi-note">三者分工不同：史书是历史证据，易经是现代反思方法。只有案例实际覆盖某部史书时，推演才会把它作为该次判断的直接历史依据；不拿空缺材料冒充证据。</p>
+    </div>
+  </section>
+
+  <section class="section source-section" id="sources" aria-labelledby="sources-title">
+    <div class="wrap">
+      <h2 id="sources-title">史鉴方法论</h2>
+      <p class="source-intro">以人物抉择和时代局势两条史料路径检视现实问题：先辨人物、关系与得失，再还原事件时序、局势变化和连锁后果。</p>
+      <div class="source-books">
+        <article class="source-book"><h3>《史记》｜人物与抉择</h3><p>从本纪、世家、列传中梳理人物处境、动机、关系与关键选择；对照正反先例，并标明来源、史料等级与现实迁移边界。</p><p><b>核心问题：</b>谁在行动？掌握什么？选择带来哪些得失？</p></article>
+        <article class="source-book"><h3>《资治通鉴》｜时序与局势</h3><p>沿编年脉络复原事件前后、各方行动和局势变化，避免脱离条件只看成败；区分史实记录与史家判断。</p><p><b>核心问题：</b>形势如何演变？哪些信号出现后应当调整？</p></article>
+      </div>
+      <div class="source-cta"><p>92 条案例保留出处、原文、史料等级和迁移边界。</p><a href="#library">检索史鉴案例 ↓</a></div>
+    </div>
+  </section>
+
+  <section class="section yijing-section" id="yijing" aria-labelledby="yijing-title">
+    <div class="wrap">
+      <h2 id="yijing-title">易经九步</h2>
+      <p class="intro">依据《易传》相关思想整理的现代决策检查流程，不是古书原有的标准程序，也不使用占筮预测。</p>
+      <h3>九步流程</h3>
+      <p class="intro">九步帮助辨清位置、变化、时机、行动与复盘；每步含原典出处和一个决策自检。</p>
+      <div class="yi-flow" id="yijing-methods"></div>
+      <h3 style="margin-top:42px">思想精要 · 六个处境案例</h3>
+      <p class="intro">用六个短案例看经典观点如何落到行动。</p>
+      <div class="yi-essentials" id="yijing-essentials"></div>
+      <p class="yi-note">本工作流是当代决策辅助的项目综合，不是《周易》原有固定程序。经、传文本层累与作者归属存在学术讨论；引文链接供读者查阅，页面所述应用属于现代解释。此处不以卦象、爻辞替用户占断，也不把类比包装成预测。</p>
+      <div class="yi-sources"><a href="https://www.nlc.cn/upload/attachments/2023-12-01/0932c8ff.pdf" target="_blank" rel="noopener">国家图书馆：《周易》概说（成书与作者问题）</a></div>
+    </div>
+  </section>
+
+  <section class="section" id="demo" aria-labelledby="demo-title">
+    <div class="wrap">
+      <h2 id="demo-title">案例示范</h2>
+      <p class="intro">选择一个处境，查看完整推演。示范入口先展示人物与抉择主题，避免三篇长文同时铺开。</p>
+      <div class="demo-entry-grid" id="demos-list"></div>
+      <div class="demo-detail" id="demo-detail" aria-live="polite"></div>
     </div>
   </section>
 
@@ -722,7 +740,7 @@ document.querySelectorAll(".yi-essential").forEach((card, i) => {
   if (demo) {
     const scene = document.createElement("p"); scene.className = "yi-scene"; scene.textContent = demo.question; title?.after(scene);
     const action = document.createElement("p"); action.className = "yi-case-action";
-    action.innerHTML = `<b>案例判断：</b>${esc(demo.verdict.pick)}。${esc(item.example)} <a class="yi-case-link" href="#demo-${demo.id}">查看完整推演 →</a>`;
+    action.innerHTML = `<b>案例判断：</b>${esc(demo.verdict.pick)}。${esc(item.example)} <a class="yi-case-link" href="#demo-${demo.id}" data-demo-select="${demo.id}">查看案例 →</a>`;
     card.querySelector(".yi-example")?.replaceWith(action);
   }
 });
@@ -735,7 +753,7 @@ const STEPS = [
   ["照镜", "每个选项都配正例和反例，写清像在哪里、不像在哪里。不像的地方如果正是关键变量，这个案例就只作参考。"],
   ["推演", "每个选项走近期、中期、远期三段，写出它会像谁那样翻车，看到什么信号就该调整。"],
   ["换位", "站到关键他人的位置上，再推一遍。"],
-  ["易经方法", "以完整的易经决策流程贯穿判断：辨位、察势、看信号、审时、谋始、守正、虑患、变通、复盘；不占断，不替代现实证据。"],
+  ["易经方法", "用九步检查位置、变化、时机、风险和复盘；不占断，不替代现实证据。"],
   ["太史公曰", "推荐、前提、止损线，外加一张本周就能动手的行动卡。"],
 ];
 const caseLink = id => { const c = caseById[id]; return c ? `<a href="#case-${id}">${esc(c.title)}</a>` : ""; };
@@ -782,7 +800,7 @@ function planHTML(d) {
   const sourceBasis = `<section aria-label="本次推演的三源依据"><h4>本次推演：三源依据各司其职</h4><div class="basis-grid">
     ${basisFor("史记", "核对人物位置、关系、选择与得失。")}
     ${basisFor("资治通鉴", "核对事件时序、局势变化与连锁后果。")}
-    <article class="basis-card"><h4>易经方法</h4><p>九步工作流检查现实证据、变化信号、行动时机和止损复盘。</p><p>${yiSteps.map(s => esc(yijingPrinciples[s.principle].name)).join(" → ")}</p></article>
+    <article class="basis-card"><h4>易经方法</h4><p>九步工作流检查现实证据、变化信号、行动时机和止损复盘。</p><p>本案例的九步应用见下方简要检查。</p></article>
     </div></section>`;
   const opts = d.options.map(o => `<div class="opt${o.pick ? " pick" : ""}">
       <h4>${esc(o.name)}${o.pick ? '<span class="rec">推荐</span>' : ""}</h4>
@@ -790,12 +808,14 @@ function planHTML(d) {
       <p class="risk"><b>会怎么翻车</b>${esc(o.fail)}</p>
       <p class="sig"><b>看到这个信号就调整</b>${esc(o.signal)}</p></div>`).join("");
   const swaps = d.swap.map(s => `<div><h4>站在${esc(s.who)}的位置</h4><p>${esc(s.v)}</p></div>`).join("");
-  const yijing = `<section class="yijing-analysis" aria-label="易经决策方法应用"><h4>易经决策方法 · 九步复核</h4>
-    ${yiSteps.map((step,i) => { const principle=yijingPrinciples[step.principle]; return `<div class="yi-result">
-      <div><b>${i+1}. ${esc(principle.name)}</b><p class="yi-quote">「${esc(principle.phrase)}」</p>
-      <p class="yi-meta">${esc(principle.source)} · <a href="${esc(principle.url)}" target="_blank" rel="noopener">原文</a></p></div>
-      <div><p>${esc(step.reading)}</p><p><b>事实/未知：</b>${esc(step.evidence)}</p><p><b>下一步：</b>${esc(step.action)}</p></div></div>`; }).join("")}
-    <p class="yi-boundary">本工作流是当代决策辅助的项目综合，不是《周易》原有固定程序。经、传文本层累与作者归属存在学术讨论；引文链接供读者查阅，页面所述应用属于现代解释。此处不以卦象、爻辞替用户占断，也不把类比包装成预测。</p></section>`;
+  const yiGroups = [
+    ["看清局势", "辨位 · 观势 · 察几", "核实所处位置、可用资源和正在变化的信号。"],
+    ["择时行动", "审时 · 谋始 · 守正", "比较窗口与代价，先做可验证、可回退的一步。"],
+    ["留退复盘", "虑患 · 变通 · 复盘", "预设止损信号；条件改变时及时调整并复盘。"],
+  ];
+  const yijing = `<section class="yijing-analysis" aria-label="易经决策方法应用"><h4>易经方法 · 三次检查</h4>
+    <div class="yi-summary">${yiGroups.map(([title, names, desc]) => `<article><b>${title}</b><p>${names}</p><p>${desc}</p></article>`).join("")}</div>
+    <p class="yi-boundary">九步完整方法与原典出处见 <a href="#yijing">易经九步</a>；这里仅展示本案例的简要复核。本工作流是当代决策辅助的项目综合，不是《周易》原有固定程序。经、传文本层累与作者归属存在学术讨论；引文链接供读者查阅，页面所述应用属于现代解释。此处不以卦象、爻辞替用户占断，也不把类比包装成预测。</p></section>`;
   const v = d.verdict, qc = caseById[v.quote_case];
   const verdict = `<div class="verdict"><div class="seal" aria-hidden="true">太史公曰</div><div>
       <p class="v-pick">${esc(v.pick)}</p>
@@ -818,12 +838,22 @@ function planHTML(d) {
       ${d.extra ? `<span class="who" style="margin-top: 10px">补充</span>${esc(d.extra)}` : ""}</div>
     <ol class="steps">${STEPS.map(([t, p], i) => `<li class="step"><div class="step-head"><h3>${t}</h3><p>${p}</p></div><div>${bodies[i]}</div></li>`).join("")}</ol>`;
 }
-$("#demos-list").innerHTML = DATA.demos.map(d => `<article class="demo-full" id="demo-${esc(d.id)}" aria-labelledby="demo-title-${esc(d.id)}">
-  <h3 id="demo-title-${esc(d.id)}">${esc(d.tab)}</h3>${planHTML(d)}</article>`).join("");
+const demoDescription = ["事业合伙 · 创业去留", "家族传承 · 接班选择", "职场进退 · 权责变化"];
+$("#demos-list").innerHTML = DATA.demos.map((d, i) => `<button class="demo-entry" type="button" data-demo-index="${i}" aria-pressed="false">
+  <span class="entry-no">CASE / 0${i + 1}</span><strong>${esc(d.tab)}</strong><span class="entry-desc">${demoDescription[i] || "历史决策案例"}</span><span class="entry-action">打开完整推演　↗</span></button>`).join("");
+const demoDetail = $("#demo-detail");
 function selectTab(i) {
   const demo = DATA.demos[i]; if (!demo) return;
-  document.getElementById(`demo-${demo.id}`)?.scrollIntoView({behavior: "smooth", block: "start"});
+  const detail = demoDetail;
+  detail.id = `demo-${demo.id}`;
+  detail.innerHTML = `<h3 class="demo-detail-title" id="demo-title-${esc(demo.id)}">${esc(demo.tab)}<button type="button" class="demo-close" aria-label="收起案例">收起</button></h3>${planHTML(demo)}`;
+  document.querySelectorAll(".demo-entry").forEach((button, index) => button.setAttribute("aria-pressed", String(index === i)));
+  detail.querySelector(".demo-close").addEventListener("click", () => { detail.replaceChildren(); detail.id = "demo-detail"; document.querySelectorAll(".demo-entry").forEach(button => button.setAttribute("aria-pressed", "false")); });
+  detail.scrollIntoView({behavior: "smooth", block: "start"});
 }
+$("#demos-list").addEventListener("click", e => { const button = e.target.closest("[data-demo-index]"); if (button) selectTab(Number(button.dataset.demoIndex)); });
+document.addEventListener("click", e => { const link = e.target.closest("[data-demo-select]"); if (!link) return; e.preventDefault(); const index = DATA.demos.findIndex(d => d.id === link.dataset.demoSelect); if (index >= 0) selectTab(index); });
+window.addEventListener("hashchange", () => { const m = location.hash.match(/^#demo-(.+)$/); if (!m) return; const index = DATA.demos.findIndex(d => d.id === m[1]); if (index >= 0) selectTab(index); });
 
 /* ---------- 案例库 ---------- */
 $("#lib-count").textContent = DATA.cases.length;
