@@ -66,15 +66,15 @@ def demo_markdown(d, cases, yijing):
                   f"- 近期（0–6 个月）：{o['near']}", f"- 中期（1–2 年）：{o['mid']}", f"- 远期（3–5 年）：{o['far']}",
                   f"- **会怎么翻车**：{o['fail']}", f"- **看到这个信号就调整**：{o['signal']}", ""]
     lines += ["## 换位"] + [f"- **{s['who']}**：{s['v']}" for s in d["swap"]]
-    lines += ["", "## 易经决策方法：贯穿全程的复核", "本方法是项目基于经传材料形成的现代综合，不是古代固定步骤。"]
+    lines += ["", "## 易经决策方法：本案复核", "本方法是项目基于经传材料形成的现代综合，不是古代固定步骤。"]
     apps = {a["case"]: a for a in yijing["caseApplications"]}
     app = apps[d["id"]]
-    lines += [f"**案例应用：{app['title']}**：{app['application']}", "", "| 步骤 | 经传要点 | 对本案例的提问 | 原文与出处 |",
-              "|---|---|---|---|"]
-    for sid in yijing["workflow"]:
-        step = next(x for x in yijing["principles"] if x["id"] == sid)
-        lines += [f"| {step['name']} | {step['reading']} | {step['question']} | [{step['source']}：{step['phrase']}]({step['url']}) |"]
-    lines += ["", f"> 方法边界：{yijing['methodBoundary']}"]
+    principle_map = {step["id"]: step for step in yijing["principles"]}
+    lines += [f"**案例应用：{app['title']}**：{app['application']}", "", "| 易经方法 | 本案分析 | 本案行动 |", "|---|---|---|"]
+    for item in app["checks"]:
+        methods = "、".join(principle_map[sid]["name"].split("：", 1)[0] for sid in item["principles"])
+        lines += [f"| {methods} | {item['analysis']} | {item['action']} |"]
+    lines += ["", f"> 完整九步方法与原典出处见易经决策方法数据；方法边界：{yijing['methodBoundary']}"]
     v = d["verdict"]
     lines += ["", "## 太史公曰", f"推荐 **{v['pick']}**。「{v['quote']}」（{t(v['quote_case'])}）{v['why']}",
               f"- 前提：{v['premise']}", f"- 止损线：{v['stop']}", "", "## 行动卡",
@@ -127,6 +127,13 @@ def main():
           "每个示范都必须且只能对应一个易经综合应用", errors)
     for a in yijing["caseApplications"]:
         check(bool(a.get("title") and a.get("application")), f"案例 {a.get('case')} 缺少易经综合应用", errors)
+        checks = a.get("checks", [])
+        check(len(checks) == 3, f"案例 {a.get('case')} 的易经复核应有 3 条案例分析", errors)
+        for item in checks:
+            check(bool(item.get("principles")) and all(pid in principles for pid in item.get("principles", [])),
+                  f"案例 {a.get('case')} 易经分析引用了不存在的方法步骤", errors)
+            check(bool(item.get("analysis") and item.get("action")),
+                  f"案例 {a.get('case')} 易经分析必须写明本案分析和行动", errors)
 
     for c in cases:
         check(grade_of(c) in GRADES, f"[{c['id']}] 缺少史料等级（「史料：A｜理由」），先跑 verify_quotes.py", errors)

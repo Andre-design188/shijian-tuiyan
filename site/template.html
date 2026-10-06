@@ -441,40 +441,32 @@ footer { border-top:1px solid var(--rule); padding-block:28px; color:var(--ink-2
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
 }
-/* 墨色决策剧场：档案室的黑曜底、暖金题签与朱砂印记 */
-:root { --bg:#111310; --surface:#1a1c18; --ink:#eee7d9; --ink-2:#c2b9a8; --ink-3:#a59a87; --rule:#393a32; --gu:#d2b16d; --gu-soft:#302a1e; --on-gu:#171712; --jin:#d7a85d; --jin-soft:#29251d; --seal:#c45b45; --on-seal:#fff2e9; color-scheme:dark; }
-body { background-image:radial-gradient(ellipse at 75% -8%,rgba(167,124,52,.14),transparent 38rem),linear-gradient(90deg,transparent 0 6%,rgba(255,255,255,.018) 6.1%,transparent 6.2%); }
+/* 暖纸与朱砂：历史档案的纸色、松烟墨和旧铜金 */
+:root { --bg:#f3eee5; --surface:#fffaf2; --ink:#302920; --ink-2:#66594b; --ink-3:#817363; --rule:#ddd1bf; --gu:#986333; --gu-soft:#eee1ce; --on-gu:#fffaf3; --jin:#a44b32; --jin-soft:#f1dfd4; --seal:#9e3529; --on-seal:#fff8f1; color-scheme:light; }
+body { background-image:radial-gradient(ellipse at 82% 0%,rgba(214,184,137,.22),transparent 38rem),linear-gradient(90deg,transparent 0 6%,rgba(112,78,43,.025) 6.1%,transparent 6.2%); }
 .top { background:color-mix(in srgb,var(--bg) 92%,transparent); border-color:var(--rule); }
 .brand { gap:12px; letter-spacing:.08em; }
 .brand-mark { width:34px; height:34px; border:1px solid var(--gu); border-radius:3px; background:var(--seal); box-shadow:inset 0 0 0 3px var(--bg),inset 0 0 0 4px var(--gu); position:relative; }
-.brand-mark::after { content:"鉴"; position:absolute; inset:0; display:grid; place-items:center; color:#f4e8cc; font:700 20px/1 var(--serif); }
+.brand-mark::after { content:"鉴"; position:absolute; inset:0; display:grid; place-items:center; color:#fff4e4; font:700 20px/1 var(--serif); }
 .hero { padding-bottom:clamp(54px,7vw,88px); }
-.hero h1 { color:#f1e2c0; text-shadow:none; letter-spacing:.14em; }
+.hero h1 { color:#36271d; text-shadow:none; letter-spacing:.14em; }
 .hero h1::after { content:"以史照局 · 以易察变"; display:block; margin-top:22px; color:var(--seal); font:500 14px/1.6 var(--sans); letter-spacing:.22em; }
 .hero .lead { max-width:34em; }
-.dlg,.source-book,.yi-step,.yi-essential,.verdict,.basis-card,.opt,.trust>div { border-radius:5px; border-color:var(--rule); box-shadow:0 12px 34px rgba(0,0,0,.22); }
-.dlg { background:linear-gradient(145deg,#20221d,var(--surface)); }
-.section { padding-block:clamp(58px,7.5vw,92px); border-top:1px solid rgba(210,177,109,.1); }
-.section h2 { letter-spacing:.07em; color:#e9d8b3; }
+.dlg,.source-book,.yi-step,.verdict,.basis-card,.opt,.trust>div { border-radius:5px; border-color:var(--rule); box-shadow:0 8px 24px rgba(74,52,30,.07); }
+.dlg { background:linear-gradient(145deg,#fffdf8,var(--surface)); }
+.section { padding-block:clamp(58px,7.5vw,92px); border-top:1px solid rgba(152,99,51,.12); }
+.section h2 { letter-spacing:.07em; color:#3b2d23; }
 .section .intro { max-width:58em; }
-.yijing-section { background:linear-gradient(180deg,rgba(210,177,109,.045),transparent 55%); }
+.yijing-section { background:linear-gradient(180deg,rgba(219,195,160,.16),transparent 55%); }
 .yi-step { grid-template-columns:52px minmax(190px,.75fr) minmax(0,1.6fr); gap:18px; margin:8px 0; padding:20px; border:1px solid var(--rule); background:var(--surface); }
 .yi-index { display:grid; width:38px; height:38px; place-items:center; border-radius:2px; background:var(--gu-soft); color:var(--gu); font-size:15px; }
 .yi-quote { color:var(--jin); }
-.yi-essentials { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; border:0; margin-top:18px; }
-.yi-essential { padding:22px; border:1px solid var(--rule); background:var(--surface); }
-.yi-essential h4 { margin-top:8px; font-size:19px; }
-.yi-case-label { display:inline-block; padding:4px 9px; border:1px solid color-mix(in srgb,var(--gu) 42%,transparent); color:var(--gu); font-size:12px; font-weight:700; letter-spacing:.06em; }
-.yi-scene { padding:10px 12px; background:rgba(255,255,255,.035); border-left:2px solid var(--seal); color:var(--ink-2); }
-.yi-case-action { padding-top:10px; border-top:1px solid var(--rule); color:var(--ink-2); }
-.yi-case-link { display:inline-block; margin-top:6px; color:var(--gu); font-weight:700; }
-.yi-essential .yi-meta { margin:10px 0; }
 .nav a { font-size:13px; }
-.btn-primary { background:var(--gu); border-color:var(--gu); }
-.btn-primary:hover { background:#e0c27f; }
-.section#library { background:rgba(255,255,255,.018); }
+.btn-primary { background:var(--seal); border-color:var(--seal); }
+.btn-primary:hover { background:#812c22; }
+.section#library { background:rgba(255,250,242,.55); }
 .cases { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
-.case { align-self:start; min-width:0; padding:0; overflow:hidden; border:1px solid var(--rule); border-radius:4px; background:var(--surface); box-shadow:0 8px 24px rgba(0,0,0,.16); scroll-margin-top:90px; }
+.case { align-self:start; min-width:0; padding:0; overflow:hidden; border:1px solid var(--rule); border-radius:4px; background:var(--surface); box-shadow:0 5px 16px rgba(74,52,30,.05); scroll-margin-top:90px; }
 .case summary { position:relative; display:flex; min-height:180px; flex-direction:column; align-items:flex-start; gap:8px; padding:18px; cursor:pointer; list-style:none; }
 .case summary::-webkit-details-marker { display:none; }
 .case summary::after { content:"＋"; position:absolute; top:15px; right:16px; color:var(--gu); font-size:19px; }
@@ -485,29 +477,33 @@ body { background-image:radial-gradient(ellipse at 75% -8%,rgba(167,124,52,.14),
 .case-more { margin-top:auto; color:var(--gu); font-size:12px; font-weight:700; }
 .case dl { grid-template-columns:4.5em minmax(0,1fr); gap:7px 10px; margin:0; padding:16px 18px 20px; border-top:1px solid var(--rule); font-size:14px; }
 .case dd.quote { color:var(--jin); }
-.case:hover { border-color:var(--gu); transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.28); }
+.case:hover { border-color:#c6a77c; transform:translateY(-1px); box-shadow:0 8px 20px rgba(74,52,30,.08); }
 .case.flash { outline:2px solid var(--seal); }
 .more { display:flex; align-items:center; justify-content:center; gap:12px; color:var(--ink-3); font-size:13px; }
 .more .btn { border-radius:2px; }
 .source-cta { border-radius:3px; background:var(--gu-soft); }
 .theme-note { font-size:13px; }
-.demo-entry-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:28px; }
-.demo-entry { position:relative; display:flex; min-height:188px; flex-direction:column; align-items:flex-start; gap:12px; padding:22px; border:1px solid var(--rule); background:linear-gradient(150deg,#20221d,var(--surface)); color:var(--ink); text-align:left; cursor:pointer; transition:border-color .2s,transform .2s,background .2s; }
-.demo-entry:hover,.demo-entry[aria-pressed="true"] { border-color:var(--gu); transform:translateY(-2px); background:linear-gradient(150deg,#28261f,var(--surface)); }
-.demo-entry .entry-no { color:var(--seal); font:700 12px var(--mono); letter-spacing:.12em; }
-.demo-entry strong { font:700 20px/1.45 var(--serif); }
-.demo-entry .entry-desc { color:var(--ink-3); font-size:14px; }
-.demo-entry .entry-action { margin-top:auto; color:var(--gu); font-size:13px; }
+.demo-entry-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:24px 0 0; }
+.demo-entry { display:flex; min-height:190px; flex-direction:column; gap:8px; background:var(--surface); text-align:left; }
+.demo-entry .entry-no { margin:0; color:var(--seal); font:700 12px var(--mono); letter-spacing:.1em; }
+.demo-entry h3 { margin:2px 0 0; font:700 20px/1.45 var(--serif); }
+.demo-entry .entry-desc { flex:1; margin:0; color:var(--ink-2); font-size:14px; }
+.demo-entry .demo-open { align-self:flex-start; padding:0; border:0; background:none; color:var(--gu); font:500 14px var(--sans); cursor:pointer; }
+.demo-entry .demo-open:hover { text-decoration:underline; text-underline-offset:4px; }
 .demo-detail { margin-top:26px; padding-top:26px; border-top:1px solid var(--rule); scroll-margin-top:92px; }
 .demo-detail:empty { display:none; }
-.demo-detail-title { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:0 0 20px; font:700 clamp(22px,3vw,30px)/1.35 var(--serif); color:#eadbb9; }
-.demo-close { border:1px solid var(--rule); padding:8px 12px; background:transparent; color:var(--ink-2); cursor:pointer; }
-.yi-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-.yi-summary article { padding:14px; border:1px solid var(--rule); background:rgba(255,255,255,.025); }
-.yi-summary b { color:var(--gu); }
-.yi-summary p { margin:6px 0 0; color:var(--ink-2); font-size:14px; }
-@media (max-width:900px) { .cases,.demo-entry-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .yi-essentials { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (max-width:760px) { .yi-step { grid-template-columns:42px 1fr; } .yi-essentials,.cases,.demo-entry-grid,.yi-summary { grid-template-columns:1fr; } .case summary { min-height:0; } .demo-entry { min-height:140px; } }
+.demo-detail-title { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:0 0 20px; font:700 clamp(22px,3vw,30px)/1.35 var(--serif); color:#3b2d23; }
+.demo-close { border:1px solid var(--rule); padding:8px 12px; background:var(--surface); color:var(--ink-2); cursor:pointer; }
+.yijing-analysis { margin:22px 0; padding:20px 22px; background:#f7efe3; border-left:3px solid var(--seal); }
+.yijing-analysis h4 { margin:0 0 12px; color:#6f3b2c; font:700 18px var(--serif); }
+.yi-case-check { display:grid; grid-template-columns:150px minmax(0,1fr); gap:4px 18px; padding:10px 0; border-top:1px solid #e6d8c5; }
+.yi-case-check:first-child { border-top:0; }
+.yi-case-method { grid-row:span 2; padding-top:2px; color:#875d34; font-size:13px; font-weight:700; }
+.yi-case-check p { margin:0; color:var(--ink-2); font-size:14px; line-height:1.65; }
+.yi-case-check .yi-case-action { color:#45382d; }
+.yi-boundary { margin:10px 0 0; color:var(--ink-3); font-size:12px; }
+@media (max-width:900px) { .cases,.demo-entry-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:760px) { .yi-step { grid-template-columns:42px 1fr; } .cases,.demo-entry-grid { grid-template-columns:1fr; } .case summary { min-height:0; } .demo-entry { min-height:160px; } .yi-case-check { grid-template-columns:1fr; gap:4px; } .yi-case-method { grid-row:auto; } }
 </style>
 </head>
 <body>
@@ -632,9 +628,6 @@ body { background-image:radial-gradient(ellipse at 75% -8%,rgba(167,124,52,.14),
       <h3>九步流程</h3>
       <p class="intro">九步帮助辨清位置、变化、时机、行动与复盘；每步含原典出处和一个决策自检。</p>
       <div class="yi-flow" id="yijing-methods"></div>
-      <h3 style="margin-top:42px">思想精要 · 六个处境案例</h3>
-      <p class="intro">用六个短案例看经典观点如何落到行动。</p>
-      <div class="yi-essentials" id="yijing-essentials"></div>
       <p class="yi-note">${esc(DATA.yijing.methodBoundary)}</p>
       <div class="yi-sources"><a href="https://www.nlc.cn/upload/attachments/2023-12-01/0932c8ff.pdf" target="_blank" rel="noopener">国家图书馆：《周易》概说（成书与作者问题）</a></div>
     </div>
@@ -724,26 +717,7 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const caseById = Object.fromEntries(DATA.cases.map(c => [c.id, c]));
 const themeByCode = Object.fromEntries(DATA.themes.map(t => [t.code, t]));
 const yijingPrinciples = Object.fromEntries(DATA.yijing.principles.map(item => [item.id, item]));
-$("#yijing-essentials").innerHTML = DATA.yijing.essentials.map(item => {
-  const demo = DATA.demos.find(d => d.id === item.case);
-  return `<article class="yi-essential"><p class="yi-meta">${esc(item.source)} · <a href="${esc(item.url)}" target="_blank" rel="noopener">核对原文</a></p>
-    <h4>${esc(item.name)}</h4><p class="yi-quote">「${esc(item.phrase)}」</p><p>${esc(item.method)}</p>
-    <p class="yi-question"><b>可自问：</b>${esc(item.question)}</p><p class="yi-boundary">边界：${esc(item.boundary)}</p>
-    <p class="yi-example"><b>案例：</b>${esc(item.example)} ${demo ? `<a href="#demo" data-yijing-demo="${esc(item.case)}">查看「${esc(demo.tab)}」</a>` : ""}</p></article>`;
-}).join("");
-document.querySelectorAll(".yi-essential").forEach((card, i) => {
-  const item = DATA.yijing.essentials[i];
-  const demo = DATA.demos.find(d => d.id === item.case);
-  const label = document.createElement("div"); label.className = "yi-case-label"; label.textContent = `思想案例 · ${item.name}`;
-  const title = card.querySelector("h4"); if (title && demo) title.textContent = demo.tab;
-  title?.before(label);
-  if (demo) {
-    const scene = document.createElement("p"); scene.className = "yi-scene"; scene.textContent = demo.question; title?.after(scene);
-    const action = document.createElement("p"); action.className = "yi-case-action";
-    action.innerHTML = `<b>案例判断：</b>${esc(demo.verdict.pick)}。${esc(item.example)} <a class="yi-case-link" href="#demo-${demo.id}" data-demo-select="${demo.id}">查看案例 →</a>`;
-    card.querySelector(".yi-example")?.replaceWith(action);
-  }
-});
+const yijingCaseById = Object.fromEntries(DATA.yijing.caseApplications.map(item => [item.case, item]));
 const BOARD_HINT = {位: "你在结构里的位置", 力: "手里的资源", 人: "关键的他人", 时: "窗口期", 势: "大势", 退: "最坏结果"};
 
 /* ---------- 推演演示 ---------- */
@@ -766,19 +740,9 @@ $("#yijing-methods").innerHTML = DATA.yijing.workflow.map((id, i) => {
     <div class="yi-detail"><p class="yi-reading">${esc(item.reading)}</p>
       <p class="yi-question"><b>决策自检：</b>${esc(item.question)}</p><p class="yi-boundary">边界：${esc(item.boundary)}</p></div></article>`;
 }).join("");
-$("#yijing-essentials").addEventListener("click", e => {
-  const link = e.target.closest("[data-yijing-demo]"); if (!link) return;
-  const i = DATA.demos.findIndex(d => d.id === link.dataset.yijingDemo); if (i >= 0) selectTab(i);
-});
-
 /* 一次推演 → HTML；示范区和「你的推演」共用。d 的结构见 examples/demos.json */
 function planHTML(d) {
-  const yiSteps = d.yijing?.steps?.length ? d.yijing.steps : DATA.yijing.workflow.map(id => {
-    const principle = yijingPrinciples[id];
-    return {principle: id, reading: principle.reading,
-      evidence: `本示范需要核对：` + principle.question,
-      action: "根据这一步的自检问题，安排一项本周可核实、可回退的行动。"};
-  });
+  const yijingCase = yijingCaseById[d.id];
   const board = d.board.map(b => `<div class="cell"><b>${esc(b.k)}</b><span class="hint">${esc(BOARD_HINT[b.k] || "")}</span>
       <p>${esc(b.v)}${b.assume ? '<span class="assume">假设</span>' : ""}</p></div>`).join("");
   const themes = d.themes.filter(code => themeByCode[code]).map(code => { const t = themeByCode[code];
@@ -800,7 +764,7 @@ function planHTML(d) {
   const sourceBasis = `<section aria-label="本次推演的三源依据"><h4>本次推演：三源依据各司其职</h4><div class="basis-grid">
     ${basisFor("史记", "核对人物位置、关系、选择与得失。")}
     ${basisFor("资治通鉴", "核对事件时序、局势变化与连锁后果。")}
-    <article class="basis-card"><h4>易经方法</h4><p>九步工作流检查现实证据、变化信号、行动时机和止损复盘。</p><p>本案例的九步应用见下方简要检查。</p></article>
+    <article class="basis-card"><h4>易经方法</h4><p>${esc(yijingCase.title)}</p><p>以本案事实、风险信号和退出条件做简要复核。</p></article>
     </div></section>`;
   const opts = d.options.map(o => `<div class="opt${o.pick ? " pick" : ""}">
       <h4>${esc(o.name)}${o.pick ? '<span class="rec">推荐</span>' : ""}</h4>
@@ -808,14 +772,10 @@ function planHTML(d) {
       <p class="risk"><b>会怎么翻车</b>${esc(o.fail)}</p>
       <p class="sig"><b>看到这个信号就调整</b>${esc(o.signal)}</p></div>`).join("");
   const swaps = d.swap.map(s => `<div><h4>站在${esc(s.who)}的位置</h4><p>${esc(s.v)}</p></div>`).join("");
-  const yiGroups = [
-    ["看清局势", "辨位 · 观势 · 察几", "核实所处位置、可用资源和正在变化的信号。"],
-    ["择时行动", "审时 · 谋始 · 守正", "比较窗口与代价，先做可验证、可回退的一步。"],
-    ["留退复盘", "虑患 · 变通 · 复盘", "预设止损信号；条件改变时及时调整并复盘。"],
-  ];
-  const yijing = `<section class="yijing-analysis" aria-label="易经决策方法应用"><h4>易经方法 · 三次检查</h4>
-    <div class="yi-summary">${yiGroups.map(([title, names, desc]) => `<article><b>${title}</b><p>${names}</p><p>${desc}</p></article>`).join("")}</div>
-    <p class="yi-boundary">九步完整方法与原典出处见 <a href="#yijing">易经九步</a>；这里仅展示本案例的简要复核。${esc(DATA.yijing.methodBoundary)}</p></section>`;
+  const yijing = `<section class="yijing-analysis" aria-label="${esc(d.tab)}的易经案例分析"><h4>易经方法 · 本案分析</h4>
+    ${yijingCase.checks.map(item => `<article class="yi-case-check"><div class="yi-case-method">${item.principles.map(id => esc(yijingPrinciples[id].name.split("：")[0])).join(" · ")}</div>
+      <p>${esc(item.analysis)}</p><p class="yi-case-action"><b>本案行动：</b>${esc(item.action)}</p></article>`).join("")}
+    <p class="yi-boundary">依据具体事实复核，不以易象预断结果。<a href="#yijing">查看九步原典与完整方法</a></p></section>`;
   const v = d.verdict, qc = caseById[v.quote_case];
   const verdict = `<div class="verdict"><div class="seal" aria-hidden="true">太史公曰</div><div>
       <p class="v-pick">${esc(v.pick)}</p>
@@ -838,17 +798,17 @@ function planHTML(d) {
       ${d.extra ? `<span class="who" style="margin-top: 10px">补充</span>${esc(d.extra)}` : ""}</div>
     <ol class="steps">${STEPS.map(([t, p], i) => `<li class="step"><div class="step-head"><h3>${t}</h3><p>${p}</p></div><div>${bodies[i]}</div></li>`).join("")}</ol>`;
 }
-const demoDescription = ["事业合伙 · 创业去留", "家族传承 · 接班选择", "职场进退 · 权责变化"];
-$("#demos-list").innerHTML = DATA.demos.map((d, i) => `<button class="demo-entry" type="button" data-demo-index="${i}" aria-pressed="false">
-  <span class="entry-no">CASE / 0${i + 1}</span><strong>${esc(d.tab)}</strong><span class="entry-desc">${demoDescription[i] || "历史决策案例"}</span><span class="entry-action">打开完整推演　↗</span></button>`).join("");
+const demoDescription = ["创业合作、技术权限与家庭现金流", "工厂交接、父亲授权与老骨干关系", "汇报权变化、向上沟通与离职时机"];
+$("#demos-list").innerHTML = DATA.demos.map((d, i) => `<article class="source-book demo-entry">
+  <p class="entry-no">示范 / 0${i + 1}</p><h3>${esc(d.tab)}</h3><p class="entry-desc">${demoDescription[i] || "历史处境分析"}</p>
+  <button class="demo-open" type="button" data-demo-index="${i}">打开完整推演 →</button></article>`).join("");
 const demoDetail = $("#demo-detail");
 function selectTab(i) {
   const demo = DATA.demos[i]; if (!demo) return;
   const detail = demoDetail;
   detail.id = `demo-${demo.id}`;
   detail.innerHTML = `<h3 class="demo-detail-title" id="demo-title-${esc(demo.id)}">${esc(demo.tab)}<button type="button" class="demo-close" aria-label="收起案例">收起</button></h3>${planHTML(demo)}`;
-  document.querySelectorAll(".demo-entry").forEach((button, index) => button.setAttribute("aria-pressed", String(index === i)));
-  detail.querySelector(".demo-close").addEventListener("click", () => { detail.replaceChildren(); detail.id = "demo-detail"; document.querySelectorAll(".demo-entry").forEach(button => button.setAttribute("aria-pressed", "false")); });
+  detail.querySelector(".demo-close").addEventListener("click", () => { detail.replaceChildren(); detail.id = "demo-detail"; });
   detail.scrollIntoView({behavior: "smooth", block: "start"});
 }
 $("#demos-list").addEventListener("click", e => { const button = e.target.closest("[data-demo-index]"); if (button) selectTab(Number(button.dataset.demoIndex)); });
