@@ -15,6 +15,7 @@
 - 视觉：按用户选择应用青瓷浅底、深墨文字、青绿色交互和朱砂重点，重做易经步骤和案例卡片层级、圆角、留白、阴影及窄屏布局。页面已在本地 `http://127.0.0.1:8765/` 打开。
 - 验证：重建页面成功（92 案例、148 引文、3 示范）；`scripts/check_plain.py` 通过（0 处）；Node 前端语法检查与 `git diff --check` 通过。浏览器无障碍树确认九步与六个案例前置、历史案例只渲染 6 张卡、显示「6 / 92」、按需加载按钮存在；截图核对青瓷九步版式。
 - 未解决：史书全文引文核验仍需下载 `corpus/`；feature 仍需独立评审，上一轮 Codex Review 因模型服务超时未完成。
+- 版本管理：改动提交为 `c1ce6c8`（`feat(ui): redesign decision experience`），已推送至 `https://github.com/Andre-design188/shijian-tuiyan` 的 `main`。
 
 ## 2026-10-06 Codex 迁移、网页视觉优化与本地打开（feature-yijing-01）
 
