@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>知变 · 三源决策</title>
+<title>史鉴知行 · 三源决策</title>
 <meta name="description" content="纠结一个决定时，从《史记》《资治通鉴》里找出走过同样局面的人，推演每个选项的去向，给出带止损线的建议。">
-<meta property="og:title" content="知变 · 三源决策">
+<meta property="og:title" content="史鉴知行 · 三源决策">
 <meta property="og:description" content="用《史记》《资治通鉴》推演人生抉择：立局、照镜、推演、太史公曰。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M6 3h28l3 3v28l-3 3H6l-3-3V6z' fill='%23b95742' stroke='%23d3b06f' stroke-width='2'/%3E%3Cpath d='M12 11h16M12 17h16M12 23h16M12 29h16M18 8v24' stroke='%23f1e5c8' stroke-width='1.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -504,6 +504,93 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(214,184,137,.22),
 .yi-boundary { margin:10px 0 0; color:var(--ink-3); font-size:12px; }
 @media (max-width:900px) { .cases,.demo-entry-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:760px) { .yi-step { grid-template-columns:42px 1fr; } .cases,.demo-entry-grid { grid-template-columns:1fr; } .case summary { min-height:0; } .demo-entry { min-height:160px; } .yi-case-check { grid-template-columns:1fr; gap:4px; } .yi-case-method { grid-row:auto; } }
+
+/* ---------- 史鉴知行：暖色编辑式档案 ---------- */
+:root {
+  --bg:#F2EDE3; --surface:#FBF8F1; --ink:#292821; --ink-2:#5D5A50; --ink-3:#777166;
+  --rule:#D8D0C2; --gu:#785A37; --gu-soft:#E9E0D2; --on-gu:#FFFCF6;
+  --jin:#526963; --jin-soft:#DFE7E1; --seal:#A4473A; --on-seal:#FFF9F1;
+}
+body { background:var(--bg); background-image:none; }
+.wrap { width:min(1200px,100% - 56px); }
+.top { background:rgba(242,237,227,.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--rule); }
+.brand { gap:11px; font-size:19px; letter-spacing:.035em; }
+.brand small { margin-left:3px; padding-left:12px; border-left:1px solid var(--rule); color:var(--ink-3); font:500 12px var(--sans); letter-spacing:.12em; }
+.brand-mark { display:grid; place-items:center; width:31px; height:31px; border-radius:2px; background:var(--seal); color:#FFF8EC; box-shadow:inset 0 0 0 1px #E8CBA3, inset 0 0 0 3px var(--seal), inset 0 0 0 4px rgba(255,248,236,.72); font:700 17px var(--serif); }
+.nav { gap:clamp(12px,1.7vw,22px); }
+.nav a { position:relative; font-size:13px; }
+.nav a:not(.nav-gh)::after { position:absolute; right:0; bottom:1px; left:0; height:1px; background:var(--seal); content:""; transform:scaleX(0); transform-origin:left; transition:transform .18s ease; }
+.nav a:hover::after { transform:scaleX(1); }
+.hero { position:relative; padding-block:clamp(54px,8vw,98px) clamp(58px,8vw,92px); }
+.hero::after { position:absolute; right:0; bottom:0; left:0; height:1px; background:linear-gradient(90deg,transparent,var(--rule) 12%,var(--rule) 88%,transparent); content:""; }
+.hero .wrap { grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr); gap:clamp(36px,6vw,84px); align-items:center; }
+.hero-kicker { display:flex; align-items:center; gap:10px; margin:0 0 17px; color:var(--seal); font-size:12px; font-weight:700; letter-spacing:.2em; }
+.hero-kicker i { width:20px; height:1px; background:var(--rule); }
+.hero h1 { margin-bottom:8px; font-size:clamp(54px,7.6vw,90px); line-height:1.12; letter-spacing:.08em; text-shadow:none; }
+.hero h1::after { content:none; }
+.hero-deck { margin:0 0 24px; color:var(--gu); font:500 clamp(20px,2.2vw,25px)/1.5 var(--serif); letter-spacing:.08em; }
+.hero .lead { max-width:27em; font-size:17px; line-height:1.85; }
+.hero .lead + .lead { color:var(--ink-2); font-size:15px; }
+.hero-note { max-width:34em; margin-top:13px; padding-left:12px; border-left:2px solid var(--jin); font-size:13px; line-height:1.7; }
+.hero-spine { display:flex; align-items:center; gap:clamp(9px,1.5vw,18px); margin-top:32px; padding-top:18px; border-top:1px solid var(--rule); }
+.hero-spine span { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.hero-spine b { font:700 15px var(--serif); }
+.hero-spine small { color:var(--ink-3); font-size:11px; white-space:nowrap; }
+.hero-spine i { position:relative; flex:1; min-width:10px; height:1px; background:var(--rule); }
+.hero-spine i::after { position:absolute; top:-2px; right:0; width:5px; height:5px; border-top:1px solid var(--seal); border-right:1px solid var(--seal); content:""; transform:rotate(45deg); }
+.dlg { border:1px solid var(--rule); border-top:3px solid var(--seal); border-radius:2px; background:var(--surface); box-shadow:0 12px 34px rgba(59,45,29,.055); }
+.dlg-head { padding:22px 22px 0; }
+.dlg-head h2 { font-size:22px; }
+.dlg-main { padding:16px 22px 22px; gap:14px; }
+.field textarea,.field input,.engine-panel input,.engine-panel select,.more-in { border-radius:2px; background:#F7F3EA; }
+.btn { border-radius:2px; transition:background-color .18s ease,color .18s ease,border-color .18s ease; }
+.btn:hover { transform:none; box-shadow:none; }
+.btn-primary { background:var(--seal); border-color:var(--seal); }
+.btn-primary:hover { background:#883A31; filter:none; }
+.btn-ghost { border-color:var(--rule); color:var(--ink-2); }
+.btn-ghost:hover { background:var(--gu-soft); }
+.demo-pick { border-style:solid; border-radius:2px; }
+.section { padding-block:clamp(58px,7vw,84px); }
+.section h2,.mine h2 { letter-spacing:.045em; }
+.section .intro { max-width:54em; font-size:15px; line-height:1.85; }
+.source-book,.demo-entry,.basis-card,.cell,.yi-step,.opt,.verdict,.yijing-analysis,.case,.trust>div,.errata,.code,.theme-link {
+  border-radius:2px; box-shadow:none;
+}
+.source-book { border-top:2px solid var(--gu); }
+.demo-entry { min-height:178px; padding:20px 22px; border-top:2px solid var(--gu); background:var(--surface); transition:background-color .18s ease,border-color .18s ease; }
+.demo-entry:hover { transform:none; border-color:var(--rule); border-top-color:var(--seal); box-shadow:none; background:#FFFDF8; }
+.demo-entry .entry-no { color:var(--ink-3); letter-spacing:.16em; }
+.demo-entry h3 { font-size:19px; }
+.demo-entry .demo-open { color:var(--seal); }
+.method-flow { justify-content:flex-start; border-color:var(--rule); background:var(--surface); }
+.step { gap:clamp(20px,4vw,52px); }
+.step-head h3 { font-size:22px; }
+.cell { background:var(--surface); }
+.yi-step { grid-template-columns:56px minmax(180px,.7fr) minmax(0,2fr); }
+.yi-index { font-size:22px; }
+.yi-quote,.v-quote { color:var(--seal); }
+.yi-question { border-left-color:var(--jin); }
+.case { transition:background-color .16s ease,border-color .16s ease; }
+.case:hover { transform:none; border-color:var(--rule); box-shadow:none; background:var(--surface); }
+.case.flash { outline-offset:2px; }
+.theme-link { transition:border-color .16s ease,background-color .16s ease; }
+.theme-link:hover { background:var(--surface); }
+.grade.g-A { color:#6C4D2B; background:#E9E0D2; }
+:focus-visible { outline:2px solid var(--seal); outline-offset:3px; }
+@media (max-width:900px) { .hero .wrap { grid-template-columns:1fr; gap:34px; align-items:start; } .hero .hero-copy { max-width:44em; } }
+@media (max-width:760px) {
+  .wrap { width:min(100% - 32px,680px); }
+  .top .wrap { align-items:center; }
+  .hero { padding-block:42px 54px; }
+  .hero h1 { font-size:clamp(49px,13vw,72px); }
+  .hero-spine { gap:8px; }
+  .hero-spine b { font-size:14px; }
+  .hero-spine small { font-size:10px; }
+  .hero .wrap { gap:28px; }
+  .dlg-head,.dlg-main { padding-inline:18px; }
+  .yi-step { grid-template-columns:42px 1fr; }
+}
+@media (prefers-reduced-motion:reduce) { .nav a::after,.demo-entry,.case,.theme-link,.btn { transition:none; } }
 </style>
 </head>
 <body>
@@ -511,7 +598,7 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(214,184,137,.22),
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>知变 <small>三源决策</small></a>
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true">史</span>史鉴知行 <small>三源决策</small></a>
     <nav class="nav" aria-label="页面导航">
       <a href="#method">三源决策法</a>
       <a href="#sources">史鉴方法论</a>
@@ -528,10 +615,18 @@ body { background-image:radial-gradient(ellipse at 82% 0%,rgba(214,184,137,.22),
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
       <div>
-        <h1 id="hero-title">知变</h1>
+        <div class="hero-kicker"><span>史记</span><i></i><span>资治通鉴</span><i></i><span>易经</span></div>
+        <h1 id="hero-title">史鉴知行</h1>
+        <p class="hero-deck">以史观势，以易察变</p>
         <p class="lead">纠结一个决定的时候，把你的处境说给它听。</p>
         <p class="lead">结合《史记》《资治通鉴》的历史案例与《易经》的九步决策方法，梳理选项、风险和下一步行动。</p>
         <p class="hero-note">历史提供参照，易经提供复核方法；结论仍由现实证据决定。</p>
+        <div class="hero-spine" aria-label="决策脉络：人物、时序、变化、行动">
+          <span><b>人物</b><small>辨关系</small></span><i></i>
+          <span><b>时序</b><small>看局势</small></span><i></i>
+          <span><b>变化</b><small>察信号</small></span><i></i>
+          <span><b>行动</b><small>留退路</small></span>
+        </div>
       </div>
       <section class="dlg" id="dlg" aria-labelledby="dlg-title">
         <div class="dlg-bar" id="dlg-bar" hidden>
